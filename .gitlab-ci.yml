@@ -23,4 +23,4 @@ test:
     - python tests/configuration_test.py
   after_script:
     - echo "Stoping all containers"
-    - docker stop $(docker ps -aq)
+    - docker stop osm
