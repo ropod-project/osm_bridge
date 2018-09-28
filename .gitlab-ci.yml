@@ -1,0 +1,35 @@
+image: docker:stable
+
+variables:
+
+services:
+  - name: docker:dind
+    command: ["--insecure-registry=git.ropod.org:4567"] # self-signed cetificate
+
+stages:
+  - build
+  - test
+  - release
+
+before_script:
+  - docker info
+  - apk add --no-cache py-pip
+  - pip install docker-compose
+  - pip install -r requirements.txt
+  - docker-compose -v
+
+build:
+  stage: build
+  script:
+
+test:
+  stage: test
+  script:
+    - python tests/configuration_test.py
+  after_script:
+    - echo "Stoping all containers"
+    - docker stop $(docker ps -aq)
+
+release-image:
+  stage: release
+  script:

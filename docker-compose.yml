@@ -1,0 +1,7 @@
+version: "2"
+services:
+  osm:
+    container_name: osm
+    image: git.ropod.org:4567/ropod/wm/docker-overpass-api:latest
+    ports:
+      - "8000:80"
