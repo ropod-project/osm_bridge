@@ -7,20 +7,15 @@ services:
     command: ["--insecure-registry=git.ropod.org:4567"] # self-signed cetificate
 
 stages:
-  - build
   - test
-  - release
 
 before_script:
   - docker info
   - apk add --no-cache py-pip
   - pip install docker-compose
   - pip install -r requirements.txt
+  - pip install -e .
   - docker-compose -v
-
-build:
-  stage: build
-  script:
 
 test:
   stage: test
@@ -29,7 +24,3 @@ test:
   after_script:
     - echo "Stoping all containers"
     - docker stop $(docker ps -aq)
-
-release-image:
-  stage: release
-  script:
