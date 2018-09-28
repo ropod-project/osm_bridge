@@ -11,16 +11,20 @@ stages:
 
 before_script:
   - docker info
+  - apt-get install git
   - apk add --no-cache py-pip
   - pip install docker-compose
   - pip install -r requirements.txt
   - pip install -e .
   - docker-compose -v
+  - echo "Installations complete"
 
 test:
   stage: test
   script:
+    - docker-compose -f docker-compose.yml up osm
+    - docker-compose logs osm
     - python tests/configuration_test.py
   after_script:
     - echo "Stoping all containers"
-    - docker stop osm
+    - docker stop $(docker ps -aq)
