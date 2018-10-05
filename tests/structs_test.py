@@ -24,7 +24,6 @@ class TestStructs(unittest.TestCase):
         self.assertEqual(n.id, 4865)
         self.assertEqual(n.lat, 50.1362318)
         self.assertEqual(n.lon, 8.6475163)
-        self.assertEqual(n.highway, "elevator")
 
     def test_way(self):
         data =  {
@@ -46,9 +45,6 @@ class TestStructs(unittest.TestCase):
         w = Way(data)
         print(w)
         self.assertEqual(w.id, 499)
-        self.assertEqual(w.indoor, "wall")
-        self.assertEqual(w.highway, None)
-        self.assertEqual(w.oneway, None)
 
     def test_relation(self):
         data = {
@@ -85,7 +81,6 @@ class TestStructs(unittest.TestCase):
         print(r)
         self.assertEqual(r.id, 149)
         self.assertEqual(len(r.members), 4)
-        self.assertEqual(r.ref, "AMK")
         self.assertEqual(r.something, None)
 
 
