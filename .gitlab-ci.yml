@@ -1,9 +1,33 @@
-test:
-  script:
+image: docker:stable
+
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+
+services:
+  - name: docker:dind
+    command: ["--insecure-registry=git.ropod.org:4567"] # self-signed cetificate
+
+stages:
+  - test
+
+before_script:
+  - docker info
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN git.ropod.org:4567
+  - docker pull git.ropod.org:4567/ropod/wm/docker-overpass-api:master
+  - docker run -d -p 8000:80 git.ropod.org:4567/ropod/wm/docker-overpass-api:master
   - apt-get update -qy
   - apt-get install -y python3 python3-pip git
   - pip3 install -r requirements.txt
   - pip3 install -e .
-  - python3 tests/configuration_test.py
-  - python3 tests/osm_queries_test.py
-  - python3 tests/structs_test.py
+  - echo "Setup complete"
+
+test:
+  script:
+    - echo "Running unit tests"
+    - python3 tests/configuration_test.py
+    - python3 tests/osm_queries_test.py
+    - python3 tests/structs_test.py
+  after_script:
+    - echo "Stoping all containers"
+    - docker stop $(docker ps -aq)

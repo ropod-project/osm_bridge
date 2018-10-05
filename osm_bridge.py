@@ -1,9 +1,9 @@
 import overpass
 import logging
 import sys
-from structs.osm_node import Node
-from structs.osm_way import Way
-from structs.osm_relation import Relation, Member
+from structs.osm.node import Node
+from structs.osm.way import Way
+from structs.osm.relation import Relation, Member
 
 class OSMBridge(object):
 
