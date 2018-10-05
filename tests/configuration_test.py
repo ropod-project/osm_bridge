@@ -2,7 +2,7 @@ from osm_bridge import OSMBridge
 
 import unittest
 
-class TestConfiguration(unittest.TestCase):
+class TestOSMBridge(unittest.TestCase):
 
     def setUp(self):
         pass

@@ -3,7 +3,8 @@ import logging
 import sys
 from structs.osm.node import Node
 from structs.osm.way import Way
-from structs.osm.relation import Relation, Member
+from structs.osm.relation import Relation
+from structs.wm.feature import Feature
 
 class OSMBridge(object):
 
@@ -80,11 +81,18 @@ class OSMBridge(object):
     For OSM relations, its members can be directly retrieved by passing its role and type
     '''
     def get_osm_element_by_id(self, ids=[], data_type='', role='', role_type=''):
-        logging.debug('Received new query request - ids:{},data_type:{}role:{},role_type:{}'.format(ids,data_type,role,role_type))
+        logging.debug('Received new query request - ids:{},data_type:{},role:{},role_type:{}'.format(ids,data_type,role,role_type))
         if data_type == 'relation' and role and role_type:
             query_string = data_type + "(id:" + ','.join([str(id) for id in ids]) +  ");" + role_type + "(r._:'" + role + "');"
         else:
             query_string = data_type + "(id:" + ','.join([str(id) for id in ids]) +  ");"
         return  self.get(query_string)
 
+    def search_by_tag(self, data_type='',key='',value=''):
+        logging.debug('Received new search by tag request - data_type:{},key:{},value:{}'.format(data_type,key,value))
+        query_string = data_type + "[" + key + "=" + value + "];"
+        return  self.get(query_string)
+
+    def get_feature(self, id):
+        return  Feature(self, id)
     

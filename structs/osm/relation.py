@@ -1,3 +1,5 @@
+from structs.osm.tag import Tag
+
 '''
 OSM relation member
 '''
@@ -18,13 +20,12 @@ class Relation(object):
     def __init__(self, elm):
         element = elm
         self.id = element.get('id')
-        self.ref = None
-        self.type = None
 
+        self.tags = []
         tags = element.get('tags')
         if tags is not None:
             for tag in tags:
-                setattr(self, tag, tags.get(tag))    
+                self.tags.append(Tag(tag, tags.get(tag))) 
 
         members = element.get('members')
         self.members = []

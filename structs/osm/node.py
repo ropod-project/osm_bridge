@@ -1,21 +1,20 @@
 '''
 OSM node
 '''
+from structs.osm.tag import Tag
+
 class Node():
     def __init__(self, elm):
         element = elm
         self.id = element.get('id')
         self.lat = float(element.get('lat'))
         self.lon = float(element.get('lon'))
-        self.indoor = None
-        self.ref = None
-        self.level = None
-        self.levels = None
+        self.tags = []
 
         tags = element.get('tags')
         if tags is not None:
             for tag in tags:
-                setattr(self, tag, tags.get(tag))      
+                self.tags.append(Tag(tag, tags.get(tag)))      
 
     def __eq__(self, other):
         if isinstance(other, (Node)):

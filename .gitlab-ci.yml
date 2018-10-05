@@ -28,9 +28,7 @@ before_script:
 test:
   script:
     - echo "Running unit tests"
-    - python3 tests/configuration_test.py
-    - python3 tests/osm_queries_test.py
-    - python3 tests/structs_test.py
+    - python3 -m unittest discover -s 'tests' -p '*_test.py'
   after_script:
     - echo "Stoping all containers"
     - docker stop $(docker ps -aq)
