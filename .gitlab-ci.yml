@@ -16,9 +16,12 @@ before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN git.ropod.org:4567
   - docker pull git.ropod.org:4567/ropod/wm/docker-overpass-api:master
   - docker run -d -p 8000:80 git.ropod.org:4567/ropod/wm/docker-overpass-api:master
-  - apk update && apk add --no-cache git python3 python3-pip 
-  - pip3 install -r requirements.txt
-  - pip3 install -e .
+  - apk update 
+  - apk add --no-cache git 
+  - apk add --no-cache python3 
+  - apk add --no-cache py-pip 
+  - pip install -r requirements.txt
+  - pip install -e .
   - echo "Setup complete"
 
 test:
