@@ -1,17 +1,17 @@
 from structs.wm.wm_entity import WMEntity
-from structs.wm.geometry import Point
+from structs.wm.point import Point
 
 class Feature(WMEntity):
 
-    def __init__(self, osm_bridge_instance, feature_id):        
-        nodes,__,__ = osm_bridge_instance.get_osm_element_by_id(ids=[feature_id], data_type='node')
+    def __init__(self, feature_id):        
+        nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[feature_id], data_type='node')
         
         if len(nodes) == 1:
             self.id = nodes[0].id
-            
-            self.point = Point(osm_bridge_instance, self.id, osm_node=nodes[0])
 
             for tag in nodes[0].tags:
                 setattr(self, tag.key, tag.value) 
+
+            self.point = Point(nodes[0])
         else:
-            print("No feature found with given id {}".format(feature_id))  
+            self.logger.error("No feature found with specified id {}".format(feature_id))  
