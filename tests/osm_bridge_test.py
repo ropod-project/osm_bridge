@@ -1,12 +1,11 @@
 from osm_bridge import OSMBridge
-from structs.wm.feature import Feature
 from structs.wm.point import Point
 from osm_adapter import OSMAdapter
 from structs.osm.node import Node
 
 import unittest
 
-class TestWMQueries(unittest.TestCase):
+class TestOSMBridge(unittest.TestCase):
 
     def setUp(self):
         self.osm_bridge = OSMBridge()
@@ -31,13 +30,35 @@ class TestWMQueries(unittest.TestCase):
         assert p.x is not None
         assert p.y is not None
 
-    # def test_shape(self):
-    #     s = Shape(self.osm_bridge,499)
-    #     assert len(s.points) > 0
-
     def test_get_feature(self): 
         f = self.osm_bridge.get_feature(4865)
         self.assertEqual(f.id, 4865)
+
+    def test_get_side(self): 
+        s = self.osm_bridge.get_side(99999)
+        assert s.id is None
+
+    def test_get_door(self):
+        d = self.osm_bridge.get_door(161)
+        self.assertEqual(d.id,161)
+        assert d.geometry is not None
+        assert d.topology is not None
+        assert len(d.sides) == 0 
+
+    def test_get_wall(self):
+        d = self.osm_bridge.get_wall(99999)
+        assert d.id is None
+
+    def test_get_local_area(self):
+        l = self.osm_bridge.get_local_area(173)
+        assert l.id == 173
+        assert l.geometry is not None
+        assert l.topology is not None
+
+    def test_get_connection(self):
+        c = self.osm_bridge.get_connection(1199)
+        assert c.id == 1199
+        assert len(c.points) > 0
 
 
 if __name__ == '__main__':

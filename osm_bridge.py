@@ -5,8 +5,14 @@ from structs.osm.node import Node
 from structs.osm.way import Way
 from structs.osm.relation import Relation
 from osm_adapter import OSMAdapter
-from structs.wm.feature import Feature
 from structs.wm.wm_entity import WMEntity
+from structs.wm.feature import Feature
+from structs.wm.door import Door
+from structs.wm.wall import Wall
+from structs.wm.side import Side
+from structs.wm.local_area import LocalArea
+from structs.wm.connection import Connection
+
 
 class OSMBridge(object):
 
@@ -34,4 +40,19 @@ class OSMBridge(object):
 
     def get_feature(self, id):
         return  Feature(id)
+
+    def get_side(self, id):
+        return  Side(id)
+
+    def get_door(self, id):
+        return  Door(id)
+
+    def get_wall(self, id):
+        return  Wall(id)
+
+    def get_local_area(self, id):
+        return  LocalArea(id)
+
+    def get_connection(self, id):
+        return  Connection(id)
     

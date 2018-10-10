@@ -1,11 +1,11 @@
 from structs.wm.wm_entity import WMEntity
 from structs.wm.feature import Feature
-from structs.wm.geometry import Point
+from structs.wm.point import Point
 
 class Side(WMEntity):
 
     def __init__(self, side_id, *args, **kwargs):     
-        __,__,relations = self.osm_bridge.get_osm_element_by_id(ids=[side_id], data_type='relation')
+        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[side_id], data_type='relation')
         
         self.corner_ids = []
         self.feature_ids = []
@@ -22,12 +22,12 @@ class Side(WMEntity):
                 if member.role == 'feature':
                     self.feature_ids.append(member.ref)
         else:
-            self.logger("No side found with specified id {}".format(side_id))  
+            self.logger.error("No side found with specified id {}".format(side_id))  
 
     @property
     def corners(self):
         corners = []
-        corner_nodes,__,__ = self.osm_bridge.get_osm_element_by_id(ids=self.corner_ids, data_type='node')
+        corner_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=self.corner_ids, data_type='node')
         for corner_node in corner_nodes:
             corners.append(Point(corner))
         return corners

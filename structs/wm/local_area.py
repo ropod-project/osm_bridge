@@ -1,15 +1,12 @@
 from structs.wm.wm_entity import WMEntity
-from structs.wm.feature import Feature
 from structs.wm.point import Point
 from structs.wm.shape import Shape
-from structs.wm.side import Side
 
-class Door(WMEntity):
+class LocalArea(WMEntity):
 
-    def __init__(self, door_id, *args, **kwargs):      
-        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[door_id], data_type='relation')
+    def __init__(self, local_area_id, *args, **kwargs):      
+        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[local_area_id], data_type='relation')
         
-        self.side_ids = []
         self.geometry_id = None
         self.topology_id = None
 
@@ -20,14 +17,12 @@ class Door(WMEntity):
                 setattr(self, tag.key, tag.value) 
 
             for member in relations[0].members:
-                if member.role == 'side':
-                    self.side_ids.append(member.ref)
                 if member.role == 'geometry':
                     self.geometry_id = member.ref
                 if member.role == 'topology':
                     self.topology_id = member.ref
         else:
-            self.logger.error("No door found with given id {}".format(door_id))  
+            self.logger.error("No local area found with given id {}".format(door_id))  
 
     @property
     def geometry(self):
@@ -46,10 +41,3 @@ class Door(WMEntity):
     def topology(self):
         topological_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[self.topology_id], data_type='node')
         return Point(topological_nodes[0])
-
-    @property
-    def sides(self):
-        sides = []
-        for side_id in self.side_ids:
-            sides.append(Side(side_id))
-        return sides

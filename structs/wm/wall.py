@@ -1,13 +1,13 @@
 from structs.wm.wm_entity import WMEntity
 from structs.wm.feature import Feature
-from structs.wm.geometry import Point, Shape
+from structs.wm.point import Point
+from structs.wm.shape import Shape
 from structs.wm.side import Side
 
 class Wall(WMEntity):
 
-    def __init__(self, osm_bridge_instance, wall_id, *args, **kwargs):
-        self.osm_bridge = osm_bridge_instance        
-        __,__,relations = self.osm_bridge.get_osm_element_by_id(ids=[wall_id], data_type='relation')
+    def __init__(self, wall_id, *args, **kwargs):      
+        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[wall_id], data_type='relation')
         
         self.side_ids = []
         self.geometry_id = None
@@ -24,15 +24,25 @@ class Wall(WMEntity):
                 if member.role == 'geometry':
                     self.geometry_id = member.ref
         else:
-            print("No side found with given id {}".format(side_id))  
+            self.logger.error("No wall found with specified id {}".format(wall_id))  
 
     @property
     def geometry(self):
-        return Shape(self.osm_bridge, self.geometry_id)
+        __,geometries,__ = self.osm_adapter.get_osm_element_by_id(ids=[self.geometry_id], data_type='way')
+
+        for tag in geometries[0].tags:
+            setattr(self, tag.key, tag.value) 
+
+        nodes = []
+        for node_id in geometries[0].nodes:
+            temp_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[node_id], data_type='node')
+            nodes.append(temp_nodes[0])
+        return Shape(nodes)
+
 
     @property
     def sides(self):
         sides = []
-        for side_id in side_ids:
-            sides.append(Feature(self.osm_bridge, side_id))
+        for side_id in self.side_ids:
+            sides.append(Side(side_id))
         return sides
