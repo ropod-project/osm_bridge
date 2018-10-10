@@ -12,6 +12,12 @@ from structs.wm.wall import Wall
 from structs.wm.side import Side
 from structs.wm.local_area import LocalArea
 from structs.wm.connection import Connection
+from structs.wm.room import Room
+from structs.wm.corridor import Corridor
+from structs.wm.elevator import Elevator
+from structs.wm.stairs import Stairs
+from structs.wm.floor import Floor
+from structs.wm.building import Building
 
 
 class OSMBridge(object):
@@ -55,4 +61,22 @@ class OSMBridge(object):
 
     def get_connection(self, id):
         return  Connection(id)
+
+    def get_room(self, id):
+        return  Room(id)
+
+    def get_corridor(self, id):
+        return  Corridor(id)
+
+    def get_elevator(self, id):
+        return  Elevator(id)
+
+    def get_stairs(self, id):
+        return  Stair(id)
+
+    def get_floor(self, id):
+        return  Floor(id)
+
+    def get_building(self, id):
+        return  Building(id)
     

@@ -60,6 +60,50 @@ class TestOSMBridge(unittest.TestCase):
         assert c.id == 1199
         assert len(c.points) > 0
 
+    def test_get_room(self):
+        r = self.osm_bridge.get_room(22)
+        assert r.id == 22
+        assert len(r.walls) == 0
+        assert r.doors is not None
+        assert r.local_areas is not None
+        assert r.connections is not None
+        assert r.geometry is not None
+        assert r.topology is not None
+
+    def test_get_corridor(self):
+        r = self.osm_bridge.get_corridor(140)
+        assert r.id == 140
+        assert len(r.walls) == 0
+        assert r.doors is not None
+        assert r.local_areas is not None
+        assert r.connections is not None
+        assert r.geometry is not None
+        assert r.topology is not None
+
+    def test_get_elevator(self):
+        e = self.osm_bridge.get_elevator(5)
+        assert e.id == 5
+        assert len(e.walls) == 0
+        assert e.doors is not None
+        assert e.local_areas is not None
+        assert e.connections is not None
+        assert e.geometry is not None
+        assert e.topology is not None
+
+    def test_get_floor(self):
+        f = self.osm_bridge.get_floor(164)
+        assert f.id == 164
+        assert len(f.walls) == 0
+        assert f.corridors is not None
+        assert f.rooms is not None
+        assert f.connections is not None
+
+    def test_get_building(self):
+        b = self.osm_bridge.get_building(149)
+        assert b.id == 149
+        assert len(b.stairs) == 0
+        assert b.elevators is not None
+        assert b.floors is not None
 
 if __name__ == '__main__':
     unittest.main()
