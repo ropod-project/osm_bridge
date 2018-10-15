@@ -11,40 +11,49 @@ class Stairs(WMEntity):
 
     def __init__(self, stairs_id, *args, **kwargs):      
         __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[stairs_id], data_type='relation')
-        
-        self.geometry_id = None
-        self.topology_id = None
-        self.connection_ids = []
-        self.feature_ids = []
-        self.wall_ids = []
-        self.door_ids = []
-        self.local_area_ids = []
+
+        # possible attributes
+        # NOTE: attirbute will have value only if its set by the mapper
+        # Some attribute values will be available only after loading related property of stairs
+        self.conveying = ''
+        self.stair_height = ''
+        self.stair_width = ''
+        self.stair_length = ''
+
+        # private attributes
+        self._geometry_id = None
+        self._topology_id = None
+        self._connection_ids = []
+        self._feature_ids = []
+        self._wall_ids = []
+        self._door_ids = []
+        self._local_area_ids = []
 
         if len(relations) == 1:
             self.id = relations[0].id
 
             for tag in relations[0].tags:
-                setattr(self, tag.key, tag.value) 
+                setattr(self, tag.key.replace(":", "_"), tag.value) 
 
             for member in relations[0].members:
                 if member.role == 'wall':
-                    self.wall_ids.append(member.ref)
+                    self._wall_ids.append(member.ref)
                 if member.role == 'door':
-                    self.door_ids.append(member.ref)
+                    self._door_ids.append(member.ref)
                 if member.role == 'feature':
-                    self.feature_ids.append(member.ref)
+                    self._feature_ids.append(member.ref)
                 if member.role == 'local_connection':
-                    self.connection_ids.append(member.ref)
+                    self._connection_ids.append(member.ref)
                 if member.role == 'geometry':
-                    self.geometry_id = member.ref
+                    self._geometry_id = member.ref
                 if member.role == 'topology':
-                    self.topology_id = member.ref
+                    self._topology_id = member.ref
         else:
             self.logger.error("No  stairs found with given id {}".format(stairs_id))  
 
     @property
     def geometry(self):
-        __,geometries,__ = self.osm_adapter.get_osm_element_by_id(ids=[self.geometry_id], data_type='way')
+        __,geometries,__ = self.osm_adapter.get_osm_element_by_id(ids=[self._geometry_id], data_type='way')
 
         for tag in geometries[0].tags:
             setattr(self, tag.key, tag.value) 
@@ -57,40 +66,40 @@ class Stairs(WMEntity):
 
     @property
     def topology(self):
-        topological_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[self.topology_id], data_type='node')
+        topological_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[self._topology_id], data_type='node')
         return Point(topological_nodes[0])
 
     @property
     def walls(self):
         walls = []
-        for wall_id in self.wall_ids:
+        for wall_id in self._wall_ids:
             walls.append(Wall(wall_id))
         return walls
 
     @property
     def doors(self):
         doors = []
-        for door_id in self.door_ids:
+        for door_id in self._door_ids:
             doors.append(Door(door_id))
         return doors
 
     @property
     def features(self):
         features = []
-        for feature_id in self.feature_ids:
+        for feature_id in self._feature_ids:
             features.append(Feature(feature_id))
         return features
 
     @property
     def connections(self):
         connections = []
-        for connection_id in self.connection_ids:
+        for connection_id in self._connection_ids:
             connections.append(Connection(connection_id))
         return connections
 
     @property
     def local_areas(self):
         local_areas = []
-        for local_area_id in self.local_area_ids:
+        for local_area_id in self._local_area_ids:
             local_areas.append(LocalArea(local_area_id))
         return local_areas

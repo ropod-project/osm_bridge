@@ -5,6 +5,11 @@ class Feature(WMEntity):
 
     def __init__(self, feature_id):        
         nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[feature_id], data_type='node')
+
+        # mandatory attributes
+        self.height = ''
+        self.width = ''
+        self.length = ''
         
         if len(nodes) == 1:
             self.id = nodes[0].id

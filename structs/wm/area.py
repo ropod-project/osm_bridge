@@ -7,15 +7,21 @@ from structs.wm.door import Door
 from structs.wm.local_area import LocalArea
 from structs.wm.connection import Connection
 
-class Elevator(WMEntity):
+class Area(WMEntity):
 
-    def __init__(self, elevator_id, *args, **kwargs):      
-        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[elevator_id], data_type='relation')
+    def __init__(self, area_id, *args, **kwargs):    
+        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[area_id], data_type='relation')
 
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
-        self.levels = '' # available only after loading geometry or topology
-
+        # Some attribute values will be available only after loading related property of the area
+        self.surface = ''      
+        self.surface_smoothness = ''
+        self.internet = ''
+        self.level = ''
+        self.ref = ''
+        self.name = ''
+        
         # private attributes
         self._geometry_id = None
         self._topology_id = None
@@ -45,7 +51,7 @@ class Elevator(WMEntity):
                 if member.role == 'topology':
                     self._topology_id = member.ref
         else:
-            self.logger.error("No  elevator found with specified id {}".format(elevator_id))  
+            self.logger.error("No area found with specified id {}".format(area_id))  
 
     @property
     def geometry(self):
@@ -63,10 +69,6 @@ class Elevator(WMEntity):
     @property
     def topology(self):
         topological_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[self._topology_id], data_type='node')
-
-        for tag in topological_nodes[0].tags:
-            setattr(self, tag.key, tag.value) 
-
         return Point(topological_nodes[0])
 
     @property

@@ -88,4 +88,5 @@ class OSMAdapter(object):
         self.logger.debug('Received new search by tag request - data_type:{},key:{},value:{}'.format(data_type,key,value))
         query_string = data_type + "[" + key + "=" + value + "];"
         return  self.get(query_string)
+    #TODO: provide option to define search scope
     

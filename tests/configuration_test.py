@@ -1,20 +1,20 @@
-from osm_bridge import OSMBridge
+from osm_adapter import OSMAdapter
 
 import unittest
 
-class TestOSMBridge(unittest.TestCase):
+class TestConfiguration(unittest.TestCase):
 
     def setUp(self):
         pass
 
     def test_overpass_connection_success(self):
-        osm_bridge = OSMBridge()
-        status = osm_bridge.test_overpass_connection()
+        osm_adapter = OSMAdapter()
+        status = osm_adapter.test_overpass_connection()
         self.assertTrue(status)
 
     def test_overpass_connection_failure(self):
-        osm_bridge = OSMBridge(server_port=80)
-        status = osm_bridge.test_overpass_connection()
+        osm_adapter = OSMAdapter(server_port=80)
+        status = osm_adapter.test_overpass_connection()
         self.assertFalse(status)
 
 

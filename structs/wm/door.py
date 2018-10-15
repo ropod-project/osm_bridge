@@ -9,29 +9,42 @@ class Door(WMEntity):
     def __init__(self, door_id, *args, **kwargs):      
         __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[door_id], data_type='relation')
         
-        self.side_ids = []
-        self.geometry_id = None
-        self.topology_id = None
+        # possible attributes
+        # NOTE: attirbute will have value only if its set by the mapper
+        # Some attribute values will be available only after loading door geometry
+        self.door = ''              # type of door - hinged, sliding etc.
+        self.door_automatic = ''    # yes/no
+        self.door_direction = ''    # inside/outside/both
+        self.step_count = ''        # steps if any else 0
+        self.double_doors = ''      # yes/no
+        self.always_closed = ''     # yes/no
+        self.level = ''
+
+
+        # private attributes
+        self._side_ids = []
+        self._geometry_id = None
+        self._topology_id = None
 
         if len(relations) == 1:
             self.id = relations[0].id
 
             for tag in relations[0].tags:
-                setattr(self, tag.key, tag.value) 
+                setattr(self, tag.key.replace("-", "_"), tag.value) 
 
             for member in relations[0].members:
                 if member.role == 'side':
-                    self.side_ids.append(member.ref)
+                    self._side_ids.append(member.ref)
                 if member.role == 'geometry':
-                    self.geometry_id = member.ref
+                    self._geometry_id = member.ref
                 if member.role == 'topology':
-                    self.topology_id = member.ref
+                    self._topology_id = member.ref
         else:
             self.logger.error("No door found with given id {}".format(door_id))  
 
     @property
     def geometry(self):
-        __,geometries,__ = self.osm_adapter.get_osm_element_by_id(ids=[self.geometry_id], data_type='way')
+        __,geometries,__ = self.osm_adapter.get_osm_element_by_id(ids=[self._geometry_id], data_type='way')
 
         for tag in geometries[0].tags:
             setattr(self, tag.key, tag.value) 
@@ -44,12 +57,12 @@ class Door(WMEntity):
 
     @property
     def topology(self):
-        topological_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[self.topology_id], data_type='node')
+        topological_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[self._topology_id], data_type='node')
         return Point(topological_nodes[0])
 
     @property
     def sides(self):
         sides = []
-        for side_id in self.side_ids:
+        for side_id in self._side_ids:
             sides.append(Side(side_id))
         return sides

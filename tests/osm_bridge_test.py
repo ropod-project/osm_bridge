@@ -100,6 +100,7 @@ class TestOSMBridge(unittest.TestCase):
 
     def test_get_building(self):
         b = self.osm_bridge.get_building(149)
+        assert b.geometry is not None
         assert b.id == 149
         assert len(b.stairs) == 0
         assert b.elevators is not None

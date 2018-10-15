@@ -7,8 +7,11 @@ class Side(WMEntity):
     def __init__(self, side_id, *args, **kwargs):     
         __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[side_id], data_type='relation')
         
-        self.corner_ids = []
-        self.feature_ids = []
+        # no mandatory attributes, but it can still have some tags added by user as attributes
+
+        # private attributes
+        self._corner_ids = []
+        self._feature_ids = []
 
         if len(relations) == 1:
             self.id = relations[0].id
@@ -18,16 +21,16 @@ class Side(WMEntity):
 
             for member in relations[0].members:
                 if member.role == 'corner':
-                    self.corner_ids.append(member.ref)
+                    self._corner_ids.append(member.ref)
                 if member.role == 'feature':
-                    self.feature_ids.append(member.ref)
+                    self._feature_ids.append(member.ref)
         else:
             self.logger.error("No side found with specified id {}".format(side_id))  
 
     @property
     def corners(self):
         corners = []
-        corner_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=self.corner_ids, data_type='node')
+        corner_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=self._corner_ids, data_type='node')
         for corner_node in corner_nodes:
             corners.append(Point(corner))
         return corners
@@ -35,6 +38,6 @@ class Side(WMEntity):
     @property
     def features(self):
         features = []
-        for feature_id in feature_ids:
+        for feature_id in _feature_ids:
             features.append(Feature(feature_id))
         return features
