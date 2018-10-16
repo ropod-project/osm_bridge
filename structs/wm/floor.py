@@ -6,8 +6,12 @@ from structs.wm.connection import Connection
 
 class Floor(WMEntity):
 
-    def __init__(self, floor_id, *args, **kwargs):      
-        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[floor_id], data_type='relation')
+    def __init__(self, floor_ref, *args, **kwargs):      
+
+        if self._is_osm_id(floor_ref):      
+            __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[floor_ref], data_type='relation')
+        else:
+            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=floor_ref)
 
         # possible attributes
         # NOTE: attribute will have value only if its set by the mapper
@@ -37,7 +41,7 @@ class Floor(WMEntity):
                 if member.role == 'global_connection':
                     self._connection_ids.append(member.ref)
         else:
-            self.logger.error("No floor found with given id {}".format(floor_id))  
+            self.logger.error("No floor found with given ref {}".format(floor_ref))  
 
     @property
     def walls(self):

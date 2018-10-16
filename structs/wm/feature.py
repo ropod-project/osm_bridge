@@ -3,8 +3,12 @@ from structs.wm.point import Point
 
 class Feature(WMEntity):
 
-    def __init__(self, feature_id):        
-        nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[feature_id], data_type='node')
+    def __init__(self, feature_ref):
+          
+        if self._is_osm_id(feature_ref):      
+            nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[feature_ref], data_type='node')
+        else:
+            nodes,__,__ = self.osm_adapter.search_by_tag(data_type='node',key='ref',value=feature_ref)
 
         # mandatory attributes
         self.height = ''
@@ -19,4 +23,4 @@ class Feature(WMEntity):
 
             self.point = Point(nodes[0])
         else:
-            self.logger.error("No feature found with specified id {}".format(feature_id))  
+            self.logger.error("No feature found with specified ref {}".format(feature_ref))  

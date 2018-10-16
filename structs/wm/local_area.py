@@ -4,8 +4,12 @@ from structs.wm.shape import Shape
 
 class LocalArea(WMEntity):
 
-    def __init__(self, local_area_id, *args, **kwargs):      
-        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[local_area_id], data_type='relation')
+    def __init__(self, local_area_ref, *args, **kwargs):      
+
+        if self._is_osm_id(local_area_ref):      
+            __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[local_area_ref], data_type='relation')
+        else:
+            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=local_area_ref)
         
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
@@ -29,7 +33,7 @@ class LocalArea(WMEntity):
                 if member.role == 'topology':
                     self._topology_id = member.ref
         else:
-            self.logger.error("No local area found with specified id {}".format(door_id))  
+            self.logger.error("No local area found with specified ref {}".format(local_area_ref))  
 
     @property
     def geometry(self):

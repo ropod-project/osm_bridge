@@ -23,3 +23,10 @@ class WMEntity():
 
     def __getattr__(self, item):
         return None
+
+    def _is_osm_id(self,ref):
+        if isinstance(ref, int):
+            return True
+        else:
+            return False
+

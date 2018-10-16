@@ -30,37 +30,50 @@ class TestOSMBridge(unittest.TestCase):
         assert p.x is not None
         assert p.y is not None
 
-    def test_get_feature(self): 
+    def test_get_feature_by_id(self): 
         f = self.osm_bridge.get_feature(4865)
         self.assertEqual(f.id, 4865)
 
-    def test_get_side(self): 
+    def test_get_side_by_id(self): 
         s = self.osm_bridge.get_side(99999)
         assert s.id is None
 
-    def test_get_door(self):
+    def test_get_door_by_id(self):
         d = self.osm_bridge.get_door(161)
         self.assertEqual(d.id,161)
         assert d.geometry is not None
         assert d.topology is not None
         assert len(d.sides) == 0 
 
-    def test_get_wall(self):
+    def test_get_door_by_name(self):
+        d = self.osm_bridge.get_door('AMK_B_L-1_C2_Door1')
+        self.assertEqual(d.id,161)
+        assert d.geometry is not None
+        assert d.topology is not None
+        assert len(d.sides) == 0 
+
+    def test_get_wall_by_id(self):
         d = self.osm_bridge.get_wall(99999)
         assert d.id is None
 
-    def test_get_local_area(self):
+    def test_get_local_area_by_id(self):
         l = self.osm_bridge.get_local_area(173)
         assert l.id == 173
         assert l.geometry is not None
         assert l.topology is not None
 
-    def test_get_connection(self):
+    def test_get_local_area_by_name(self):
+        l = self.osm_bridge.get_local_area('AMK_B_L4_RoomB404_LA2')
+        assert l.id == 173
+        assert l.geometry is not None
+        assert l.topology is not None
+
+    def test_get_connection_by_id(self):
         c = self.osm_bridge.get_connection(1199)
         assert c.id == 1199
         assert len(c.points) > 0
 
-    def test_get_room(self):
+    def test_get_room_by_id(self):
         r = self.osm_bridge.get_room(22)
         assert r.id == 22
         assert len(r.walls) == 0
@@ -70,7 +83,17 @@ class TestOSMBridge(unittest.TestCase):
         assert r.geometry is not None
         assert r.topology is not None
 
-    def test_get_corridor(self):
+    def test_get_room_by_ref(self):
+        r = self.osm_bridge.get_room('AMK_B_L4_RoomB401')
+        assert r.id == 22
+        assert len(r.walls) == 0
+        assert r.doors is not None
+        assert r.local_areas is not None
+        assert r.connections is not None
+        assert r.geometry is not None
+        assert r.topology is not None
+
+    def test_get_corridor_by_id(self):
         r = self.osm_bridge.get_corridor(140)
         assert r.id == 140
         assert len(r.walls) == 0
@@ -80,8 +103,28 @@ class TestOSMBridge(unittest.TestCase):
         assert r.geometry is not None
         assert r.topology is not None
 
-    def test_get_elevator(self):
+    def test_get_corridor_by_ref(self):
+        r = self.osm_bridge.get_corridor('AMK_B_L-1_C14')
+        assert r.id == 140
+        assert len(r.walls) == 0
+        assert r.doors is not None
+        assert r.local_areas is not None
+        assert r.connections is not None
+        assert r.geometry is not None
+        assert r.topology is not None
+
+    def test_get_elevator_by_id(self):
         e = self.osm_bridge.get_elevator(5)
+        assert e.id == 5
+        assert len(e.walls) == 0
+        assert e.doors is not None
+        assert e.local_areas is not None
+        assert e.connections is not None
+        assert e.geometry is not None
+        assert e.topology is not None
+
+    def test_get_elevator_by_name(self):
+        e = self.osm_bridge.get_elevator('AMK_B_E1')
         assert e.id == 5
         assert len(e.walls) == 0
         assert e.doors is not None
@@ -98,8 +141,24 @@ class TestOSMBridge(unittest.TestCase):
         assert f.rooms is not None
         assert f.connections is not None
 
-    def test_get_building(self):
+    def test_get_floor_by_name(self):
+        f = self.osm_bridge.get_floor('AMK_L4')
+        assert f.id == 164
+        assert len(f.walls) == 0
+        assert f.corridors is not None
+        assert f.rooms is not None
+        assert f.connections is not None
+
+    def test_get_building_by_id(self):
         b = self.osm_bridge.get_building(149)
+        assert b.geometry is not None
+        assert b.id == 149
+        assert len(b.stairs) == 0
+        assert b.elevators is not None
+        assert b.floors is not None
+
+    def test_get_building_by_name(self):
+        b = self.osm_bridge.get_building('AMK')
         assert b.geometry is not None
         assert b.id == 149
         assert len(b.stairs) == 0

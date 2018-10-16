@@ -9,8 +9,12 @@ from structs.wm.connection import Connection
 
 class Stairs(WMEntity):
 
-    def __init__(self, stairs_id, *args, **kwargs):      
-        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[stairs_id], data_type='relation')
+    def __init__(self, stairs_ref, *args, **kwargs):      
+
+        if self._is_osm_id(stairs_ref):      
+            __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[stairs_ref], data_type='relation')
+        else:
+            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=stairs_ref)
 
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
@@ -49,7 +53,7 @@ class Stairs(WMEntity):
                 if member.role == 'topology':
                     self._topology_id = member.ref
         else:
-            self.logger.error("No  stairs found with given id {}".format(stairs_id))  
+            self.logger.error("No  stairs found with given ref {}".format(stairs_ref))  
 
     @property
     def geometry(self):

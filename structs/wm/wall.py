@@ -6,8 +6,12 @@ from structs.wm.side import Side
 
 class Wall(WMEntity):
 
-    def __init__(self, wall_id, *args, **kwargs):      
-        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[wall_id], data_type='relation')
+    def __init__(self, wall_ref, *args, **kwargs):      
+
+        if self._is_osm_id(wall_ref):      
+            __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[wall_ref], data_type='relation')
+        else:
+            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=wall_ref)
         
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
@@ -32,7 +36,7 @@ class Wall(WMEntity):
                 if member.role == 'geometry':
                     self._geometry_id = member.ref
         else:
-            self.logger.error("No wall found with specified id {}".format(wall_id))  
+            self.logger.error("No wall found with specified ref {}".format(wall_ref))  
 
     @property
     def geometry(self):

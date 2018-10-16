@@ -6,8 +6,12 @@ from structs.wm.side import Side
 
 class Door(WMEntity):
 
-    def __init__(self, door_id, *args, **kwargs):      
-        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[door_id], data_type='relation')
+    def __init__(self, door_ref, *args, **kwargs):      
+
+        if self._is_osm_id(door_ref):      
+            __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[door_ref], data_type='relation')
+        else:
+            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=door_ref)
         
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
@@ -40,7 +44,7 @@ class Door(WMEntity):
                 if member.role == 'topology':
                     self._topology_id = member.ref
         else:
-            self.logger.error("No door found with given id {}".format(door_id))  
+            self.logger.error("No door found with given id {}".format(door_ref))  
 
     @property
     def geometry(self):

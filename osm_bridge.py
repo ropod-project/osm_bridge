@@ -44,39 +44,39 @@ class OSMBridge(object):
         if kwargs.get("debug", self._debug):            
             self.logger.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-    def get_feature(self, id):
-        return  Feature(id)
+    def get_feature(self, ref):
+        return  Feature(ref)
 
-    def get_side(self, id):
-        return  Side(id)
+    def get_side(self, ref):
+        return  Side(ref)
 
-    def get_door(self, id):
-        return  Door(id)
+    def get_door(self, ref):
+        return  Door(ref)
 
-    def get_wall(self, id):
-        return  Wall(id)
+    def get_wall(self, ref):
+        return  Wall(ref)
 
-    def get_local_area(self, id):
-        return  LocalArea(id)
+    def get_local_area(self, ref):
+        return  LocalArea(ref)
 
-    def get_connection(self, id):
-        return  Connection(id)
+    def get_connection(self, ref):
+        return  Connection(ref)
 
-    def get_room(self, id):
-        return  Room(id)
+    def get_room(self, ref):
+        return  Room(ref)
 
-    def get_corridor(self, id):
-        return  Corridor(id)
+    def get_corridor(self, ref):
+        return  Corridor(ref)
 
-    def get_elevator(self, id):
-        return  Elevator(id)
+    def get_elevator(self, ref):
+        return  Elevator(ref)
 
-    def get_stairs(self, id):
-        return  Stair(id)
+    def get_stairs(self, ref):
+        return  Stair(ref)
 
-    def get_floor(self, id):
-        return  Floor(id)
+    def get_floor(self, ref):
+        return  Floor(ref)
 
-    def get_building(self, id):
-        return  Building(id)
+    def get_building(self, ref):
+        return  Building(ref)
     

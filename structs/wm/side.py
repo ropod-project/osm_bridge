@@ -4,8 +4,12 @@ from structs.wm.point import Point
 
 class Side(WMEntity):
 
-    def __init__(self, side_id, *args, **kwargs):     
-        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[side_id], data_type='relation')
+    def __init__(self, side_ref, *args, **kwargs):     
+
+        if self._is_osm_id(side_ref):      
+            __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[side_ref], data_type='relation')
+        else:
+            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=side_ref)
         
         # no mandatory attributes, but it can still have some tags added by user as attributes
 
@@ -25,7 +29,7 @@ class Side(WMEntity):
                 if member.role == 'feature':
                     self._feature_ids.append(member.ref)
         else:
-            self.logger.error("No side found with specified id {}".format(side_id))  
+            self.logger.error("No side found with specified red {}".format(side_ref))  
 
     @property
     def corners(self):

@@ -6,8 +6,12 @@ from structs.wm.floor import Floor
 
 class Building(WMEntity):
 
-    def __init__(self, building_id, *args, **kwargs):      
-        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[building_id], data_type='relation')
+    def __init__(self, building_ref, *args, **kwargs):      
+
+        if self._is_osm_id(building_ref):      
+            __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[building_ref], data_type='relation')
+        else:
+            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=building_ref)
         
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
@@ -45,7 +49,7 @@ class Building(WMEntity):
                 if member.role == 'stairs':
                     self._stairs_ids.append(member.ref)
         else:
-            self.logger.error("No building found with given id {}".format(building_id))  
+            self.logger.error("No building found with given ref {}".format(building_ref))  
 
     @property
     def floors(self):

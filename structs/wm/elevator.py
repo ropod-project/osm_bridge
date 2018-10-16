@@ -9,8 +9,12 @@ from structs.wm.connection import Connection
 
 class Elevator(WMEntity):
 
-    def __init__(self, elevator_id, *args, **kwargs):      
-        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[elevator_id], data_type='relation')
+    def __init__(self, elevator_ref, *args, **kwargs):      
+
+        if self._is_osm_id(elevator_ref):      
+            __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[elevator_ref], data_type='relation')
+        else:
+            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=elevator_ref)
 
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
@@ -45,7 +49,7 @@ class Elevator(WMEntity):
                 if member.role == 'topology':
                     self._topology_id = member.ref
         else:
-            self.logger.error("No  elevator found with specified id {}".format(elevator_id))  
+            self.logger.error("No  elevator found with specified id {}".format(elevator_ref))  
 
     @property
     def geometry(self):

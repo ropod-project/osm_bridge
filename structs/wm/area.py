@@ -9,8 +9,12 @@ from structs.wm.connection import Connection
 
 class Area(WMEntity):
 
-    def __init__(self, area_id, *args, **kwargs):    
-        __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[area_id], data_type='relation')
+    def __init__(self, area_ref, *args, **kwargs):    
+
+        if self._is_osm_id(area_ref):      
+            __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[area_ref], data_type='relation')
+        else:
+            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=area_ref)
 
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
@@ -51,7 +55,7 @@ class Area(WMEntity):
                 if member.role == 'topology':
                     self._topology_id = member.ref
         else:
-            self.logger.error("No area found with specified id {}".format(area_id))  
+            self.logger.error("No area found with specified id {}".format(area_ref))  
 
     @property
     def geometry(self):
