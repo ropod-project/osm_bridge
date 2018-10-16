@@ -69,7 +69,7 @@ class Building(WMEntity):
     def stairs(self):
         stairs = []
         for stairs_id in self._stairs_ids:
-            stairs.append(Room(stairs_id))
+            stairs.append(Stairs(stairs_id))
         return stairs
 
     @property
@@ -84,3 +84,13 @@ class Building(WMEntity):
             temp_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[node_id], data_type='node')
             nodes.append(temp_nodes[0])
         return Shape(nodes)
+
+    def floor(self, ref):
+        return Floor(ref,scope_id=self.id, scope_role='level',scope_role_type='relation')
+
+    def elevator(self, ref):
+        return Elevator(ref,scope_id=self.id, scope_role='elevator',scope_role_type='relation')
+
+    def stair(self, ref):
+        return Stairs(ref,scope_id=self.id, scope_role='stairs',scope_role_type='relation')
+

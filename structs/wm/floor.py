@@ -11,7 +11,7 @@ class Floor(WMEntity):
         if self._is_osm_id(floor_ref):      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[floor_ref], data_type='relation')
         else:
-            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=floor_ref)
+            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=floor_ref,*args,**kwargs)
 
         # possible attributes
         # NOTE: attribute will have value only if its set by the mapper
@@ -70,3 +70,9 @@ class Floor(WMEntity):
         for corridor_id in self._corridor_ids:
             corridors.append(Corridor(corridor_id))
         return corridors
+
+    def room(self,ref):
+        return Room(ref,scope_id=self.id, scope_role='room',scope_role_type='relation')
+
+    def corridor(self,ref):
+        return Corridor(ref,scope_id=self.id, scope_role='corridor',scope_role_type='relation')

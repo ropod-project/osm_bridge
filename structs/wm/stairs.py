@@ -107,3 +107,6 @@ class Stairs(WMEntity):
         for local_area_id in self._local_area_ids:
             local_areas.append(LocalArea(local_area_id))
         return local_areas
+
+    def local_area(self, ref):
+        return LocalArea(ref,scope_id=self.id, scope_role='local_area',scope_role_type='relation')

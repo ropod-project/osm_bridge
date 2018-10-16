@@ -15,7 +15,7 @@ before_script:
   - docker info
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN git.ropod.org:4567
   - docker pull git.ropod.org:4567/ropod/wm/docker-overpass-api:master
-  - docker run -d -p 8000:80 git.ropod.org:4567/ropod/wm/docker-overpass-api:master
+  - docker run -p 8000:80 git.ropod.org:4567/ropod/wm/docker-overpass-api:master
   - apk update 
   - apk add --no-cache git 
   - apk add --no-cache python3 && \

@@ -133,6 +133,13 @@ class TestOSMBridge(unittest.TestCase):
         assert e.geometry is not None
         assert e.topology is not None
 
+    def test_search_by_scope_for_elevator(self):
+        e = self.osm_bridge.get_elevator('AMK_B_E1')
+        assert e.id == 5
+        la = e.local_area('AMK_B_E1_LA1')
+        assert la.id == 163
+
+
     def test_get_floor(self):
         f = self.osm_bridge.get_floor(164)
         assert f.id == 164
@@ -149,6 +156,14 @@ class TestOSMBridge(unittest.TestCase):
         assert f.rooms is not None
         assert f.connections is not None
 
+    def test_search_by_scope_for_floor(self):
+        f = self.osm_bridge.get_floor('AMK_L4')
+        r = f.room('AMK_B_L4_RoomB401')
+        assert r.id == 22
+
+        c = f.corridor('AMK_B_L4_C6')
+        assert c.id == 19
+
     def test_get_building_by_id(self):
         b = self.osm_bridge.get_building(149)
         assert b.geometry is not None
@@ -164,6 +179,17 @@ class TestOSMBridge(unittest.TestCase):
         assert len(b.stairs) == 0
         assert b.elevators is not None
         assert b.floors is not None
+
+    def test_search_by_scope_for_building(self):
+        b = self.osm_bridge.get_building('AMK')
+        f = b.floor('AMK_L4')
+        assert f.id == 164
+
+        e = b.elevator('AMK_B_E1')
+        assert e.id == 5
+
+        s = b.stair('AMK_B_S1')
+        assert s is not None
 
 if __name__ == '__main__':
     unittest.main()

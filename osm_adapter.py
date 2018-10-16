@@ -84,9 +84,18 @@ class OSMAdapter(object):
     '''
     Searches OSM elements based on tag
     '''
-    def search_by_tag(self, data_type='',key='',value=''):
+    def search_by_tag(self, data_type='',key='',value='', *args, **kwargs):
+        scope_id = kwargs.get("scope_id", '')        # id of scope relation
+        scope_role = kwargs.get("scope_role", '')    # role of scope relation
+        scope_role_type = kwargs.get("scope_role_type", '')    # role of scope relation
+
+        if scope_id and scope_role and scope_role_type:            # this restricts search scope to this relation
+            scope_string = 'relation(' + str(scope_id) + ');' + scope_role_type + "(r._:'" + scope_role+ "');"
+        else:
+            scope_string = ''
+
         self.logger.debug('Received new search by tag request - data_type:{},key:{},value:{}'.format(data_type,key,value))
-        query_string = data_type + "[" + key + "='" + value + "'];"
+        query_string = scope_string + data_type + "[" + key + "='" + value + "'];"
         return  self.get(query_string)
     #TODO: provide option to define search scope
     
