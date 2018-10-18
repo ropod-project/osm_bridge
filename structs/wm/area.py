@@ -19,6 +19,7 @@ class Area(WMEntity):
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
         # Some attribute values will be available only after loading related property of the area
+        self.id = ''
         self.surface = ''      
         self.surface_smoothness = ''
         self.internet = ''
@@ -55,7 +56,8 @@ class Area(WMEntity):
                 if member.role == 'topology':
                     self._topology_id = member.ref
         else:
-            self.logger.error("No area found with specified id {}".format(area_ref))  
+            self.logger.error("No area found with specified ref {}".format(area_ref))  
+            raise Exception("No area found")
 
     @property
     def geometry(self):

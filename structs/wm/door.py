@@ -16,6 +16,7 @@ class Door(WMEntity):
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
         # Some attribute values will be available only after loading door geometry
+        self.id = ''
         self.door = ''              # type of door - hinged, sliding etc.
         self.door_automatic = ''    # yes/no
         self.door_direction = ''    # inside/outside/both
@@ -44,7 +45,8 @@ class Door(WMEntity):
                 if member.role == 'topology':
                     self._topology_id = member.ref
         else:
-            self.logger.error("No door found with given id {}".format(door_ref))  
+            self.logger.error("No door found with given ref {}".format(door_ref))  
+            raise Exception("No door found")
 
     @property
     def geometry(self):

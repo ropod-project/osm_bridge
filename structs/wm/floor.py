@@ -15,6 +15,7 @@ class Floor(WMEntity):
 
         # possible attributes
         # NOTE: attribute will have value only if its set by the mapper
+        self.id = ''
         self.ref = ''
         self.name = ''
         self.height = ''
@@ -42,6 +43,7 @@ class Floor(WMEntity):
                     self._connection_ids.append(member.ref)
         else:
             self.logger.error("No floor found with given ref {}".format(floor_ref))  
+            raise Exception("No floor found")
 
     @property
     def walls(self):

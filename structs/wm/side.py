@@ -14,6 +14,7 @@ class Side(WMEntity):
         # no mandatory attributes, but it can still have some tags added by user as attributes
 
         # private attributes
+        self.id = ''
         self._corner_ids = []
         self._feature_ids = []
 
@@ -29,7 +30,8 @@ class Side(WMEntity):
                 if member.role == 'feature':
                     self._feature_ids.append(member.ref)
         else:
-            self.logger.error("No side found with specified red {}".format(side_ref))  
+            self.logger.error("No side found with specified ref {}".format(side_ref))  
+            raise Exception("No side found")
 
     @property
     def corners(self):

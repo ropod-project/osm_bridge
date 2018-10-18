@@ -11,13 +11,13 @@ class Point(WMEntity):
     def __init__(self, node, *args, **kwargs):
         global_origin = kwargs.get("global_origin", self.global_origin)
         local_origin = kwargs.get("local_origin", self.local_origin)
-        coordinate_system = kwargs.get("coordinate_system", self.coordinate_system)
+        self.coordinate_system = kwargs.get("coordinate_system", self.coordinate_system)
     
         self.id = node.id
-        if coordinate_system == 'spherical':
+        if self.coordinate_system == 'spherical':
             self.lat = node.lat
             self.lon = node.lon
-        elif coordinate_system == 'utm':
+        elif self.coordinate_system == 'cartesian':
             temp = utm.from_latlon(node.lat, node.lon)
-            self.x = temp[0] - global_origin[0]
-            self.y = temp[1] - global_origin[1]
+            self.x = temp[0] - global_origin[0] - local_origin[0]
+            self.y = temp[1] - global_origin[1] - local_origin[1]

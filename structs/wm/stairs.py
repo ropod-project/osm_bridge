@@ -19,6 +19,8 @@ class Stairs(WMEntity):
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
         # Some attribute values will be available only after loading related property of stairs
+        self.id = ''
+        self.levels = ''
         self.conveying = ''
         self.stair_height = ''
         self.stair_width = ''
@@ -54,6 +56,7 @@ class Stairs(WMEntity):
                     self._topology_id = member.ref
         else:
             self.logger.error("No  stairs found with given ref {}".format(stairs_ref))  
+            raise Exception("No stairs found")
 
     @property
     def geometry(self):

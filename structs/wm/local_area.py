@@ -14,6 +14,7 @@ class LocalArea(WMEntity):
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
         # These attributes will be available only after fetching geometry
+        self.id = ''
         self.behaviour = ''
         self.ref = ''
 
@@ -34,6 +35,7 @@ class LocalArea(WMEntity):
                     self._topology_id = member.ref
         else:
             self.logger.error("No local area found with specified ref {}".format(local_area_ref))  
+            raise Exception("No local area found")
 
     @property
     def geometry(self):

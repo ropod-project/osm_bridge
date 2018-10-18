@@ -11,6 +11,7 @@ class Connection(WMEntity):
             __,ways,__ = self.osm_adapter.search_by_tag(data_type='way',key='ref',value=connection_ref)
         
         # possible attributes
+        self.id = ''
         self.highway = '' # type of connection eg. localway, footway etc.
         self.oneway = '' # yes/no
         self.lanes_forward = ''
@@ -29,7 +30,8 @@ class Connection(WMEntity):
 
             self._point_ids = ways[0].nodes
         else:
-            self.logger.error("No connection found with given id {}".format(connection_ref))  
+            self.logger.error("No connection found with given ref {}".format(connection_ref))  
+            raise Exception("No connection found")
 
     @property
     def points(self):

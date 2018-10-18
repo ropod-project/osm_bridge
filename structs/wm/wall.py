@@ -16,6 +16,7 @@ class Wall(WMEntity):
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
         # Some attribute values will be available only after loading wall geometry
+        self.id = ''
         self.height = ''
         self.min_height = ''  # height from ground by default 0
         self.level = ''
@@ -37,6 +38,7 @@ class Wall(WMEntity):
                     self._geometry_id = member.ref
         else:
             self.logger.error("No wall found with specified ref {}".format(wall_ref))  
+            raise Exception("No wall found")
 
     @property
     def geometry(self):

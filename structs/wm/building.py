@@ -16,6 +16,7 @@ class Building(WMEntity):
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
         # Some attribute values will be available only after loading related property of the building
+        self.id = ''
         self.building = ''              # purpose of the building eg. university, hospital etc.       
         self.name = ''
         self.city = ''
@@ -50,6 +51,7 @@ class Building(WMEntity):
                     self._stairs_ids.append(member.ref)
         else:
             self.logger.error("No building found with given ref {}".format(building_ref))  
+            raise Exception("No building found")
 
     @property
     def floors(self):

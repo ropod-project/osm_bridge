@@ -18,7 +18,9 @@ class Elevator(WMEntity):
 
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
+        self.id = ''
         self.levels = '' # available only after loading geometry or topology
+        self.ref = ''
 
         # private attributes
         self._geometry_id = None
@@ -50,6 +52,7 @@ class Elevator(WMEntity):
                     self._topology_id = member.ref
         else:
             self.logger.error("No  elevator found with specified id {}".format(elevator_ref))  
+            raise Exception("No elevator found")
 
     @property
     def geometry(self):

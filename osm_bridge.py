@@ -18,6 +18,7 @@ from structs.wm.elevator import Elevator
 from structs.wm.stairs import Stairs
 from structs.wm.floor import Floor
 from structs.wm.building import Building
+from structs.wm.point import Point
 
 
 class OSMBridge(object):
@@ -27,7 +28,7 @@ class OSMBridge(object):
     _server_port = 8000
     _global_origin = [50.1363485, 8.6474024]
     _local_origin = [0,0]
-    _map_location = "~"
+    _coordinate_system = "spherical"
     _debug = False
 
     def __init__(self, *args, **kwargs):
@@ -36,13 +37,19 @@ class OSMBridge(object):
 
         WMEntity.osm_adapter = OSMAdapter(server_ip=server_ip, server_port=server_port)
         
-        self.global_origin = kwargs.get("global_origin", self._global_origin)
-        self.local_origin = kwargs.get("local_origin", self._local_origin)
-        self.map_location = kwargs.get("map_location", self._map_location)
+        Point.global_origin = kwargs.get("global_origin", self._global_origin)
+        Point.local_origin = kwargs.get("local_origin", self._local_origin)
+        Point.coordinate_system = kwargs.get("coordinate_system", self._coordinate_system)
 
         self.logger = logging.getLogger("OSMBridge")
         if kwargs.get("debug", self._debug):            
             self.logger.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
+
+    def set_coordinate_system(self, name, *args, **kwargs):
+        Point.coordinate_system = name
+        Point.global_origin = kwargs.get("global_origin")
+        Point.local_origin = kwargs.get("local_origin")
 
     def get_feature(self, ref):
         return  Feature(ref)

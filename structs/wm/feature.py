@@ -11,6 +11,7 @@ class Feature(WMEntity):
             nodes,__,__ = self.osm_adapter.search_by_tag(data_type='node',key='ref',value=feature_ref)
 
         # mandatory attributes
+        self.id = ''
         self.height = ''
         self.width = ''
         self.length = ''
@@ -24,3 +25,4 @@ class Feature(WMEntity):
             self.point = Point(nodes[0])
         else:
             self.logger.error("No feature found with specified ref {}".format(feature_ref))  
+            raise Exception("No feature found")

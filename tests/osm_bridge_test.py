@@ -22,7 +22,7 @@ class TestOSMBridge(unittest.TestCase):
 
     def test_point_utm(self):
         node_result,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4865],data_type='node')
-        Point.coordinate_system = 'utm'
+        Point.coordinate_system = 'cartesian'
         Point.global_origin = [50.1363485, 8.6474024]
         p = Point(node_result[0])
         assert p.lat is None
@@ -35,8 +35,7 @@ class TestOSMBridge(unittest.TestCase):
         self.assertEqual(f.id, 4865)
 
     def test_get_side_by_id(self): 
-        s = self.osm_bridge.get_side(99999)
-        assert s.id is None
+        self.assertRaises(Exception, self.osm_bridge.get_side, 99999)
 
     def test_get_door_by_id(self):
         d = self.osm_bridge.get_door(161)
@@ -53,8 +52,7 @@ class TestOSMBridge(unittest.TestCase):
         assert len(d.sides) == 0 
 
     def test_get_wall_by_id(self):
-        d = self.osm_bridge.get_wall(99999)
-        assert d.id is None
+        self.assertRaises(Exception, self.osm_bridge.get_wall, 99999)
 
     def test_get_local_area_by_id(self):
         l = self.osm_bridge.get_local_area(173)
@@ -188,8 +186,7 @@ class TestOSMBridge(unittest.TestCase):
         e = b.elevator('AMK_B_E1')
         assert e.id == 5
 
-        s = b.stair('AMK_B_S1')
-        assert s is not None
+        self.assertRaises(Exception, b.stair, 'AMK_B_S1')
 
 if __name__ == '__main__':
     unittest.main()
