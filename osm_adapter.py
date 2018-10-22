@@ -21,7 +21,7 @@ class OSMAdapter(object):
         
         self.logger = logging.getLogger("OSMAdapter")
         if kwargs.get("debug", self._debug):            
-            self.logger.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+            logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
         
         self.logger.info("Connecting to overpass server at {}:{}....".format(server_ip, server_port))
 

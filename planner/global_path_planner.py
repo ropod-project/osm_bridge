@@ -20,12 +20,18 @@ class GlobalPathPlanner(object):
 
     def __init__(self, osm_bridge, *args, **kwargs):
         self.osm_bridge = osm_bridge
+        self.topological_path = []
+        self.semantic_path = []
+        self.path_distance = 0
 
         self.logger = logging.getLogger("GlobalPathPlanner")
         if kwargs.get("debug", self._debug):            
             self.logger.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-    def get_plan(self, start_floor, destination_floor, start, destination, elevators):
+    '''
+    Plans global path using A* planner with straight line distance heurisitcs
+    '''
+    def plan(self, start_floor, destination_floor, start, destination, elevators):
         if not (isinstance(start_floor, Floor) and isinstance(destination_floor, Floor)):
             raise Exception("Invalid floor type")
 
@@ -39,11 +45,14 @@ class GlobalPathPlanner(object):
             if not (isinstance(elevator, Elevator) or isinstance(elevator, Stairs)):
                 raise Exception("Invalid stairs or elevators type")
 
+        self.path_distance = 0
+        self.semantic_path = []
+        self.topological_path = []
+
         start_node = Node(start.topology)
         destination_node = Node(destination.topology)
 
         connections = []
-        topological_path = []
 
         if start_floor == destination_floor:
             for connection in start_floor.connections:
@@ -51,7 +60,8 @@ class GlobalPathPlanner(object):
 
             router = Router(start_node, destination_node, connections)
             router.route()
-            topological_path = router.nodes
+            self.topological_path = router.nodes
+            self.path_distance = router.path_distance
         else:
             start_connections = []
             destination_connections = []
@@ -78,14 +88,18 @@ class GlobalPathPlanner(object):
             best_path_to_elevator_idx = start_to_elevator_distances.index(min(start_to_elevator_distances))
             elevator_node = elevator_nodes[best_path_to_elevator_idx]
             start_to_elevator_path = start_to_elevator_paths[best_path_to_elevator_idx]
+            self.path_distance = start_to_elevator_distances[best_path_to_elevator_idx]
 
             router = Router(elevator_node, destination_node, destination_connections)
             router.route()
             elevator_to_destination_path = router.nodes
 
-            topological_path = start_to_elevator_path + elevator_to_destination_path
+            self.topological_path = start_to_elevator_path + elevator_to_destination_path
+            self.path_distance = self.path_distance + router.path_distance
 
-
+        log_statement = "Successfully planned {} m long path between {} and {}".format(self.path_distance, start.ref, destination.ref)
+        self.logger.info(log_statement)
+        print(log_statement)
 
 
         

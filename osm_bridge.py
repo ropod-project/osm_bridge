@@ -43,7 +43,7 @@ class OSMBridge(object):
 
         self.logger = logging.getLogger("OSMBridge")
         if kwargs.get("debug", self._debug):            
-            self.logger.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+            logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
     def set_coordinate_system(self, name, *args, **kwargs):

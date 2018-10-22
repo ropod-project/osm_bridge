@@ -31,11 +31,11 @@ class Router(object):
             # })
             self.explore(selected)
             if selected.node == self.to:
-                print("Path successfully planned ", selected.g, " m")
+                # print("Path successfully planned ", selected.g, " m")
                 self.path_distance = selected.g
                 break
         else:
-            print("Couldn't plan the path")
+            raise Exception("Couldn't plan the path")
             return False
 
         while selected:

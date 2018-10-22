@@ -1,5 +1,6 @@
 from osm_bridge import OSMBridge
 import logging
+import sys
 from structs.wm.point import Point
 from structs.wm.room import Room
 from structs.wm.corridor import Corridor
@@ -18,10 +19,14 @@ class PathPlanner(object):
 
         self.logger = logging.getLogger("PathPlanner")
         if kwargs.get("debug", self._debug):            
-            self.logger.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+            logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
     def get_global_plan(self,start_floor, destination_floor, start, destination, elevators):
-        return self.global_path_planner.get_plan(start_floor, destination_floor, start, destination, elevators)
+        self.global_path_planner.plan(start_floor, destination_floor, start, destination, elevators)
+        # return semantic path here
+
+    def get_estimated_path_length(self):
+        return self.global_path_planner.path_distance
 
 
         
