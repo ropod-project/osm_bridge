@@ -20,8 +20,8 @@ class PathPlanner(object):
         if kwargs.get("debug", self._debug):            
             self.logger.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-    def get_global_plan(self,building, start_floor, destination_floor, start, destination):
-        return self.global_path_planner.get_plan(building, start_floor, destination_floor, start, destination)
+    def get_global_plan(self,start_floor, destination_floor, start, destination, elevators):
+        return self.global_path_planner.get_plan(start_floor, destination_floor, start, destination, elevators)
 
 
         

@@ -23,12 +23,12 @@ class Router(object):
         while self.heap:
             selected = heappop(self.heap)[1]
             self.visited.append(selected)
-            print("Exploring %(node_id)s (%(distance).03f m to go, %(visited)s nodes seen, %(roads)s roads left)" % {
-                'node_id': repr(selected.node.id),
-                'distance': selected.h,
-                'roads': len(self.heap),
-                'visited': len(self.visited),
-            })
+            # print("Exploring %(node_id)s (%(distance).03f m to go, %(visited)s nodes seen, %(roads)s roads left)" % {
+            #     'node_id': repr(selected.node.id),
+            #     'distance': selected.h,
+            #     'roads': len(self.heap),
+            #     'visited': len(self.visited),
+            # })
             self.explore(selected)
             if selected.node == self.to:
                 print("Path successfully planned ", selected.g, " m")
