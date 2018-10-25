@@ -11,10 +11,13 @@ class Area(WMEntity):
 
     def __init__(self, area_ref, *args, **kwargs):    
 
-        if self._is_osm_id(area_ref):      
+        source = self._check_type(area_ref)     
+        if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[area_ref], data_type='relation')
-        else:
+        elif source == "ref":
             __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=area_ref)
+        elif source == "relation":
+            relations = [area_ref]
 
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper

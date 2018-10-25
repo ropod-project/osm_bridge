@@ -6,12 +6,14 @@ from structs.wm.floor import Floor
 
 class Building(WMEntity):
 
-    def __init__(self, building_ref, *args, **kwargs):      
-
-        if self._is_osm_id(building_ref):      
+    def __init__(self, building_ref, *args, **kwargs): 
+        source = self._check_type(building_ref)     
+        if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[building_ref], data_type='relation')
-        else:
+        elif source == "ref":
             __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=building_ref)
+        elif source == "relation":
+            relations = [building_ref]
         
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper

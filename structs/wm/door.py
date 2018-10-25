@@ -7,11 +7,13 @@ from structs.wm.side import Side
 class Door(WMEntity):
 
     def __init__(self, door_ref, *args, **kwargs):      
-
-        if self._is_osm_id(door_ref):      
+        source = self._check_type(door_ref)     
+        if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[door_ref], data_type='relation')
-        else:
+        elif source == "ref":
             __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=door_ref)
+        elif source == "relation":
+            relations = [door_ref]
         
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
@@ -64,7 +66,10 @@ class Door(WMEntity):
     @property
     def topology(self):
         topological_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[self._topology_id], data_type='node')
-        return Point(topological_nodes[0])
+        p = Point(topological_nodes[0])
+        p.parent_id = self.id
+        p.parent_type = 'Area'
+        return p
 
     @property
     def sides(self):

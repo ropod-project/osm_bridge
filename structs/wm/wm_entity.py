@@ -24,9 +24,18 @@ class WMEntity():
     def __getattr__(self, item):
         return None
 
-    def _is_osm_id(self,ref):
+    def _check_type(self,ref):
         if isinstance(ref, int):
-            return True
+            return "id"
+        elif isinstance(ref, str):
+            return "ref"
+        elif isinstance(ref, Relation):
+            return "relation"
+        elif isinstance(ref, Node):
+            return "node"
+        elif isinstance(ref, Way):
+            return "way"
         else:
-            return False
+            return None
+
 

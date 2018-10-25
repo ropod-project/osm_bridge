@@ -8,10 +8,13 @@ class Wall(WMEntity):
 
     def __init__(self, wall_ref, *args, **kwargs):      
 
-        if self._is_osm_id(wall_ref):      
+        source = self._check_type(wall_ref)     
+        if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[wall_ref], data_type='relation')
-        else:
+        elif source == "ref":
             __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=wall_ref)
+        elif source == "relation":
+            relations = [wall_ref]
         
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper

@@ -11,11 +11,13 @@ class Stairs(WMEntity):
 
     def __init__(self, stairs_ref, *args, **kwargs):      
 
-        if self._is_osm_id(stairs_ref):      
+        source = self._check_type(stairs_ref)     
+        if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[stairs_ref], data_type='relation')
-        else:
+        elif source == "ref":
             __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=stairs_ref)
-
+        elif source == "relation":
+            relations = [stairs_ref]
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
         # Some attribute values will be available only after loading related property of stairs

@@ -188,5 +188,10 @@ class TestOSMBridge(unittest.TestCase):
 
         self.assertRaises(Exception, b.stair, 'AMK_B_S1')
 
+    def get_parent_test(self):
+        nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4865],data_type='node')
+        p = Point(node[0])
+        print(p.parent)
+
 if __name__ == '__main__':
     unittest.main()

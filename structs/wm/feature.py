@@ -3,12 +3,14 @@ from structs.wm.point import Point
 
 class Feature(WMEntity):
 
-    def __init__(self, feature_ref):
-          
-        if self._is_osm_id(feature_ref):      
+    def __init__(self, feature_ref):          
+        source = self._check_type(feature_ref)     
+        if source == "id":      
             nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[feature_ref], data_type='node')
-        else:
+        elif source == "ref":
             nodes,__,__ = self.osm_adapter.search_by_tag(data_type='node',key='ref',value=feature_ref)
+        elif source == "node":
+            nodes = [feature_ref]
 
         # mandatory attributes
         self.id = ''

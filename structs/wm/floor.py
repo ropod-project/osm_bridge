@@ -8,10 +8,13 @@ class Floor(WMEntity):
 
     def __init__(self, floor_ref, *args, **kwargs):      
 
-        if self._is_osm_id(floor_ref):      
+        source = self._check_type(floor_ref)     
+        if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[floor_ref], data_type='relation')
-        else:
-            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=floor_ref,*args,**kwargs)
+        elif source == "ref":
+            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=floor_ref)
+        elif source == "relation":
+            relations = [floor_ref]
 
         # possible attributes
         # NOTE: attribute will have value only if its set by the mapper

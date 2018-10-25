@@ -4,11 +4,13 @@ from structs.wm.point import Point
 class Connection(WMEntity):
 
     def __init__(self, connection_ref, *args, **kwargs):      
-        
-        if self._is_osm_id(connection_ref):      
+        source = self._check_type(connection_ref)     
+        if source == "id":      
             __,ways,__ = self.osm_adapter.get_osm_element_by_id(ids=[connection_ref], data_type='way')
-        else:
+        elif source == "ref":
             __,ways,__ = self.osm_adapter.search_by_tag(data_type='way',key='ref',value=connection_ref)
+        elif source == "way":
+            ways = [connection_ref]
         
         # possible attributes
         self.id = ''

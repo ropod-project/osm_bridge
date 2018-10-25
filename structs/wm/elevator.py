@@ -10,11 +10,13 @@ from structs.wm.connection import Connection
 class Elevator(WMEntity):
 
     def __init__(self, elevator_ref, *args, **kwargs):      
-
-        if self._is_osm_id(elevator_ref):      
+        source = self._check_type(elevator_ref)     
+        if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[elevator_ref], data_type='relation')
-        else:
+        elif source == "ref":
             __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=elevator_ref)
+        elif source == "relation":
+            relations = [elevator_ref]
 
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper

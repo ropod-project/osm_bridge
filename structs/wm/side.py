@@ -6,10 +6,13 @@ class Side(WMEntity):
 
     def __init__(self, side_ref, *args, **kwargs):     
 
-        if self._is_osm_id(side_ref):      
+        source = self._check_type(side_ref)     
+        if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[side_ref], data_type='relation')
-        else:
+        elif source == "ref":
             __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=side_ref)
+        elif source == "relation":
+            relations = [side_ref]
         
         # no mandatory attributes, but it can still have some tags added by user as attributes
 

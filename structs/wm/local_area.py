@@ -6,10 +6,13 @@ class LocalArea(WMEntity):
 
     def __init__(self, local_area_ref, *args, **kwargs):      
 
-        if self._is_osm_id(local_area_ref):      
+        source = self._check_type(local_area_ref)     
+        if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[local_area_ref], data_type='relation')
-        else:
+        elif source == "ref":
             __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=local_area_ref)
+        elif source == "relation":
+            relations = [local_area_ref]
         
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
