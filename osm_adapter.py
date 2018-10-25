@@ -97,5 +97,28 @@ class OSMAdapter(object):
         self.logger.debug('Received new search by tag request - data_type:{},key:{},value:{}'.format(data_type,key,value))
         query_string = scope_string + data_type + "[" + key + "='" + value + "'];"
         return  self.get(query_string)
-    #TODO: provide option to define search scope
+
+    '''
+    Get parent relation of OSM element
+    Members can be directly retrieved by passing its role and type
+    '''
+    # 'node('+str(node.id)+');rel(bn:"topology");way(r._:"geometry");'
+    def get_parent(self, id, data_type, parent_child_role, role_type='', role=''):
+        if data_type == 'node':
+            role_code = 'bn'
+        elif data_type == 'way':
+            role_code = 'bw'
+        elif data_type == 'relation':
+            role_code == 'br'
+
+        query_string = data_type + '(' + str(id) + ');rel(' + role_code + ':"' + parent_child_role + '");'
+
+        if role and role_type:
+            query_string = query_string + role_type + "(r._:'" + role + "');"
+        return  self.get(query_string)
+
+
+
+
+    
     

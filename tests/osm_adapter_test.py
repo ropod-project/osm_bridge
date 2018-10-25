@@ -29,5 +29,14 @@ class TestOSMAdapter(unittest.TestCase):
         result_relation = self.osm_adapter.search_by_tag(data_type='relation',key='type',value='building')
         self.assertTrue(len(result_relation[2]) >  0)
 
+    def test_get_parent(self):
+        __,__,result_relation = self.osm_adapter.get_parent(4865, 'node', 'topology', role_type='', role='')
+        self.assertTrue(len(result_relation) > 0)
+
+        __,result_way,__ = self.osm_adapter.get_parent(4865, 'node', 'topology', 'way', 'geometry')
+        self.assertTrue(len(result_way) > 0)
+
+
+
 if __name__ == '__main__':
     unittest.main()
