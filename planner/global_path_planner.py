@@ -29,7 +29,7 @@ class GlobalPathPlanner(object):
             self.logger.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
     '''
-    Plans global path using A* planner with straight line distance heurisitcs
+    Plans global path using A* planner with straight line distance heuristics
     '''
     def plan(self, start_floor, destination_floor, start, destination, elevators):
         if not (isinstance(start_floor, Floor) and isinstance(destination_floor, Floor)):
@@ -102,7 +102,10 @@ class GlobalPathPlanner(object):
         print(log_statement)
 
 
-        
+    def get_semantic_path(self):
+        for p in self.topological_path:
+            temp = Point(p.node)
+            print(temp.parent)
 
 
         

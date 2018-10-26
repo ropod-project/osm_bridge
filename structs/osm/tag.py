@@ -9,10 +9,10 @@ class Tag():
 
     def __eq__(self, other):
         if isinstance(other, (Tag)):
-            return self.key == other.value and self.key == other.value
+            return self.key == other.key and self.value == other.value
 
     def __repr__(self):
-        return "<Tag key=%(key)s, value=%(val)s>" % {
+        return "<Tag key=%(key)s, value=%(value)s>" % {
             'key': self.key,
             'value': self.value
         }

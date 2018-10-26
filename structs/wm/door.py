@@ -1,5 +1,4 @@
 from structs.wm.wm_entity import WMEntity
-from structs.wm.feature import Feature
 from structs.wm.point import Point
 from structs.wm.shape import Shape
 from structs.wm.side import Side
