@@ -19,6 +19,7 @@ from structs.wm.stairs import Stairs
 from structs.wm.floor import Floor
 from structs.wm.building import Building
 from structs.wm.point import Point
+from structs.wm.area import Area
 
 
 class OSMBridge(object):
@@ -51,6 +52,12 @@ class OSMBridge(object):
         Point.global_origin = kwargs.get("global_origin")
         Point.local_origin = kwargs.get("local_origin")
 
+    def get_global_origin(self) :
+        return self._global_origin
+
+    def get_local_origin(self) :
+        return self._local_origin
+
     def get_feature(self, ref):
         return  Feature(ref)
 
@@ -74,6 +81,9 @@ class OSMBridge(object):
 
     def get_corridor(self, ref):
         return  Corridor(ref)
+
+    def get_area(self, ref):
+        return  Area(ref)
 
     def get_elevator(self, ref):
         return  Elevator(ref)
