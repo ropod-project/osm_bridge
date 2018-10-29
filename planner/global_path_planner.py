@@ -100,12 +100,15 @@ class GlobalPathPlanner(object):
         log_statement = "Successfully planned {} m long path between {} and {}".format(self.path_distance, start.ref, destination.ref)
         self.logger.info(log_statement)
         print(log_statement)
+        return self.topological_path
 
 
     def get_semantic_path(self):
+        semantic_path = []
         for p in self.topological_path:
             temp = Point(p.node)
-            print(temp.parent)
+            semantic_path.append(temp.parent)
+        return semantic_path
 
 
         

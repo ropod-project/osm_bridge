@@ -32,7 +32,7 @@ class Point(WMEntity):
         
         if len(relations) > 0:
             for tag in relations[0].tags:
-                if tag == Tag("type", "corridor"):
+                if tag == Tag("type", "corridor") or tag == Tag("type", "junction"):
                     from structs.wm.corridor import Corridor
                     return Corridor(relations[0])
                 elif tag == Tag("type", "room"):
