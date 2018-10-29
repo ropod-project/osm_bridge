@@ -14,10 +14,8 @@ class Point(WMEntity):
         global_origin = kwargs.get("global_origin", self.global_origin)
         local_origin = kwargs.get("local_origin", self.local_origin)
         self.coordinate_system = kwargs.get("coordinate_system", self.coordinate_system)
-    
-        self.id = node.id
         self.parent_id = ''
-        self.parent_type = ''
+        self.id = node.id
         if self.coordinate_system == 'spherical':
             self.lat = node.lat
             self.lon = node.lon
@@ -34,23 +32,37 @@ class Point(WMEntity):
             for tag in relations[0].tags:
                 if tag == Tag("type", "corridor") or tag == Tag("type", "junction"):
                     from structs.wm.corridor import Corridor
-                    return Corridor(relations[0])
+                    c = Corridor(relations[0])
+                    self.parent_id = c.id
+                    return c
                 elif tag == Tag("type", "room"):
                     from structs.wm.room import Room
-                    return Room(relations[0])
+                    r = Room(relations[0])
+                    self.parent_id = r.id
+                    return r
                 elif tag == Tag("type", "area"):
                     from structs.wm.area import Area
-                    return Area(relations[0])
+                    a = Area(relations[0])
+                    self.parent_id = a.id
+                    return a
                 elif tag == Tag("type", "door"):
                     from structs.wm.door import Door
-                    return Door(relations[0])
+                    d = Door(relations[0])
+                    self.parent_id = d.id
+                    return d
                 elif tag == Tag("type","local_area"):
                     from structs.wm.local_area import LocalArea
-                    return LocalArea(relations[0])
+                    l = LocalArea(relations[0])
+                    self.parent_id = l.id
+                    return l
                 elif tag == Tag("type","elevator"):
                     from structs.wm.elevator import Elevator
-                    return Elevator(relations[0])
+                    e = Elevator(relations[0])
+                    self.parent_id = e.id
+                    return e
                 elif tag == Tag("type","stairs"):
                     from structs.wm.stairs import Stairs
-                    return Stairs(relations[0])
+                    s = Stairs(relations[0])
+                    self.parent_id = s.id
+                    return s
         return None

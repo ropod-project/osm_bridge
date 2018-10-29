@@ -11,6 +11,7 @@ class TestPathPlanner(unittest.TestCase):
         self.osm_bridge = OSMBridge()
         self.global_path_planner = GlobalPathPlanner(self.osm_bridge)
         self.navigation_path_planner = NavigationPathPlanner(self.osm_bridge)
+        self.semantic_global_path = None
 
     def test_global_plan_same_floor(self):
         building = self.osm_bridge.get_building('AMK')
@@ -20,22 +21,22 @@ class TestPathPlanner(unittest.TestCase):
         destination = self.osm_bridge.get_corridor('AMK_D_L-1_C41')
         self.global_path_planner.plan(start_floor, destination_floor, start, destination, building.elevators)
 
-    def test_global_plan_different_floors(self):
+    def test_global_plan_different_floors_plus_local_planner(self):
         building = self.osm_bridge.get_building('AMK')
         start_floor = self.osm_bridge.get_floor('AMK_L-1')
         destination_floor = self.osm_bridge.get_floor('AMK_L4')
-        start = self.osm_bridge.get_corridor('AMK_D_L-1_C41')
-        destination = self.osm_bridge.get_corridor('AMK_B_L4_C1')
-        self.global_path_planner.plan(start_floor, destination_floor, start, destination, building.elevators)
-        self.global_path_planner.get_semantic_path()  # TODO: Junctions
 
-    # def test_navigation_path_planner(self):
-    #     building = self.osm_bridge.get_building('AMK')
-    #     start_floor = self.osm_bridge.get_floor('AMK_L-1')
-    #     destination_floor = self.osm_bridge.get_floor('AMK_L4')
-    #     start = self.osm_bridge.get_corridor('AMK_D_L-1_C41_LA1')
-    #     destination = self.osm_bridge.get_corridor('AMK_B_L4_C1_LA1')
-    #     self.navigation_path_planner.plan()
+        start_global = self.osm_bridge.get_corridor('AMK_D_L-1_C41')
+        destination_global = self.osm_bridge.get_corridor('AMK_B_L4_C1')
+
+        self.global_path_planner.plan(start_floor, destination_floor, start_global, destination_global, building.elevators)
+        global_path =  self.global_path_planner.get_semantic_path()
+
+        print(global_path)
+
+        start_local = self.osm_bridge.get_local_area('AMK_D_L-1_C41_LA1')
+        destination_local = self.osm_bridge.get_local_area('AMK_B_L4_C1_LA1')
+        self.navigation_path_planner.plan(start_floor, destination_floor, start_local, destination_local, global_path)
 
 
         

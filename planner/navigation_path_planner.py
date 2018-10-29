@@ -51,6 +51,24 @@ class NavigationPathPlanner(object):
 
         connections = []
 
+        for place in global_path:
+            temp = place.connections
+            if temp is not None:
+                for connection in temp:
+                    connections.append(Connection(connection))
+
+        router = Router(start_node, destination_node, connections)
+        router.route()
+
+        local_path = router.nodes
+          
+        #TODO proper path generation
+
+
+
+
+
+
         
 
 
