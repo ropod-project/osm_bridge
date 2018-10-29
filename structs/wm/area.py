@@ -58,6 +58,8 @@ class Area(WMEntity):
                     self._geometry_id = member.ref
                 if member.role == 'topology':
                     self._topology_id = member.ref
+                if member.role == 'local_area':
+                    self._local_area_ids.append(member.ref)
         else:
             self.logger.error("No area found with specified ref {}".format(area_ref))  
             raise Exception("No area found")
