@@ -30,7 +30,7 @@ class LocalAreaFinder(object):
         self.global_origin_cartesian = utm.from_latlon(self.global_origin[0], self.global_origin[1])
 
     def get_local_area(self, pointX, pointY, *args, **kwargs):
-        """gets the LocalArea of the point corresponding to x and y
+        """gets the LocalArea object of the point corresponding to x and y
 
         :x: int/float
         :y: int/float
@@ -59,6 +59,9 @@ class LocalAreaFinder(object):
 
         if area_name == None :
             area_object = self._get_area_object(x, y, floor_name)
+#           just in case the robot position is outside currently known areas
+            if area_object == None :
+                return None
         else :
             area_object = self.osm_bridge.get_area(area_name)
 
@@ -70,7 +73,7 @@ class LocalAreaFinder(object):
             self.logger.debug(geometry)
             self.logger.debug(geometry.points)
             if self._is_inside_polygon(x, y, geometry.points) :
-                return local_area.ref
+                return local_area
         return self._get_nearest_local_area(x, y, local_areas)
 
     def _get_nearest_local_area(self, x, y, local_areas):
@@ -94,7 +97,7 @@ class LocalAreaFinder(object):
             if min_dist_local_area == None or dist < min_dist :
                 min_dist = dist
                 min_dist_local_area = local_area
-        return min_dist_local_area.ref
+        return min_dist_local_area
 
     def _is_inside_polygon(self, x, y, points):
         """checks if point (x,y) is inside the polygon created by points
