@@ -37,8 +37,5 @@ class Connection(WMEntity):
 
     @property
     def points(self):
-        points = []
-        for point_id in self._point_ids:
-            nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[point_id], data_type='node')
-            points.append(Point(nodes[0]))
+        points,__,__ = self.osm_adapter.get_osm_element_by_id(ids=self._point_ids, data_type='node')
         return points
