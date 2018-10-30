@@ -11,6 +11,7 @@ from structs.wm.floor import Floor
 from planner.router import Router
 from planner.node import Node
 from planner.connection import Connection
+from planner.planner_area import PlannerArea
 
 
 class GlobalPathPlanner(object):
@@ -105,8 +106,8 @@ class GlobalPathPlanner(object):
 
     def get_semantic_path(self):
         semantic_path = []
-        for p in self.topological_path:
-            temp = Point(p.node)
+        for i, pt in enumnerate(self.topological_path):
+            temp = PlannerArea(Point(p.node))
             semantic_path.append(temp.parent)
         return semantic_path
 
