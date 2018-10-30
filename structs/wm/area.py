@@ -18,6 +18,8 @@ class Area(WMEntity):
             __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=area_ref)
         elif source == "relation":
             relations = [area_ref]
+        elif isinstance(area_ref, Point) :
+            __,__,relations = self.osm_adapter.get_parent(id=area_ref.id, data_type='node', parent_child_role='topology')
 
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
@@ -131,3 +133,8 @@ class Area(WMEntity):
 
     def local_area(self, ref):
         return LocalArea(ref,scope_id=self.id, scope_role='local_area',scope_role_type='relation')
+
+    def __repr__(self):
+        return "<" + self.__class__.__name__ + " id=%(id)s type=%(type)s>" % {
+            'id': self.id, 'type': self.type
+        }

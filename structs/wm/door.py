@@ -13,6 +13,8 @@ class Door(WMEntity):
             __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=door_ref)
         elif source == "relation":
             relations = [door_ref]
+        elif isinstance(door_ref, Point) :
+            __,__,relations = self.osm_adapter.get_parent(id=door_ref.id, data_type='node', parent_child_role='topology')
         
         # possible attributes
         # NOTE: attirbute will have value only if its set by the mapper
@@ -64,7 +66,7 @@ class Door(WMEntity):
         topological_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[self._topology_id], data_type='node')
         p = Point(topological_nodes[0])
         p.parent_id = self.id
-        p.parent_type = 'Area'
+#        p.parent_type = 'Area'
         return p
 
     @property
