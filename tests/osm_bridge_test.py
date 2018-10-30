@@ -51,6 +51,14 @@ class TestOSMBridge(unittest.TestCase):
         assert d.topology is not None
         assert d.sides is None
 
+    def test_get_door_from_point(self) :
+        node_result,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4978],data_type='node')
+        Point.coordinate_system = 'cartesian'
+        Point.global_origin = [50.1363485, 8.6474024]
+        p = Point(node_result[0])
+        d = self.osm_bridge.get_door(p)
+        self.assertEqual(d.id, 150)
+
     def test_get_wall_by_id(self):
         self.assertRaises(Exception, self.osm_bridge.get_wall, 99999)
 
@@ -65,6 +73,14 @@ class TestOSMBridge(unittest.TestCase):
         assert l.id == 173
         assert l.geometry is not None
         assert l.topology is not None
+
+    def test_get_local_area_from_point(self) :
+        node_result,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4743],data_type='node')
+        Point.coordinate_system = 'cartesian'
+        Point.global_origin = [50.1363485, 8.6474024]
+        p = Point(node_result[0])
+        l = self.osm_bridge.get_local_area(p)
+        self.assertEqual(l.id, 27)
 
     def test_get_connection_by_id(self):
         c = self.osm_bridge.get_connection(1199)
@@ -91,6 +107,14 @@ class TestOSMBridge(unittest.TestCase):
         assert r.geometry is not None
         assert r.topology is not None
 
+    def test_get_room_from_point(self) :
+        node_result,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4678],data_type='node')
+        Point.coordinate_system = 'cartesian'
+        Point.global_origin = [50.1363485, 8.6474024]
+        p = Point(node_result[0])
+        r = self.osm_bridge.get_room(p)
+        self.assertEqual(r.id, 22)
+
     def test_get_corridor_by_id(self):
         r = self.osm_bridge.get_corridor(140)
         assert r.id == 140
@@ -110,6 +134,14 @@ class TestOSMBridge(unittest.TestCase):
         assert r.connections is not None
         assert r.geometry is not None
         assert r.topology is not None
+
+    def test_get_corridor_from_point(self) :
+        node_result,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4666],data_type='node')
+        Point.coordinate_system = 'cartesian'
+        Point.global_origin = [50.1363485, 8.6474024]
+        p = Point(node_result[0])
+        c = self.osm_bridge.get_corridor(p)
+        self.assertEqual(c.id, 14)
 
     def test_get_elevator_by_id(self):
         e = self.osm_bridge.get_elevator(5)
@@ -196,6 +228,7 @@ class TestOSMBridge(unittest.TestCase):
         nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4677],data_type='node')
         p = Point(nodes[0])
         assert p.parent.id == 21
+
 
 if __name__ == '__main__':
     unittest.main()
