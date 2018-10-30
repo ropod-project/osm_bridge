@@ -1,26 +1,14 @@
 from planner.node import Node
+from structs.wm.connection import Connection
 
-class Connection(object):
-    def __init__(self, connection):
-        self.connection = connection
+class Connection(Connection):
+    def __init__(self, connection_ref):
+        super().__init__(connection_ref)
         self.nodes = []
-        for pt in self.connection.points:
+        for pt in self.points:
             self.nodes.append(Node(pt))
+        self.oneway = True if self.oneway == "yes" else False
 
-    @property
-    def id(self):
-        return self.connection.id
-
-    @property
-    def highway(self):
-        return self.tags.connection.highway
-
-    @property
-    def oneway(self):
-        return True if self.connection.oneway == "yes" else False
-
-    def __eq__(self, other):
-        return other is not None and self.id== other.id
 
     def __repr__(self):
         return "<Connection id=%(id)s, highway=%(highway)s, oneway=%(oneway)s>" % {

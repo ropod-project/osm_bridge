@@ -52,25 +52,16 @@ class NavigationPathPlanner(object):
         connections = []
 
         for place in global_path:
-            temp = place.connections
+            temp = place._connection_ids
             if temp is not None:
-                for connection in temp:
-                    connections.append(Connection(connection))
+                for connection_id in temp:
+                    connections.append(Connection(connection_id))
 
         router = Router(start_node, destination_node, connections)
         router.route()
 
         local_path = router.nodes
 
-        for local_pt in local_path:
-            parent = local_pt.node.point.parent
-            
-            for global_pt in global_path:
-                global_pt.local_areas = []
-                if global_pt._local_area_ids is not None and parent.id in global_pt._local_area_ids:
-                    global_pt.local_areas.append(parent)
-                    break 
-          
         #TODO proper path generation
 
 
