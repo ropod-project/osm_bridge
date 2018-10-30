@@ -73,6 +73,8 @@ class OSMAdapter(object):
         For OSM relations, its members can be directly retrieved by passing its role and type
         '''
         self.logger.debug('Received new query request - ids:{},data_type:{},role:{},role_type:{}'.format(ids,data_type,role,role_type))
+        if len(ids) == 0 :
+            raise Exception("Empty list of Ids passed.")
         if data_type == 'relation' and role and role_type:
             if len(ids) > 1 :
                 return self._get_ordered_osm_element_by_id(ids, data_type, role, role_type)
@@ -80,6 +82,7 @@ class OSMAdapter(object):
                 query_string = data_type + "(id:" + ','.join([str(id) for id in ids]) +  ");" + role_type + "(r._:'" + role + "');"
         else:
             query_string = data_type + "(id:" + ','.join([str(id) for id in ids]) +  ");"
+#        print(query_string)
         data = self.get(query_string)
         if len(ids) > 1 :
             return self._reorder_elements(ids, data)

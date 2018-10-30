@@ -69,6 +69,8 @@ class Door(WMEntity):
 
     @property
     def sides(self):
+        if len(self._side_ids) == 0 :
+            return None
         sides = []
         for side_id in self._side_ids:
             sides.append(Side(side_id))

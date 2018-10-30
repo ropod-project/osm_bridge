@@ -50,30 +50,42 @@ class Floor(WMEntity):
 
     @property
     def walls(self):
+        if len(self._wall_ids) == 0 :
+            return None
         walls = []
-        for wall_id in self._wall_ids:
+        __,__,wall_relations = self.osm_adapter.get_osm_element_by_id(ids=self._wall_ids, data_type='relation')
+        for wall_id in wall_relations:
             walls.append(Wall(wall_id))
         return walls
 
     @property
     def connections(self):
+        if len(self._connection_ids) == 0 :
+            return None
         connections = []
-        for connection_id in self._connection_ids:
-            connections.append(Connection(connection_id))
+        __,connections_ways,__ = self.osm_adapter.get_osm_element_by_id(ids=self._connection_ids, data_type='way')
+        for connection in connections_ways:
+            connections.append(Connection(connection))
         return connections
 
     @property
     def rooms(self):
+        if len(self._room_ids) == 0 :
+            return None
         rooms = []
-        for room_id in self._room_ids:
-            rooms.append(Room(room_id))
+        __,__,room_relations = self.osm_adapter.get_osm_element_by_id(ids=self._room_ids, data_type='relation')
+        for room in room_relations:
+            rooms.append(Room(room))
         return rooms
 
     @property
     def corridors(self):
+        if len(self._corridor_ids) == 0 :
+            return None
         corridors = []
-        for corridor_id in self._corridor_ids:
-            corridors.append(Corridor(corridor_id))
+        __,__,corridor_relations = self.osm_adapter.get_osm_element_by_id(ids=self._corridor_ids, data_type='relation')
+        for corridor in corridor_relations:
+            corridors.append(Corridor(corridor))
         return corridors
 
     def room(self,ref):
