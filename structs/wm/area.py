@@ -71,10 +71,7 @@ class Area(WMEntity):
         for tag in geometries[0].tags:
             setattr(self, tag.key, tag.value) 
 
-        nodes = []
-        for node_id in geometries[0].nodes:
-            temp_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[node_id], data_type='node')
-            nodes.append(temp_nodes[0])
+        nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=geometries[0].nodes, data_type='node')
         return Shape(nodes)
 
     @property
@@ -84,37 +81,52 @@ class Area(WMEntity):
 
     @property
     def walls(self):
+        if len(self._wall_ids) == 0 :
+            return None
         walls = []
-        for wall_id in self._wall_ids:
+        __,__,wall_relations = self.osm_adapter.get_osm_element_by_id(ids=self._wall_ids, data_type='relation')
+        for wall_id in wall_relations:
             walls.append(Wall(wall_id))
         return walls
 
     @property
     def doors(self):
+        if len(self._door_ids) == 0 :
+            return None
         doors = []
-        for door_id in self._door_ids:
-            doors.append(Door(door_id))
+        __,__,door_relations = self.osm_adapter.get_osm_element_by_id(ids=self._door_ids, data_type='relation')
+        for door in door_relations :
+            doors.append(Door(door))
         return doors
 
     @property
     def features(self):
+        if len(self._feature_ids) == 0 :
+            return None
         features = []
-        for feature_id in self._feature_ids:
-            features.append(Feature(feature_id))
+        feature_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=self._feature_ids, data_type='node')
+        for feature in feature_nodes:
+            features.append(Feature(feature))
         return features
 
     @property
     def connections(self):
+        if len(self._connection_ids) == 0 :
+            return None
         connections = []
-        for connection_id in self._connection_ids:
-            connections.append(Connection(connection_id))
+        __,connections_ways,__ = self.osm_adapter.get_osm_element_by_id(ids=self._connection_ids, data_type='way')
+        for connection in connections_ways:
+            connections.append(Connection(connection))
         return connections
 
     @property
     def local_areas(self):
+        if len(self._local_area_ids) == 0 :
+            return None
         local_areas = []
-        for local_area_id in self._local_area_ids:
-            local_areas.append(LocalArea(local_area_id))
+        __,__,local_area_relations = self.osm_adapter.get_osm_element_by_id(ids=self._local_area_ids, data_type='relation')
+        for local_area in local_area_relations :
+            local_areas.append(LocalArea(local_area))
         return local_areas
 
     def local_area(self, ref):

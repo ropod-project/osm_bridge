@@ -57,23 +57,32 @@ class Building(WMEntity):
 
     @property
     def floors(self):
+        if len(self._floor_ids) == 0 :
+            return None
         floors = []
-        for floor_id in self._floor_ids:
-            floors.append(Floor(floor_id))
+        __,__,floor_relations = self.osm_adapter.get_osm_element_by_id(ids=self._floor_ids, data_type='relation')
+        for floor in floor_relations:
+            floors.append(Floor(floor))
         return floors
 
     @property
     def elevators(self):
+        if len(self._elevator_ids) == 0 :
+            return None
         elevators = []
-        for elevator_id in self._elevator_ids:
-            elevators.append(Elevator(elevator_id))
+        __,__,elevator_relations = self.osm_adapter.get_osm_element_by_id(ids=self._elevator_ids, data_type='relation')
+        for elevator in elevator_relations:
+            elevators.append(Elevator(elevator))
         return elevators
 
     @property
     def stairs(self):
+        if len(self._stairs_ids) == 0 :
+            return None
         stairs = []
-        for stairs_id in self._stairs_ids:
-            stairs.append(Stairs(stairs_id))
+        __,__,stairs_relations = self.osm_adapter.get_osm_element_by_id(ids=self._stairs_ids, data_type='relation')
+        for stairs in stairs_relations:
+            stairs.append(Stairs(stairs))
         return stairs
 
     @property
@@ -83,10 +92,7 @@ class Building(WMEntity):
         for tag in geometries[0].tags:
             setattr(self, tag.key, tag.value) 
 
-        nodes = []
-        for node_id in geometries[0].nodes:
-            temp_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[node_id], data_type='node')
-            nodes.append(temp_nodes[0])
+        nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=geometries[0].nodes, data_type='node')
         return Shape(nodes)
 
     def floor(self, ref):

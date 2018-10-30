@@ -1,9 +1,9 @@
-'''
-OSM way
-'''
 from structs.osm.tag import Tag
 
 class Way(object):
+    '''
+    OSM way
+    '''
     def __init__(self, elm):
         element = elm
         self.id = element.get('id')
@@ -16,8 +16,8 @@ class Way(object):
         self.tags = []
         tags = element.get('tags')
         if tags is not None:
-            for tag in tags:
-                self.tags.append(Tag(tag, tags.get(tag)))    
+            for key in tags:
+                self.tags.append(Tag(key, tags.get(key)))
 
     def __eq__(self, other):
         return other is not None and self.id == other.id

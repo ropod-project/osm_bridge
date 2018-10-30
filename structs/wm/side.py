@@ -38,6 +38,8 @@ class Side(WMEntity):
 
     @property
     def corners(self):
+        if len(self._corner_ids) == 0 :
+            return None
         corners = []
         corner_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=self._corner_ids, data_type='node')
         for corner_node in corner_nodes:
@@ -46,7 +48,10 @@ class Side(WMEntity):
 
     @property
     def features(self):
+        if len(self._feature_ids) == 0 :
+            return None
         features = []
-        for feature_id in _feature_ids:
-            features.append(Feature(feature_id))
+        feature_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=self._feature_ids, data_type='node')
+        for feature in feature_nodes:
+            features.append(Feature(feature))
         return features

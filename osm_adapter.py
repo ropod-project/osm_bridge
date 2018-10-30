@@ -30,20 +30,20 @@ class OSMAdapter(object):
         else:
             self.logger.info("Couldn't connect to Overpass server")
 
-    '''
-    Tests if connection to overpass server was successfully established
-    '''
     def test_overpass_connection(self):
+        '''
+        Tests if connection to overpass server was successfully established
+        '''
         try:
             data = self.api.get('node(1234);')  # just test query for testing overpass connection
         except:
             return False
         return True
 
-    '''
-    Constructs output response based on data retrieved from overpass
-    '''
     def _construct_output_response(self, data):
+        '''
+        Constructs output response based on data retrieved from overpass
+        '''
         node_list = []
         way_list = []
         relation_list = []
@@ -57,34 +57,42 @@ class OSMAdapter(object):
                 relation_list.append(Relation(element))
         return node_list,way_list,relation_list
 
-
-    '''
-    Makes request to overpass server and returns response as python data structures
-    '''
     def get(self, query_string):
+        '''
+        Makes request to overpass server and returns response as python data structures
+        '''
         if len(query_string) > 0:
             data = self.api.get(query_string) 
         else:
             data = self.api.get('out;')
         return self._construct_output_response(data)
 
-
-    '''
-    Queries OSM data elements - node, way and relation based on their id
-    For OSM relations, its members can be directly retrieved by passing its role and type
-    '''
     def get_osm_element_by_id(self, ids=[], data_type='', role='', role_type=''):
+        '''
+        Queries OSM data elements - node, way and relation based on their id
+        For OSM relations, its members can be directly retrieved by passing its role and type
+        '''
         self.logger.debug('Received new query request - ids:{},data_type:{},role:{},role_type:{}'.format(ids,data_type,role,role_type))
+        if len(ids) == 0 :
+            raise Exception("Empty list of Ids passed.")
         if data_type == 'relation' and role and role_type:
-            query_string = data_type + "(id:" + ','.join([str(id) for id in ids]) +  ");" + role_type + "(r._:'" + role + "');"
+            if len(ids) > 1 :
+                return self._get_ordered_osm_element_by_id(ids, data_type, role, role_type)
+            else :
+                query_string = data_type + "(id:" + ','.join([str(id) for id in ids]) +  ");" + role_type + "(r._:'" + role + "');"
         else:
             query_string = data_type + "(id:" + ','.join([str(id) for id in ids]) +  ");"
-        return  self.get(query_string)
+#        print(query_string)
+        data = self.get(query_string)
+        if len(ids) > 1 :
+            return self._reorder_elements(ids, data)
+        else :
+            return data
 
-    '''
-    Searches OSM elements based on tag
-    '''
     def search_by_tag(self, data_type='',key='',value='', *args, **kwargs):
+        '''
+        Searches OSM elements based on tag
+        '''
         scope_id = kwargs.get("scope_id", '')        # id of scope relation
         scope_role = kwargs.get("scope_role", '')    # role of scope relation
         scope_role_type = kwargs.get("scope_role_type", '')    # role of scope relation
@@ -98,12 +106,12 @@ class OSMAdapter(object):
         query_string = scope_string + data_type + "[" + key + "='" + value + "'];"
         return  self.get(query_string)
 
-    '''
-    Get parent relation of OSM element
-    Members can be directly retrieved by passing its role and type
-    '''
     # 'node('+str(node.id)+');rel(bn:"topology");way(r._:"geometry");'
     def get_parent(self, id, data_type, parent_child_role, role_type='', role=''):
+        '''
+        Get parent relation of OSM element
+        Members can be directly retrieved by passing its role and type
+        '''
         if data_type == 'node':
             role_code = 'bn'
         elif data_type == 'way':
@@ -117,8 +125,38 @@ class OSMAdapter(object):
             query_string = query_string + role_type + "(r._:'" + role + "');"
         return  self.get(query_string)
 
+    def _reorder_elements(self, ids, data):
+        """Reorders elements in data according to the ids list
 
+        :ids: list of int
+        :data: tuple of size 3, each element is a list of objects
+        :returns: tuple of size 3, each element is a list of objects
 
+        """
+        reordered_data = [[], [], []]
+        for i in range(3) :
+            if len(data[i]) != 0 :
+                for element_id in ids :
+                    for element in data[i] :
+                        if element.id == element_id :
+                            reordered_data[i].append(element)
+                            break
+        return tuple (reordered_data)
 
-    
-    
+    def _get_ordered_osm_element_by_id(self, ids, data_type, role, role_type):
+        """get the elements in order of their ids by making individual queries
+
+        :data_type: string
+        :ids: list of int
+        :role: string
+        :role_type: string
+        :returns: tuple of 3 lists, each list can contain objects
+
+        """
+        data = [[], [], []]
+        for id_number in ids :
+            query_string = data_type + "(id:" + str(id_number) +  ");" + role_type + "(r._:'" + role + "');"
+            response = self.get(query_string)
+            for i in range(3) :
+                data[i].extend(response[i])
+        return tuple (data)

@@ -26,7 +26,7 @@ class Point(WMEntity):
 
     @property
     def parent(self):
-        __,__,relations = self.osm_adapter.get_parent(self.id, 'node', 'topology', role_type='', role='')
+        __,__,relations = self.osm_adapter.get_parent(self.id, data_type='node', parent_child_role='topology', role_type='', role='')
         
         if len(relations) > 0:
             for tag in relations[0].tags:

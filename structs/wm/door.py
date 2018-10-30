@@ -56,10 +56,7 @@ class Door(WMEntity):
         for tag in geometries[0].tags:
             setattr(self, tag.key, tag.value) 
 
-        nodes = []
-        for node_id in geometries[0].nodes:
-            temp_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[node_id], data_type='node')
-            nodes.append(temp_nodes[0])
+        nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=geometries[0].nodes, data_type='node')
         return Shape(nodes)
 
     @property
@@ -72,6 +69,8 @@ class Door(WMEntity):
 
     @property
     def sides(self):
+        if len(self._side_ids) == 0 :
+            return None
         sides = []
         for side_id in self._side_ids:
             sides.append(Side(side_id))
