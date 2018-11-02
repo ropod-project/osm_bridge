@@ -17,10 +17,25 @@ from planner.planner_area import PlannerArea
 
 class GlobalPathPlanner(object):
 
+    """Summary
+    Plans global path between different indoor elements
+    Attributes:
+        logger (logging): logger
+        osm_bridge (OSMBridge): bridge between wm and osm
+        path_distance (int): path distance in km
+        semantic_path (list): list of planner areas
+        topological_path (list): list of points
+    """
+    
     # default values
     _debug = False
 
     def __init__(self, osm_bridge, *args, **kwargs):
+        """Summary
+        
+        Args:
+            osm_bridge (OSMBridge): bridge between wm and osm
+        """
         self.osm_bridge = osm_bridge
         self.topological_path = []
         self.semantic_path = []
@@ -30,10 +45,24 @@ class GlobalPathPlanner(object):
         if kwargs.get("debug", self._debug):            
             self.logger.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-    '''
-    Plans global path using A* planner with straight line distance heuristics
-    '''
+
     def plan(self, start_floor, destination_floor, start, destination, elevators):
+        """Summary
+        Plans global path using A* planner with straight line distance heuristics
+        
+        Args:
+            start_floor (Floor): start floor wm entity
+            destination_floor (Floor): destination floor wm entity
+            start (Area): start area wm entity
+            destination (Area): destination area wm entity
+            elevators (Elevators): list of elevator wm entity
+        
+        Returns:
+            [PlannerArea]: list of planner areas
+        
+        Raises:
+            Exception: multiple exception
+        """
         if not (isinstance(start_floor, Floor) and isinstance(destination_floor, Floor)):
             raise Exception("Invalid floor type")
 
@@ -106,6 +135,11 @@ class GlobalPathPlanner(object):
 
 
     def get_semantic_path(self):
+        """Summary
+        
+        Returns:
+            [PlannerArea]: path consisting of planner areas
+        """
         semantic_path = []
         prev_idx = -1
         for p in self.topological_path:

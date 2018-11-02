@@ -141,3 +141,6 @@ class Area(WMEntity):
         return "<" + self.__class__.__name__ + " id=%(id)s type=%(type)s>" % {
             'id': self.id, 'type': self.type
         }
+
+    def get_local_area_ids(self):
+        return self._local_area_ids
