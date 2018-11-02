@@ -29,16 +29,17 @@ class TestPathPlanner(unittest.TestCase):
         start_global = self.osm_bridge.get_corridor('AMK_D_L-1_C41')
         destination_global = self.osm_bridge.get_corridor('AMK_B_L4_C1')
 
-        self.global_path_planner.plan(start_floor, destination_floor, start_global, destination_global, building.elevators)
-        global_path =  self.global_path_planner.get_semantic_path()
-
-        print(global_path)
+        global_path = self.global_path_planner.plan(start_floor, destination_floor, start_global, destination_global, building.elevators)
 
         start_local = self.osm_bridge.get_local_area('AMK_D_L-1_C41_LA1')
         destination_local = self.osm_bridge.get_local_area('AMK_B_L4_C1_LA1')
-        self.navigation_path_planner.plan(start_floor, destination_floor, start_local, destination_local, global_path)
+        path = self.navigation_path_planner.plan(start_floor, destination_floor, start_local, destination_local, global_path)
 
-
+        for pt in path:
+            print(pt)
+            print(pt.exit_door)
+            print(pt.navigation_areas)
+            print("---------------------------------------------")
         
 if __name__ == '__main__':
     unittest.main()

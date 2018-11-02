@@ -12,6 +12,7 @@ from structs.wm.floor import Floor
 from planner.router import Router
 from planner.node import Node
 from planner.connection import Connection
+from planner.planner_area import PlannerArea
 
 
 class NavigationPathPlanner(object):
@@ -62,7 +63,13 @@ class NavigationPathPlanner(object):
 
         local_path = router.nodes
 
-        #TODO proper path generation
+        for local_pt in local_path:
+            local_area = LocalArea(local_pt.node)            
+            for global_pt in global_path:
+                if global_pt._local_area_ids is not None and local_area.id in global_pt._local_area_ids:
+                    global_pt.navigation_areas.append(local_area)
+                    break 
+        return global_path
 
 
 

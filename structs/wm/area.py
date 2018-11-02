@@ -47,6 +47,9 @@ class Area(WMEntity):
             for tag in relations[0].tags:
                 setattr(self, tag.key.replace("-", "_"), tag.value) 
 
+            if not (self.type=='room' or self.type=='corridor' or self.type=='elevator' or self.type=='stairs' or self.type=='junction'):
+                raise Exception("Invalid relation")
+
             for member in relations[0].members:
                 if member.role == 'wall':
                     self._wall_ids.append(member.ref)

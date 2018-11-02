@@ -8,9 +8,11 @@ from structs.wm.stairs import Stairs
 from structs.wm.area import Area
 from structs.wm.building import Building
 from structs.wm.floor import Floor
+from structs.wm.door import Door
 from planner.router import Router
 from planner.node import Node
 from planner.connection import Connection
+from planner.planner_area import PlannerArea
 
 
 class GlobalPathPlanner(object):
@@ -100,14 +102,20 @@ class GlobalPathPlanner(object):
         log_statement = "Successfully planned {} m long path between {} and {}".format(self.path_distance, start.ref, destination.ref)
         self.logger.info(log_statement)
         print(log_statement)
-        return self.topological_path
+        return self.get_semantic_path()
 
 
     def get_semantic_path(self):
         semantic_path = []
+        prev_idx = -1
         for p in self.topological_path:
-            temp = Point(p.node)
-            semantic_path.append(temp.parent)
+            try:
+                temp = PlannerArea(p.node)
+                semantic_path.append(temp)
+                prev_idx = prev_idx + 1
+            except:
+                semantic_path[prev_idx].exit_door = Door(p.node)
+
         return semantic_path
 
 

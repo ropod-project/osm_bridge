@@ -220,14 +220,14 @@ class TestOSMBridge(unittest.TestCase):
 
         self.assertRaises(Exception, b.stair, 'AMK_B_S1')
 
-    def get_parent_test(self):
-        nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[3141],data_type='node')
-        p = Point(nodes[0])
-        assert p.parent.id == 5
+    # def get_parent_test(self):
+    #     nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[3141],data_type='node')
+    #     p = Point(nodes[0])
+    #     assert p.parent.id == 5
 
-        nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4677],data_type='node')
-        p = Point(nodes[0])
-        assert p.parent.id == 21
+    #     nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4677],data_type='node')
+    #     p = Point(nodes[0])
+    #     assert p.parent.id == 21
 
 
 if __name__ == '__main__':
