@@ -110,8 +110,7 @@ class PathPlanner(object):
 
         destination_local_area = None
         if not destination_local_area_ref:
-            #TODO
-            pass
+            destination_local_area = self.local_area_finder.get_local_area(area_name=destination_area, behaviour=destination_task)
         else:
             destination_local_area = self.osm_bridge.get_local_area(destination_local_area_ref)
 
