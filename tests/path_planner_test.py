@@ -40,6 +40,17 @@ class TestPathPlanner(unittest.TestCase):
             print(pt.exit_door)
             print(pt.navigation_areas)
             print("---------------------------------------------")
+
+    def test_overall_path_planner(self):
+        path_planner = PathPlanner(self.osm_bridge)
+        path_planner.set_building('AMK')
+        path = path_planner.get_path_plan(start_floor='AMK_L-1', destination_floor='AMK_L4',start_area='AMK_D_L-1_C41',destination_area='AMK_B_L4_C1', start_local_area='AMK_D_L-1_C41_LA1',destination_local_area='AMK_B_L4_C1_LA1')
         
+        for pt in path:
+            print(pt)
+            print(pt.exit_door)
+            print(pt.navigation_areas)
+            print("---------------------------------------------")
+
 if __name__ == '__main__':
     unittest.main()
