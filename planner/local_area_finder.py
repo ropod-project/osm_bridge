@@ -10,7 +10,7 @@ from structs.wm.floor import Floor
 
 class LocalAreaFinder(object):
 
-    """Finds the nearest local area to a give position (x, y) of robot"""
+    """Finds the nearest local area to a give position (x, y) of robot or with a behaviour tag"""
 
     # default values
     _debug = False
@@ -29,28 +29,49 @@ class LocalAreaFinder(object):
         self.global_origin = self.osm_bridge.get_global_origin()
         self.global_origin_cartesian = utm.from_latlon(self.global_origin[0], self.global_origin[1])
 
-    def get_local_area(self, pointX, pointY, *args, **kwargs):
-        """gets the LocalArea object of the point corresponding to x and y
+    def get_local_area(self, *args, **kwargs):
+        """gets the LocalArea object containing a point (x, y) or with a behaviour tag
 
         :x: int/float
         :y: int/float
         :area_name: string
         :floor_name: string
+        :behaviour: string
         :isLatlong: boolean (default False)
-        :returns: TODO
+        :returns: LocalArea object
 
         Either area_name or floor_name is required to get non None return
+        Either behaviour or (x and y) is required to get non None return 
 
         """
-        self.logger.debug(kwargs.get("area_name"))
-        if kwargs.get("floor_name") == None and kwargs.get("area_name") == None :
-#            raise Exception ("Either area_name or floor_name is required")
-            return None
-
         area_name = kwargs.get("area_name")
         floor_name = kwargs.get("floor_name")
+        pointX = kwargs.get("x")
+        pointY = kwargs.get("y")
+        behaviour =kwargs.get("behaviour")
+        self._isLatlong = kwargs.get("isLatlong", self._isLatlong)
+        if floor_name == None and area_name == None :
+#            raise Exception ("Either area_name or floor_name is required")
+            return None
+        if behaviour == None and (pointX == None and pointY == None) :
+            return None
 
-        if kwargs.get("isLatlong", self._isLatlong):            
+        if behaviour == None :
+            return self._get_local_area_from_position(pointX, pointY, area_name, floor_name)
+        else :
+            return self._get_local_area_from_behaviour(area_name, floor_name, behaviour)
+
+    def _get_local_area_from_position(self, pointX, pointY, area_name, floor_name):
+        """get LocalArea object which contains point (pointX, pointY)
+
+        :pointX: int/float
+        :pointY: int/float
+        :area_name: string
+        :floor_name: string
+        :returns: LocalArea object
+
+        """
+        if self._isLatlong :            
             x, y = self.convert_to_cartesian(pointX, pointY)
             self.logger.debug(x)
             self.logger.debug(y)
@@ -76,6 +97,29 @@ class LocalAreaFinder(object):
                 return local_area
         return self._get_nearest_local_area(x, y, local_areas)
 
+    def _get_local_area_from_behaviour(self, area_name, floor_name, query_behaviour):
+        """returns a LocalArea object inside area_name with given behaviour tag
+
+        :area_name: string
+        :floor_name: string
+        :query_behaviour: string
+        :returns: LocalArea object
+
+        """
+        if area_name == None :
+            return self._get_local_area_from_floor_with_behaviour(query_behaviour, floor_name)
+        else :
+            area_object = self.osm_bridge.get_area(area_name)
+
+        self.logger.debug("Area ID: "+str(area_object.id))
+        local_areas = area_object.local_areas
+        for local_area in local_areas :
+            self.logger.debug(local_area.ref)
+            local_area.geometry # need to call geometry because the tag is owned by it
+            if local_area.behaviour == query_behaviour :
+                return local_area
+        return None
+    
     def _get_nearest_local_area(self, x, y, local_areas):
         """returns the local area that is nearest to the point (x, y)
 
@@ -204,4 +248,28 @@ class LocalAreaFinder(object):
             if self._is_inside_polygon(x, y, geometry.points) :
                 return probable_area
 #        return self.osm_bridge.get_area("AMK_B_L-1_C29")
+        return None
+
+    def _get_local_area_from_floor_with_behaviour(self, query_behaviour, floor_name):
+        """TODO: Docstring for _get_local_area_from_floor_with_behaviour.
+
+        :query_behaviour: string
+        :floor_name: string
+        :returns: LocalArea object
+
+        """
+        self.logger.debug(floor_name)
+        floor_object = self.osm_bridge.get_floor(floor_name)
+        self.logger.debug("Floor ID: "+str(floor_object.id))
+        areas = floor_object.corridors
+        areas.extend(floor_object.rooms)
+        for area in areas :
+            self.logger.debug(area.ref)
+            local_areas = area.local_areas
+            if local_areas == None :
+                continue
+            for local_area in local_areas :
+                local_area.geometry # the tags belong to geometry
+                if local_area.behaviour == query_behaviour :
+                    return local_area
         return None
