@@ -72,8 +72,8 @@ class PathPlanner(object):
             start_area (str): start area ref
             destination_area (str): destination area ref
             elevator(str, optional): ref of elevator to use
-            start_local_area_ref(str, optional): start local area ref
-            destination_local_area_ref(str, optional): destination local area ref
+            start_local_area(str, optional): start local area ref
+            destination_local_area(str, optional): destination local area ref
             robot_position([x,y]) : robot position in x/y or lat/lng
             destination_task(str) : task to be performed at destination eg. docking, charging etc.
 

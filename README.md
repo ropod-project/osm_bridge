@@ -364,3 +364,20 @@ Attributes
 ## Note
 * All the attributes maynot be available immediately once any `wm_entity` is initialised as different attributes are stored under different models in OSM. Most of the attributes will be available after loading geometry (if exist). 
 * Querying each model requires atleast 1 overpass query, which can be time consuming as well as unnecessary most of thr times hence all the models are not loaded during initialisation
+
+
+#### Path planner
+Methods
+```
+- set_building(building ref) - to set building 
+- set_cooridnate_system('spherical'/'cartesian') - to set cooridnate system
+- get_path_plan(start floor ref,destination floor ref, start area ref, destination area ref)
+  Optional keyword arguments:
+    - start_local_area: start local area ref
+    - destination_local_area: destination local area ref
+    - destination_task: task tobe performed at destination
+    - robot_position: robot starting position
+    (2 of these 4 optional arguments are mandatory - 1 each for start and destination)
+- get_estimated_path_distance(start floor ref, destination floor ref, start area ref, destination area ref) - returns estimated path distance in m
+```
+
