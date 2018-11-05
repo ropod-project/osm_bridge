@@ -63,7 +63,7 @@ class PathPlanner(object):
         self._coordinate_system = coordinate_system
 
 
-    def get_path_plan(self,start_floor, destination_floor, start_area, destination_area, *args, **kwargs):
+    def get_path_plan(self,start_floor='', destination_floor='', start_area='', destination_area='', *args, **kwargs):
         """Summary
         Plans detailed navigation path for robot
         Args:
@@ -95,10 +95,10 @@ class PathPlanner(object):
         robot_position = kwargs.get("robot_position")
 
         if not start_local_area_ref and not robot_position:
-            raise Exception("Start local area ref or robot position is must to determine starting position") 
+            raise Exception("Start local area ref or robot position is required to determine starting position") 
 
         if not destination_local_area_ref and not destination_task:
-            raise Exception("Destination local area ref or destination task is must to determine destination")
+            raise Exception("Destination local area ref or destination task is required to determine destination")
 
         isLatlong = True if self._coordinate_system == 'spherical' else False
 
@@ -126,7 +126,7 @@ class PathPlanner(object):
         return navigation_path
 
 
-    def get_estimated_path_distance(self,start_floor, destination_floor, start_area, destination_area, *args, **kwargs):
+    def get_estimated_path_distance(self,start_floor='', destination_floor='', start_area='', destination_area='', *args, **kwargs):
         """Summary
         Returns estimated path distance in Kms
         Args:

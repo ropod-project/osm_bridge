@@ -10,8 +10,8 @@ from structs.wm.building import Building
 from structs.wm.floor import Floor
 from structs.wm.door import Door
 from planner.router import Router
-from planner.node import Node
-from planner.connection import Connection
+from planner.planner_node import PlannerNode
+from planner.planner_connection import PlannerConnection
 from planner.planner_area import PlannerArea
 
 
@@ -80,14 +80,14 @@ class GlobalPathPlanner(object):
         self.semantic_path = []
         self.topological_path = []
 
-        start_node = Node(start.topology)
-        destination_node = Node(destination.topology)
+        start_node = PlannerNode(start.topology)
+        destination_node = PlannerNode(destination.topology)
 
         connections = []
 
         if start_floor == destination_floor:
             for connection_id in start_floor._connection_ids:
-                connections.append(Connection(connection_id))
+                connections.append(PlannerConnection(connection_id))
 
             router = Router(start_node, destination_node, connections)
             router.route()
@@ -98,10 +98,10 @@ class GlobalPathPlanner(object):
             destination_connections = []
             
             for connection_id in start_floor._connection_ids:
-                start_connections.append(Connection(connection_id))
+                start_connections.append(PlannerConnection(connection_id))
 
             for connection_id in destination_floor._connection_ids:
-                destination_connections.append(Connection(connection_id))
+                destination_connections.append(PlannerConnection(connection_id))
 
             connections = start_connections + destination_connections
 
@@ -109,7 +109,7 @@ class GlobalPathPlanner(object):
             start_to_elevator_distances = []
             start_to_elevator_paths = []
             for elevator in elevators:
-                elevator_node = Node(elevator.topology)
+                elevator_node = PlannerNode(elevator.topology)
                 elevator_nodes.append(elevator_node)
                 router = Router(start_node, elevator_node, start_connections)
                 router.route()

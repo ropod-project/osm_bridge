@@ -10,8 +10,8 @@ from structs.wm.local_area import LocalArea
 from structs.wm.building import Building
 from structs.wm.floor import Floor
 from planner.router import Router
-from planner.node import Node
-from planner.connection import Connection
+from planner.planner_node import PlannerNode
+from planner.planner_connection import PlannerConnection
 from planner.planner_area import PlannerArea
 
 
@@ -73,8 +73,8 @@ class NavigationPathPlanner(object):
         self.path_distance = 0
         self.topological_path = []
 
-        start_node = Node(start.topology)
-        destination_node = Node(destination.topology)
+        start_node = PlannerNode(start.topology)
+        destination_node = PlannerNode(destination.topology)
 
         connections = []
 
@@ -82,7 +82,7 @@ class NavigationPathPlanner(object):
             temp = place._connection_ids
             if temp is not None:
                 for connection_id in temp:
-                    connections.append(Connection(connection_id))
+                    connections.append(PlannerConnection(connection_id))
 
         router = Router(start_node, destination_node, connections)
         router.route()

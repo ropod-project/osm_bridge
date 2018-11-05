@@ -1,6 +1,6 @@
-from planner.node import Node
+from planner.planner_node import PlannerNode
 from planner.visited_node import VisitedNode
-from planner.connection import Connection
+from planner.planner_connection import PlannerConnection
 from heapq import heappop, heappush, heapify
 from math import sin, radians, cos, atan2, sqrt
 
@@ -23,12 +23,14 @@ class Router(object):
         while self.heap:
             selected = heappop(self.heap)[1]
             self.visited.append(selected)
-            # print("Exploring %(node_id)s (%(distance).03f m to go, %(visited)s nodes seen, %(roads)s roads left)" % {
-            #     'node_id': repr(selected.node.id),
-            #     'distance': selected.h,
-            #     'roads': len(self.heap),
-            #     'visited': len(self.visited),
-            # })
+            '''
+            print("Exploring %(node_id)s (%(distance).03f m to go, %(visited)s nodes seen, %(roads)s roads left)" % {
+               'node_id': repr(selected.node.id),
+                'distance': selected.h,
+                'roads': len(self.heap),
+                'visited': len(self.visited),
+            })
+            '''
             self.explore(selected)
             if selected.node == self.to:
                 # print("Path successfully planned ", selected.g, " m")
@@ -73,23 +75,29 @@ class Router(object):
         g = 0
         for idx, step in enumerate(walk_nodes):
             if not self.is_way_section_accessible(way, from_, step):
-                # Remaining nodes are not accessible, so there's no point in
-                # walking them. Also these nodes cannot be marked as visited,
-                # as they might be accessible through a different path.
+                '''
+                Remaining nodes are not accessible, so there's no point in
+                walking them. Also these nodes cannot be marked as visited,
+                as they might be accessible through a different path.
                 break
+                '''
 
             if step in self.visited:
-                # We've already been here, and most likely also visited the
-                # remainder of the street. So we can safely skip the
-                # remainder of the way.
+                '''
+                We've already been here, and most likely also visited the
+                remainder of the street. So we can safely skip the
+                remainder of the way.
+                '''
                 break
             g = from_.g + self.path_cost(way, from_, step)
             for index, (_, other) in enumerate(self.heap):
                 if step != other:
                     continue
                 if other.g <= g:
-                    # We've already found a shorter route to this node; the
-                    # remainder of the way can be skipped as well.
+                    '''
+                    We've already found a shorter route to this node; the
+                    remainder of the way can be skipped as well.
+                    '''
                     return
                 self.heap[index] = self.heap[-1]
                 self.heap.pop()

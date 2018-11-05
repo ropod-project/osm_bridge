@@ -1,5 +1,3 @@
-"""Summary
-"""
 import overpass
 import logging
 import sys
@@ -27,6 +25,7 @@ from structs.wm.area import Area
 class OSMBridge(object):
 
     """Summary
+    Provides abstraction to world model (https://git.ropod.org/ropod/wm/openstreetmap-indoor-modelling) using OSM adapter
     
     Attributes:
         logger (logging): logger
