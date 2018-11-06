@@ -1,7 +1,7 @@
-from osm_bridge import OSMBridge
-from path_planner import PathPlanner
-from planner.navigation_path_planner import NavigationPathPlanner
-from planner.global_path_planner import GlobalPathPlanner
+from OBL import OSMBridge
+from OBL import PathPlanner
+from OBL.planner.navigation_path_planner import NavigationPathPlanner
+from OBL.planner.global_path_planner import GlobalPathPlanner
 
 import unittest
 

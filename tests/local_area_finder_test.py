@@ -1,5 +1,5 @@
-from osm_bridge import OSMBridge
-from planner.local_area_finder import LocalAreaFinder
+from OBL import OSMBridge
+from OBL import LocalAreaFinder
 
 import unittest
 

@@ -39,6 +39,9 @@ lib
 libs
 logger
 
+# python setuptools metadata
+/*.egg-info
+
 
 cmake-build-debug
 .idea*

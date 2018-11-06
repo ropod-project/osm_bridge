@@ -1,4 +1,4 @@
-from osm_adapter import OSMAdapter
+from OBL import OSMAdapter
 import unittest
 
 class TestOSMAdapter(unittest.TestCase):

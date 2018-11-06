@@ -9,4 +9,6 @@ setup(
     package_dir={'': '.'},
     author='Lakshadeep Naik',
     author_email='lakshadeep.naik@gmail.com'
+    install_requires=['utm'],
+#    dependency_links=['http://github.com/Lakshadeep/overpass-api-python-wrapper/tarball/master#egg=overpass-0.6.1']
     )

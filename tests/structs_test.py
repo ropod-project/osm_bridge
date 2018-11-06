@@ -1,6 +1,6 @@
-from structs.osm.node import Node
-from structs.osm.way import Way
-from structs.osm.relation import Relation, Member
+from OBL.structs.osm.node import Node
+from OBL.structs.osm.way import Way
+from OBL.structs.osm.relation import Relation, Member
 import unittest
 
 class TestStructs(unittest.TestCase):

@@ -1,7 +1,7 @@
-from osm_bridge import OSMBridge
-from structs.wm.point import Point
-from osm_adapter import OSMAdapter
-from structs.osm.node import Node
+from OBL import OSMBridge
+from OBL.structs.wm.point import Point
+from OBL import OSMAdapter
+from OBL.structs.osm.node import Node
 
 import unittest
 
