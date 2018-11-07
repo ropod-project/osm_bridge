@@ -1,6 +1,5 @@
 import logging
 import sys
-import utm
 from OBL.osm_bridge import OSMBridge
 from OBL.structs.wm.point import Point
 from OBL.structs.wm.room import Room
@@ -14,8 +13,6 @@ class LocalAreaFinder(object):
 
     # default values
     _debug = False
-    resolution = 0.02
-    local_origin = [-25, -25]
     _isLatlong = False
 
     def __init__(self, osm_bridge, *args, **kwargs):
@@ -26,8 +23,8 @@ class LocalAreaFinder(object):
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
         self.logger.debug("inside init of LocalAreaFinder")
     
-        self.global_origin = self.osm_bridge.get_global_origin()
-        self.global_origin_cartesian = utm.from_latlon(self.global_origin[0], self.global_origin[1])
+#        self.global_origin = self.osm_bridge.get_global_origin()
+#        self.global_origin_cartesian = utm.from_latlon(self.global_origin[0], self.global_origin[1])
 
     def get_local_area(self, *args, **kwargs):
         """gets the LocalArea object containing a point (x, y) or with a behaviour tag
@@ -72,7 +69,7 @@ class LocalAreaFinder(object):
 
         """
         if self._isLatlong :            
-            x, y = self.convert_to_cartesian(pointX, pointY)
+            x, y = self.osm_bridge.convert_to_cartesian(pointX, pointY)
             self.logger.debug(x)
             self.logger.debug(y)
         else :
@@ -134,7 +131,7 @@ class LocalAreaFinder(object):
         for local_area in local_areas :
             topology = local_area.topology
             if topology.coordinate_system == "spherical" :
-                cart_x, cart_y = self.convert_to_cartesian(topology.lat, topology.lon)
+                cart_x, cart_y = self.osm_bridge.convert_to_cartesian(topology.lat, topology.lon)
             else :
                 cart_x, cart_y = topology.x, topology.y
             dist = self._calculate_cartesian_distance(x, y, cart_x, cart_y)
@@ -157,7 +154,7 @@ class LocalAreaFinder(object):
 
         for point in points[:-1] :      # first and last point in points is same
             if point.coordinate_system == "spherical" :
-                cart_x, cart_y = self.convert_to_cartesian(point.lat, point.lon)
+                cart_x, cart_y = self.osm_bridge.convert_to_cartesian(point.lat, point.lon)
             else :
                 cart_x, cart_y = point.x, point.y
             xPoints.append(cart_x)
@@ -186,19 +183,6 @@ class LocalAreaFinder(object):
                 counter += 1
             j = i
         return (counter % 2 == 1)
-
-    def convert_to_cartesian(self, lat, lon):
-        """convert a point (x, y) from spherical coordinates to cartesian coordinates
-
-        :lat: int/float
-        :lon: int/float
-        :returns: tuple (float, float)
-
-        """
-        temp = utm.from_latlon(lat, lon)
-        x = temp[0] - self.global_origin_cartesian[0] - self.local_origin[0]
-        y = -(temp[1] - self.global_origin_cartesian[1]) - self.local_origin[1]
-        return (x/self.resolution, y/self.resolution)
 
     def _calculate_cartesian_distance(self, x1, y1, x2, y2):
         """returns the cartesian distance between 2 points
@@ -231,7 +215,7 @@ class LocalAreaFinder(object):
             self.logger.debug(area.ref)
             topology = area.topology
             if topology.coordinate_system == "spherical" :
-                cart_x, cart_y = self.convert_to_cartesian(topology.lat, topology.lon)
+                cart_x, cart_y = self.osm_bridge.convert_to_cartesian(topology.lat, topology.lon)
             else :
                 cart_x, cart_y = topology.x, topology.y
             dist = self._calculate_cartesian_distance(x, y, cart_x, cart_y)
