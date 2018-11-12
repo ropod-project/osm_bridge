@@ -37,7 +37,6 @@ class OSMBridge(object):
     _server_port = 8000
     _global_origin = [50.1363485, 8.6474024]
     _local_origin = [-25, -25]
-    _resolution = 0.02
     _coordinate_system = "spherical"
     _debug = False
 
@@ -56,7 +55,6 @@ class OSMBridge(object):
         self._global_origin = kwargs.get("global_origin", self._global_origin)
         self._local_origin = kwargs.get("local_origin", self._local_origin)
         self._coordinate_system = kwargs.get("coordinate_system", self._coordinate_system)
-        self._resolution = kwargs.get("resolution", self._resolution)
         Point.coordinate_system = self._coordinate_system
         self._global_origin_cartesian = utm.from_latlon(self._global_origin[0], self._global_origin[1])
 
@@ -67,7 +65,7 @@ class OSMBridge(object):
         Point.convert_to_cartesian = self.convert_to_cartesian
 
     def convert_to_cartesian(self, lat, lon):
-        """convert a point (x, y) from spherical coordinates to cartesian coordinates
+        """convert a point (x, y) from spherical coordinates to cartesian coordinates (in meters)
             based on the global_origin and the local_origin provided to OSMBridge
 
         :lat: int/float
@@ -78,7 +76,7 @@ class OSMBridge(object):
         temp = utm.from_latlon(lat, lon)
         x = temp[0] - self._global_origin_cartesian[0] - self._local_origin[0]
         y = -(temp[1] - self._global_origin_cartesian[1]) - self._local_origin[1]
-        return (x/self._resolution, y/self._resolution)
+        return (x, y)
 
     def set_coordinate_system(self, name, *args, **kwargs):
         """Set the global or local origin for the OSMBridge
@@ -90,10 +88,6 @@ class OSMBridge(object):
         self._coordinate_system = name
         self._global_origin = kwargs.get("global_origin", self._global_origin)
         self._local_origin = kwargs.get("local_origin", self._local_origin)
-
-    @property
-    def resolution(self):
-        return self._resolution
 
     @property
     def global_origin(self) :

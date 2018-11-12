@@ -16,6 +16,7 @@ class OccGridGenerator(object):
     _dirname = "../maps"
     _file_name = "map"
     _dimension = 10000 #10000
+    _resolution = 0.02
     _scale = 1
 
     def __init__(self, osm_bridge, *args, **kwargs):
@@ -39,20 +40,25 @@ class OccGridGenerator(object):
         if kwargs.get("debug", self._debug):            
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
         self.logger.debug("inside init of occ grid generator")
+        self._resolution = kwargs.get("resolution", self._resolution)
         self._dirname = kwargs.get("dirname", self._dirname)
         self._file_name = kwargs.get("filename", self._file_name)
         self._dimension = kwargs.get("dimension", self._dimension)
         self._scale = kwargs.get("scale", self._scale)
 
-    def generate_map(self, floor=None):
+    @property
+    def resolution(self):
+        return self._resolution
+
+    def generate_map(self, floor=None, **kwargs):
         """generates occupancy grid maps for a given floor
 
-        :floor: string
+        :floor: int
         :returns: None
 
         """
         if floor == None :
-            raise "Floor name is required"
+            raise "Floor number is required"
 
         """ create directory for maps """
         if not os.path.exists(self._dirname):
@@ -72,7 +78,8 @@ class OccGridGenerator(object):
         ways.extend(self._get_doors(floor))
         max_x , max_y = 0, 0
         for way in ways:
-            way_cartesian = [self.osm_bridge.convert_to_cartesian(n.lat, n.lon) for n in way]
+            way_cartesian_meter = [self.osm_bridge.convert_to_cartesian(n.lat, n.lon) for n in way]
+            way_cartesian = [tuple([i[0]/self._resolution, i[1]/self._resolution]) for i in way_cartesian_meter]
             local_max_x = max(way_cartesian, key=lambda x: x[0])[0]
             local_max_y = max(way_cartesian, key=lambda y: y[1])[1]
             max_x = local_max_x if local_max_x > max_x else max_x
@@ -80,26 +87,12 @@ class OccGridGenerator(object):
             drawObject.polygon(way_cartesian,0,0)
         self.logger.debug("size x " + str(max_x))
         self.logger.debug("size y " + str(max_y))
-        cropped_image = grid_map.crop((0,0, int(max_x+100), int(max_y+100)))
+        max_x += 100
+        max_y += 100
+        cropped_image = grid_map.crop((0,0, int(max_x), int(max_y)))
         cropped_image.save(self._dirname + "/" + self._file_name + "_floor_" + str(floor) + ".pgm")
-        self._save_yaml_file(floor)
+        self._save_yaml_file(floor, max_x, max_y)
         print("Map files saved at " + os.path.abspath(self._dirname))
-
-    def generate_map_all_floor(self, building=None):
-        """generate map of all the floor in the given building
-
-        :building: String
-        :returns: None
-
-        """
-        if building == None :
-            raise Exception("Building ref is required")
-        building_object = self.osm_bridge.get_building(building)
-        floors = building_object.floors
-        for floor in floors :
-            self.logger.debug(floor.ref)
-            floor_number = int(floor.ref.split("_")[1][1:])
-            self.generate_map(floor=floor_number)
 
     def _get_walls(self, floor):
         """returns all the nodes for all ways with wall tag
@@ -146,22 +139,25 @@ class OccGridGenerator(object):
         self.logger.debug(str(len(walls)) + " doors found")
         return tuple(walls)
 
-    def _save_yaml_file(self, floor):
+    def _save_yaml_file(self, floor, max_x, max_y):
         """save yaml file with map specifications
 
         :floor: int
+        :max_x: int
+        :max_y: int
         :returns: None
 
         """
 #        grid_map_origin = [0,0]
 #        grid_map_origin[0] = self.osm_bridge.local_origin[1] - self.osm_bridge.local_origin[0]
-#        grid_map_origin[1] = ((self._dimension*self.osm_bridge.resolution*self._scale) - self.osm_bridge.local_origin[0]) + self.osm_bridge.local_origin[1]
+#        grid_map_origin[1] = ((self._dimension*self._resolution*self._scale) - self.osm_bridge.local_origin[0]) + self.osm_bridge.local_origin[1]
+        map_origin_y = - (max_y * self._resolution - ( - self.osm_bridge.local_origin[1]))
 
         data = dict(
             image = self._file_name + '_floor_' + str(floor) + '.pgm',
-            resolution = self.osm_bridge.resolution*self._scale,
+            resolution = self._resolution*self._scale,
 #            origin = [grid_map_origin[0], grid_map_origin[1], 0.0],
-            origin = [self.osm_bridge.local_origin[0]*self._scale, self.osm_bridge.local_origin[1]*self._scale, 0.0],
+            origin = [self.osm_bridge.local_origin[0]*self._scale, map_origin_y*self._scale, 0.0],
             negate = 0,
             latitude = self.osm_bridge.global_origin[0],
             longitude = self.osm_bridge.global_origin[1],
@@ -171,3 +167,22 @@ class OccGridGenerator(object):
 
         with open(self._dirname + "/" + self._file_name + '_floor_' + str(floor) + '.yaml', 'w') as outfile:
             yaml.dump(data, outfile, default_flow_style=True)
+
+
+#     commented because current map does not have all the details
+#     def generate_map_all_floor(self, building=None):
+#         """generate map of all the floor in the given building
+# 
+#         :building: String
+#         :returns: None
+# 
+#         """
+#         if building == None :
+#             raise Exception("Building ref is required")
+#         building_object = self.osm_bridge.get_building(building)
+#         floors = building_object.floors
+#         for floor in floors :
+#             self.logger.debug(floor.ref)
+#             floor_number = int(floor.ref.split("_")[1][1:])
+#             self.generate_map(floor=floor_number)
+
