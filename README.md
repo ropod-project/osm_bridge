@@ -2,14 +2,11 @@
 
 ## Installation
 
-Get the requirements:
-```
-pip3 install -r requirements.txt
 ```
 
-To add the osm_bridge to you `PYTHONPATH` simply run:
+To install OBL run the following command:
 ```
-sudo pip3 install -e .
+sudo pip3 install -e . --process-dependency-links
 ```
 
 To run all unit tests:

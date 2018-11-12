@@ -1,1 +1,0 @@
-git+https://github.com/Lakshadeep/overpass-api-python-wrapper.git
