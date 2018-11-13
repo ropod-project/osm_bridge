@@ -9,6 +9,5 @@ setup(
     package_dir={'': '.'},
     author='Lakshadeep Naik',
     author_email='lakshadeep.naik@gmail.com',
-    install_requires=['utm','overpass>=0.7.0'],
-    dependency_links=['git+http://github.com/Lakshadeep/overpass-api-python-wrapper.git#egg=overpass-0.7.0']
+    install_requires=['utm','overpass']
     )

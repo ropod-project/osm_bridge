@@ -9,7 +9,7 @@
 
 To install OBL clone & run the following command:
 ```
-sudo pip3 install -e . --process-dependency-links
+sudo pip3 install -e .
 ```
 
 ## Tests
@@ -109,6 +109,6 @@ Methods
 ```
 
 ## World model structs
-[wm](OBL/structs/WM/README.md)
+[wm](OBL/structs/wm/README.md)
 
 

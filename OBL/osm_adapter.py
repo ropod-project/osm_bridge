@@ -17,7 +17,7 @@ class OSMAdapter(object):
         server_port = kwargs.get("server_port", self._server_port)
 
         endpoint = "http://" + server_ip + ":" + str(server_port) + "/api/interpreter"
-        self.api = overpass.API(endpoint=endpoint)
+        self.api = overpass.API(endpoint=endpoint,)
         
         self.logger = logging.getLogger("OSMAdapter")
         if kwargs.get("debug", self._debug):            
@@ -35,7 +35,7 @@ class OSMAdapter(object):
         Tests if connection to overpass server was successfully established
         '''
         try:
-            data = self.api.get('node(1234);')  # just test query for testing overpass connection
+            data = self.api.get('node(1234);',responseformat="json")  # just test query for testing overpass connection
         except:
             return False
         return True
@@ -62,9 +62,9 @@ class OSMAdapter(object):
         Makes request to overpass server and returns response as python data structures
         '''
         if len(query_string) > 0:
-            data = self.api.get(query_string) 
+            data = self.api.get(query_string,responseformat="json") 
         else:
-            data = self.api.get('out;')
+            data = self.api.get('out;',responseformat="json")
         return self._construct_output_response(data)
 
     def get_osm_element_by_id(self, ids=[], data_type='', role='', role_type=''):
