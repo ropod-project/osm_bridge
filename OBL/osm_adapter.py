@@ -89,21 +89,34 @@ class OSMAdapter(object):
         else :
             return data
 
-    def search_by_tag(self, data_type='',key='',value='', *args, **kwargs):
+    def search_by_tag(self, data_type='', *args, **kwargs):
         '''
         Searches OSM elements based on tag
         '''
         scope_id = kwargs.get("scope_id", '')        # id of scope relation
         scope_role = kwargs.get("scope_role", '')    # role of scope relation
         scope_role_type = kwargs.get("scope_role_type", '')    # role of scope relation
+        key_val_dict = kwargs.get("key_val_dict") # dictionary object with multiple keys value tag search
+        key = kwargs.get("key") # key for a single tag search
+        value = kwargs.get("value") # value for a single tag search
+
+        if key_val_dict == None and (key == None and value == None) :
+            raise Exception("Either key and value or key_val_dict is required")
 
         if scope_id and scope_role and scope_role_type:            # this restricts search scope to this relation
             scope_string = 'relation(' + str(scope_id) + ');' + scope_role_type + "(r._:'" + scope_role+ "');"
         else:
             scope_string = ''
 
-        self.logger.debug('Received new search by tag request - data_type:{},key:{},value:{}'.format(data_type,key,value))
-        query_string = scope_string + data_type + "[" + key + "='" + value + "'];"
+        if key_val_dict == None :
+            self.logger.debug('Received new search by tag request - data_type:{},key:{},value:{}'.format(data_type,key,value))
+            query_string = scope_string + data_type + "[" + key + "='" + str(value) + "'];"
+        else :
+            self.logger.debug('Received new search by tag request - data_type:{},key_val_dict:{}'.format(data_type,key_val_dict))
+            query_string = scope_string + data_type
+            for key in key_val_dict.keys() :
+                query_string += "[" + key + "='" + str(key_val_dict[key]) + "']"
+            query_string += ";"
         return  self.get(query_string)
 
     # 'node('+str(node.id)+');rel(bn:"topology");way(r._:"geometry");'

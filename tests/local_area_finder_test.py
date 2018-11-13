@@ -18,8 +18,8 @@ class TestLocalAreaFinder(unittest.TestCase):
         """
         area_name = "AMK_B_L-1_C29"
         expected_local_area_ref = "AMK_B_L-1_C29_LA1"
-        x = 1909.5119518548017
-        y = 2258.2658047322184
+        x = 14.054641069320496
+        y = -20.23611060809344
         local_area = self.local_area_finder.get_local_area(x=x, y=y, area_name=area_name, isLatlong=False)
         self.assertEqual(local_area.ref, expected_local_area_ref)
 
@@ -29,8 +29,8 @@ class TestLocalAreaFinder(unittest.TestCase):
         """
         area_name = "AMK_B_L-1_C29"
         expected_local_area_ref = "AMK_B_L-1_C29_LA1"
-        x = 1909.5119518548017
-        y = 2258.2658047322184
+        x = 13.190239037096035
+        y = -20.165316094644368
         local_area = self.local_area_finder.get_local_area(x=x, y=y, area_name=area_name, isLatlong=False)
         self.assertEqual(local_area.ref, expected_local_area_ref)
 

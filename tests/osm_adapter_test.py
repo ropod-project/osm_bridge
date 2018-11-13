@@ -51,6 +51,10 @@ class TestOSMAdapter(unittest.TestCase):
         result_way = self.osm_adapter.search_by_tag(data_type='way',key='highway',value='footway')
         self.assertTrue(len(result_way[1]) >  0)
 
+        """ search with multiple tags"""
+        __,result_ways,__ = self.osm_adapter.search_by_tag(data_type='way', key_val_dict={'level':'-1','indoor':'wall'})
+        self.assertEqual(len(result_ways), 198)
+
         result_relation = self.osm_adapter.search_by_tag(data_type='relation',key='type',value='building')
         self.assertTrue(len(result_relation[2]) >  0)
 
