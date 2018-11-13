@@ -36,7 +36,6 @@ class OSMBridge(object):
     _server_ip = "127.0.0.1"
     _server_port = 8000
     _global_origin = [50.1363485, 8.6474024]
-#     _local_origin = [-25, -25]
     _coordinate_system = "spherical"
     _debug = False
 

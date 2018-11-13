@@ -60,7 +60,6 @@ class OccGridGenerator(object):
         self.logger = logging.getLogger("OccGridGenerator")
         if kwargs.get("debug", self._debug):            
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-        self.logger.debug("inside init of occ grid generator")
         self._local_offset = kwargs.get("local_offset", self._local_offset)
         self._resolution = kwargs.get("resolution", self._resolution)
         self._dirname = kwargs.get("dirname", self._dirname)

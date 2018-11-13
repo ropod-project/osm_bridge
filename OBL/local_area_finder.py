@@ -21,7 +21,6 @@ class LocalAreaFinder(object):
         self.logger = logging.getLogger("LocalAreaFinder")
         if kwargs.get("debug", self._debug):            
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-        self.logger.debug("inside init of LocalAreaFinder")
 
     def get_local_area(self, *args, **kwargs):
         """gets the LocalArea object containing a point (x, y) or with a behaviour tag
