@@ -91,7 +91,7 @@ class OSMAdapter(object):
 
     def search_by_tag(self, data_type='', *args, **kwargs):
         '''
-        Searches OSM elements based on tag
+        Searches OSM elements based on tag within a scope (if provided)
         '''
         scope_id = kwargs.get("scope_id", '')        # id of scope relation
         scope_role = kwargs.get("scope_role", '')    # role of scope relation
