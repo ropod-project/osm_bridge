@@ -11,10 +11,32 @@ class TestOccGridGenerator(unittest.TestCase):
 
     def setUp(self):
         self.osm_bridge = OSMBridge()
-        self.occ_grid_generator = OccGridGenerator(self.osm_bridge, debug=False)
+        self.server_ip = "127.0.0.1"
+        self.server_port = 8000
+        self.global_origin = [50.1363485, 8.6474024]
+        self.local_offset = [25, 25]
+        self.debug = True
 
-    def test_map_files_exists(self):
-        self.occ_grid_generator.generate_map(floor=-1)
+    def test_require_osm_bridge(self) :
+        self.assertRaises(Exception, OccGridGenerator(debug=self.debug))
+
+    def test_require_server_info_and_global_origin(self) :
+        self.assertRaises(Exception, OccGridGenerator(server_ip=self.server_ip, server_port=self.server_port, debug=self.debug))
+
+    def test_map_files_exists_with_bridge_object(self):
+        occ_grid_generator = OccGridGenerator(osm_bridge=self.osm_bridge, local_offset=self.local_offset, debug=self.debug)
+        occ_grid_generator.generate_map(floor=-1)
+        file_list = os.listdir("../")
+        for (dirpath, dirnames, filenames) in os.walk("../"):
+            self.assertIn("maps", dirnames)
+            break
+        self.assertIn("map_floor_-1.pgm", os.listdir("../maps/"))
+        self.assertIn("map_floor_-1.yaml", os.listdir("../maps/"))
+
+    def test_map_files_exists_with_server_info(self):
+        occ_grid_generator = OccGridGenerator(server_ip=self.server_ip, \
+                server_port=self.server_port, global_origin=self.global_origin, local_offset=self.local_offset, debug=self.debug)
+        occ_grid_generator.generate_map(floor=-1)
         file_list = os.listdir("../")
         for (dirpath, dirnames, filenames) in os.walk("../"):
             self.assertIn("maps", dirnames)

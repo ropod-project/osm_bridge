@@ -22,9 +22,6 @@ class LocalAreaFinder(object):
         if kwargs.get("debug", self._debug):            
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
         self.logger.debug("inside init of LocalAreaFinder")
-    
-#        self.global_origin = self.osm_bridge.get_global_origin()
-#        self.global_origin_cartesian = utm.from_latlon(self.global_origin[0], self.global_origin[1])
 
     def get_local_area(self, *args, **kwargs):
         """gets the LocalArea object containing a point (x, y) or with a behaviour tag
