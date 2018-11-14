@@ -169,12 +169,12 @@ class OccGridGenerator(object):
         :returns: None
 
         """
-        map_origin_y = - (max_y * self._resolution - ( - self._local_offset[1]))
+        map_origin_y = - (max_y * self._resolution - (self._local_offset[1]))
 
         data = dict(
             image = self._file_name + '_floor_' + str(floor) + '.pgm',
             resolution = self._resolution*self._scale,
-            origin = [self._local_offset[0]*self._scale, map_origin_y*self._scale, 0.0],
+            origin = [-(self._local_offset[0]*self._scale), map_origin_y*self._scale, 0.0],
             negate = 0,
             latitude = self._global_origin[0],
             longitude = self._global_origin[1],
