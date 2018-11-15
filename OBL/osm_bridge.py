@@ -60,7 +60,7 @@ class OSMBridge(object):
         if kwargs.get("debug", self._debug):            
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-        Point.convert_to_cartesian = self.convert_to_cartesian
+        Point._convert_to_cartesian = self.convert_to_cartesian
 
     def convert_to_cartesian(self, lat, lon):
         """convert a point (x, y) from spherical coordinates to cartesian coordinates (in meters)

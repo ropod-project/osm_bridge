@@ -12,8 +12,6 @@ class Point(WMEntity):
         self.coordinate_system = kwargs.get("coordinate_system", self.coordinate_system)
         self.parent_id = ''
         self.id = node.id
-        if self.coordinate_system == 'spherical':
-            self.lat = node.lat
-            self.lon = node.lon
-        elif self.coordinate_system == 'cartesian':
-            self.x, self.y = self.convert_to_cartesian(node.lat, node.lon)
+        self.lat = node.lat
+        self.lon = node.lon
+        self.x, self.y = self._convert_to_cartesian(node.lat, node.lon)
