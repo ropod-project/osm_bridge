@@ -68,6 +68,25 @@ class OccGridGenerator(object):
         self._scale = kwargs.get("scale", self._scale)
         self._global_origin_cartesian = utm.from_latlon(self._global_origin[0], self._global_origin[1])
 
+    def setResolution(self, resolution):
+        this._resolution = resolution
+
+    def setLocalOffset(self, local_offset):
+        this._local_offset = local_offset
+
+    def setScale(self, scale):
+        this._scale = scale
+
+    def setDirName(self, dirname):
+        this._dirname = dirname
+
+    def setFileName(self, filename):
+        this._file_name = filename
+
+    def setDimension(self, dimension):
+        this._dimension = dimension
+
+
     @property
     def resolution(self):
         return self._resolution
