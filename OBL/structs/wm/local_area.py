@@ -10,7 +10,7 @@ class LocalArea(WMEntity):
         if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[local_area_ref], data_type='relation')
         elif source == "ref":
-            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=local_area_ref)
+            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=local_area_ref, **kwargs)
         elif source == "relation":
             relations = [local_area_ref]
         elif isinstance(local_area_ref, Point) :
