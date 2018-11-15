@@ -6,6 +6,7 @@ from OBL.structs.osm.node import Node
 from OBL.structs.osm.way import Way
 from OBL.structs.osm.relation import Relation
 from OBL.osm_adapter import OSMAdapter
+from OBL.local_area_finder import LocalAreaFinder
 from OBL.structs.wm.wm_entity import WMEntity
 from OBL.structs.wm.feature import Feature
 from OBL.structs.wm.door import Door
@@ -61,6 +62,7 @@ class OSMBridge(object):
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
         Point.convert_to_cartesian = self.convert_to_cartesian
+        self.local_area_finder = LocalAreaFinder(self, debug=False)
 
     def convert_to_cartesian(self, lat, lon):
         """convert a point (x, y) from spherical coordinates to cartesian coordinates (in meters)
@@ -135,7 +137,7 @@ class OSMBridge(object):
         """
         return  Wall(ref)
 
-    def get_local_area(self, ref):
+    def get_local_area(self, *args, **kwargs):
         """Summary
         
         Args:
@@ -144,7 +146,10 @@ class OSMBridge(object):
         Returns:
             LocalArea: local area wm entity
         """
-        return  LocalArea(ref)
+        if len(args) == 1 : # arg is a ref of local area
+            return  LocalArea(ref)
+        elif len(args) == 0 and len(kwargs) >= 2 : # call local area finder 
+            return self.local_area_finder.get_local_area(**kwargs)
 
     def get_connection(self, ref):
         """Summary
