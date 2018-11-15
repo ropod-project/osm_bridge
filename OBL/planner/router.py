@@ -105,12 +105,12 @@ class Router(object):
                 break
             node = VisitedNode(step, parent=from_, g=g, h=self.path_estimate(step, self.to))
             heappush(self.heap, (node.f, node))
-            # print("    √ %s" % node)
+            # print("    sqrt %s" % node)
             from_ = node
 
     def is_way_section_accessible(self, way, from_, to):
         if way.oneway and way.nodes.index(from_) > way.nodes.index(to):
-            # print("ｘ %(way)s is one-way" % {'way': way.id})
+            # print("x %(way)s is one-way" % {'way': way.id})
             return False
         return True
 
