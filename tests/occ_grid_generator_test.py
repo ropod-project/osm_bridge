@@ -13,8 +13,12 @@ class TestOccGridGenerator(unittest.TestCase):
         self.osm_bridge = OSMBridge()
         self.server_ip = "127.0.0.1"
         self.server_port = 8000
-        self.global_origin = [50.1363485, 8.6474024]
-        self.local_offset = [25, 25]
+        self.global_origin = [50.1363485, 8.6474024] # amk
+#         self.global_origin = [50.7800401, 7.18226]  # uni (coordinates of node id 1307)
+
+        self.local_offset = [25, 25] # amk
+#         self.local_offset = [25, 80] # brsu
+        self.floor = 4
         self.debug = True
 
     def test_require_osm_bridge(self) :
