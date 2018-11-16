@@ -21,6 +21,7 @@ from OBL.structs.wm.stairs import Stairs
 from OBL.structs.wm.floor import Floor
 from OBL.structs.wm.building import Building
 from OBL.structs.wm.point import Point
+from OBL.structs.wm.shape import Shape
 from OBL.structs.wm.area import Area
 
 
@@ -61,7 +62,7 @@ class OSMBridge(object):
         if kwargs.get("debug", self._debug):            
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-        Point.convert_to_cartesian = self.convert_to_cartesian
+        Point._convert_to_cartesian = self.convert_to_cartesian
         self.local_area_finder = LocalAreaFinder(self, debug=False)
 
     def convert_to_cartesian(self, lat, lon):
@@ -147,7 +148,7 @@ class OSMBridge(object):
             LocalArea: local area wm entity
         """
         if len(args) == 1 : # arg is a ref of local area
-            return  LocalArea(ref)
+            return  LocalArea(args[0])
         elif len(args) == 0 and len(kwargs) >= 2 : # call local area finder 
             return self.local_area_finder.get_local_area(**kwargs)
 
@@ -238,4 +239,26 @@ class OSMBridge(object):
             Building: building wm entity
         """
         return  Building(ref)
+
+    def get_point(self, ref):
+        """Summary
+        
+        Args:
+            ref (id, Node): point id or OSM node
+        
+        Returns:
+            Point: point wm entity
+        """
+        return  Point(ref)
+
+    def get_shape(self, ref):
+        """Summary
+        
+        Args:
+            ref (id, Node[]): point id or OSM nodes
+        
+        Returns:
+            Shape: shape wm entity
+        """
+        return  Shape(ref)
     

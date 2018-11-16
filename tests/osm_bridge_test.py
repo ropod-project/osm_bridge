@@ -1,5 +1,6 @@
 from OBL import OSMBridge
 from OBL.structs.wm.point import Point
+from OBL.structs.wm.shape import Shape
 from OBL import OSMAdapter
 from OBL.structs.osm.node import Node
 
@@ -11,24 +12,24 @@ class TestOSMBridge(unittest.TestCase):
         self.osm_bridge = OSMBridge()
         self.osm_adapter = OSMAdapter()
 
-    def test_point_spherical(self):
+    def test_point(self):
         node_result,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4865],data_type='node')
         Point.coordinate_system = 'spherical'
-        p = Point(node_result[0])
+        p = self.osm_bridge.get_point(node_result[0])
         assert p.lat is not None
         assert p.lon is not None
-        assert p.x is None
-        assert p.y is None
-
-    def test_point_utm(self):
-        node_result,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4865],data_type='node')
-        Point.coordinate_system = 'cartesian'
-        Point.global_origin = [50.1363485, 8.6474024]
-        p = Point(node_result[0])
-        assert p.lat is None
-        assert p.lon is None
         assert p.x is not None
         assert p.y is not None
+
+        # point by id
+        p = self.osm_bridge.get_point(4865)
+        assert p.id == 4865
+
+    def test_shape(self):
+        # point by id
+        s = self.osm_bridge.get_shape(1021)
+        assert len(s.points) > 0
+
 
     def test_get_feature_by_id(self): 
         f = self.osm_bridge.get_feature(4865)

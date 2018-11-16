@@ -7,8 +7,8 @@ class Member(object):
     def __init__(self, elm):
         element = elm
         self.ref = element.get('ref')
-        self.role = element.get('role').encode()
-        self.type = element.get('type').encode()
+        self.role = element.get('role')
+        self.type = element.get('type')
 
     def __repr__(self):
         return "<Member ref=%(ref)s role=%(role)s> type=%(type)s" % { 'ref': self.ref, 'role': self.role, 'type': self.type }

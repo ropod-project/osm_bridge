@@ -13,6 +13,13 @@ class Shape(WMEntity):
         global_origin = kwargs.get("global_origin", self.global_origin)
         local_origin = kwargs.get("local_origin", self.local_origin)
         coordinate_system = kwargs.get("coordinate_system", self.coordinate_system)
+
+        if isinstance(nodes, int):
+            __,ways,__ = self.osm_adapter.get_osm_element_by_id(ids=[nodes], data_type='way')
+            if len(ways) == 1:
+                print(ways[0])
+                nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=ways[0].nodes, data_type='node')
+
     
         self.points = []
 

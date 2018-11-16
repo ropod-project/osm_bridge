@@ -3,8 +3,10 @@ class Tag(object):
     OSM tag
     '''
     def __init__(self, key, value):
-        self.key = key.encode()
-        self.value = value.encode()
+        # self.key = key.encode()
+        self.key = key
+        # self.value = value.encode()
+        self.value = value
 
 
     def __eq__(self, other):
