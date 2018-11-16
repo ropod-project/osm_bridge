@@ -1,6 +1,6 @@
 from OBL.structs.osm.tag import Tag
 
-class Node():
+class Node(object):
     '''
     OSM node
     '''
@@ -14,7 +14,7 @@ class Node():
         tags = element.get('tags')
         if tags is not None:
             for tag in tags:
-                self.tags.append(Tag(tag, tags.get(tag)))      
+                self.tags.append(Tag(tag, tags.get(tag)))
 
     def __eq__(self, other):
         if isinstance(other, (Node)):

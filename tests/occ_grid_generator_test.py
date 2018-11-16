@@ -29,24 +29,16 @@ class TestOccGridGenerator(unittest.TestCase):
 
     def test_map_files_exists_with_bridge_object(self):
         occ_grid_generator = OccGridGenerator(osm_bridge=self.osm_bridge, local_offset=self.local_offset, debug=self.debug)
-        occ_grid_generator.generate_map(floor=-1)
-        file_list = os.listdir("../")
-        for (dirpath, dirnames, filenames) in os.walk("../"):
-            self.assertIn("maps", dirnames)
-            break
-        self.assertIn("map_floor_-1.pgm", os.listdir("../maps/"))
-        self.assertIn("map_floor_-1.yaml", os.listdir("../maps/"))
+        filename = occ_grid_generator.generate_map(floor=-1)
+        print(filename)
+        self.assertTrue(os.path.isfile(filename))
 
     def test_map_files_exists_with_server_info(self):
         occ_grid_generator = OccGridGenerator(server_ip=self.server_ip, \
                 server_port=self.server_port, global_origin=self.global_origin, local_offset=self.local_offset, debug=self.debug)
-        occ_grid_generator.generate_map(floor=self.floor)
-        file_list = os.listdir("../")
-        for (dirpath, dirnames, filenames) in os.walk("../"):
-            self.assertIn("maps", dirnames)
-            break
-        self.assertIn("map_floor_-1.pgm", os.listdir("../maps/"))
-        self.assertIn("map_floor_-1.yaml", os.listdir("../maps/"))
+        filename = occ_grid_generator.generate_map(floor=-1)
+        print(filename)
+        self.assertTrue(os.path.isfile(filename))
 
 #     def test_map_files_exists_multiple_floor(self):
 #         self.occ_grid_generator.generate_map_all_floor(building="AMK")

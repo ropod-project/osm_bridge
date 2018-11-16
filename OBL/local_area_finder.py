@@ -1,6 +1,5 @@
 import logging
 import sys
-from OBL.osm_bridge import OSMBridge
 from OBL.structs.wm.point import Point
 from OBL.structs.wm.room import Room
 from OBL.structs.wm.corridor import Corridor
@@ -44,9 +43,8 @@ class LocalAreaFinder(object):
         behaviour =kwargs.get("behaviour")
         self._isLatlong = kwargs.get("isLatlong", self._isLatlong)
         if floor_name == None and area_name == None :
-#            raise Exception ("Either area_name or floor_name is required")
             return None
-        if behaviour == None and (pointX == None and pointY == None) :
+        if behaviour == None and (pointX == None or pointY == None) :
             return None
 
         if behaviour == None :

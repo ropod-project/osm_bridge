@@ -15,7 +15,7 @@ class Area(WMEntity):
         if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[area_ref], data_type='relation')
         elif source == "ref":
-            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=area_ref)
+            __,__,relations = self.osm_adapter.search_by_tag(data_type='relation',key='ref',value=area_ref, **kwargs)
         elif source == "relation":
             relations = [area_ref]
         elif isinstance(area_ref, Point) :

@@ -3,7 +3,7 @@ from OBL.structs.wm.connection import Connection
 
 class PlannerConnection(Connection):
     def __init__(self, connection_ref):
-        super().__init__(connection_ref)
+        super(PlannerConnection, self).__init__(connection_ref)
         self.nodes = []
         for pt in self.points:
             self.nodes.append(PlannerNode(pt))
