@@ -14,16 +14,15 @@ class OccGridGenerator(object):
     """
 
     _debug = False
-    _dirname = "../maps"
+    _dirname = "~/map"
     _file_name = "map"
     _server_ip = "127.0.0.1"
     _osm_bridge = None
     _server_port = 8000
-    _dimension = 10000 #10000
+    _dimension = 10000
     _resolution = 0.02
     _global_origin = [50.1363485, 8.6474024]
     _local_offset = [0, 0]
-    _scale = 1
 
     def __init__(self, *args, **kwargs):
         """ 
@@ -34,7 +33,6 @@ class OccGridGenerator(object):
         :dirname: String
         :filename: String
         :local_offset: [float, float]
-        :scale: float
         :dimension: int
         :resolution: float
         :debug: boolean
@@ -65,26 +63,30 @@ class OccGridGenerator(object):
         self._dirname = kwargs.get("dirname", self._dirname)
         self._file_name = kwargs.get("filename", self._file_name)
         self._dimension = kwargs.get("dimension", self._dimension)
-        self._scale = kwargs.get("scale", self._scale)
         self._global_origin_cartesian = utm.from_latlon(self._global_origin[0], self._global_origin[1])
 
-    def setResolution(self, resolution):
-        this._resolution = resolution
+    def setResolution(self, resolution=0.02):
+        if resolution == 0.0 :
+            resolution = 0.02
+        self._resolution = resolution
 
-    def setLocalOffset(self, local_offset):
-        this._local_offset = local_offset
-
-    def setScale(self, scale):
-        this._scale = scale
+    def setLocalOffset(self, local_offset=[0,0]):
+        self._local_offset = local_offset
 
     def setDirName(self, dirname):
-        this._dirname = dirname
+        if dirname == "" :
+            dirname = "~/map"
+        self._dirname = dirname
 
     def setFileName(self, filename):
-        this._file_name = filename
+        if filename == "" :
+            filename = "map"
+        self._file_name = filename
 
     def setDimension(self, dimension):
-        this._dimension = dimension
+        if dimension < 10000 :
+            dimension = 10000
+        self._dimension = dimension
 
 
     @property
@@ -102,6 +104,7 @@ class OccGridGenerator(object):
             raise Exception("Floor number is required")
 
         """ create directory for maps """
+        self._dirname = os.path.abspath(os.path.expanduser(self._dirname))
         if not os.path.exists(self._dirname):
             self.logger.debug("maps folder not found")
             try:
@@ -110,7 +113,7 @@ class OccGridGenerator(object):
                 print(str(exc))
 
         print("Trying to create map file...")
-        grid_map = Image.new('L', (self._dimension*self._scale,self._dimension*self._scale),255) #128
+        grid_map = Image.new('L', (self._dimension,self._dimension),255) #128
 
         drawObject = ImageDraw.Draw(grid_map)
         ways = []
@@ -132,7 +135,8 @@ class OccGridGenerator(object):
         cropped_image = grid_map.crop((0,0, int(max_x), int(max_y)))
         cropped_image.save(self._dirname + "/" + self._file_name + "_floor_" + str(floor) + ".pgm")
         self._save_yaml_file(floor, max_x, max_y)
-        print("Map files saved at " + os.path.abspath(self._dirname))
+        print("Map files saved at " + self._dirname)
+        return self._dirname + "/" + self._file_name + "_floor_" + str(floor) + ".yaml"
 
     def _get_walls(self, floor):
         """returns all the nodes for all ways with wall tag
@@ -192,8 +196,8 @@ class OccGridGenerator(object):
 
         data = dict(
             image = self._file_name + '_floor_' + str(floor) + '.pgm',
-            resolution = self._resolution*self._scale,
-            origin = [-(self._local_offset[0]*self._scale), map_origin_y*self._scale, 0.0],
+            resolution = self._resolution,
+            origin = [-(self._local_offset[0]), map_origin_y, 0.0],
             negate = 0,
             latitude = self._global_origin[0],
             longitude = self._global_origin[1],
