@@ -7,6 +7,7 @@ from OBL.structs.wm.floor import Floor
 class Building(WMEntity):
 
     def __init__(self, building_ref, *args, **kwargs): 
+        super(Building, self).__init__(building_ref, *args, **kwargs)
         source = self._check_type(building_ref)     
         if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[building_ref], data_type='relation')
@@ -54,6 +55,10 @@ class Building(WMEntity):
         else:
             self.logger.error("No building found with given ref {}".format(building_ref))  
             raise Exception("No building found")
+
+    @property
+    def geometry_id(self) :
+        return self._geometry_id
 
     @property
     def floors(self):

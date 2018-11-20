@@ -3,12 +3,8 @@ from OBL.structs.wm.point import Point
 
 class PlannerNode(Point):
 
-    def __init__(self, point):
-        self.id = point.id
-        self.lat = point.lat
-        self.lon = point.lon
-        self.x = point.x
-        self.y = point.y
+    def __init__(self, point_ref):
+        super(PlannerNode, self).__init__(point_ref)
 
     def __eq__(self, other):
         if isinstance(other, VisitedNode):

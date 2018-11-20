@@ -11,6 +11,7 @@ class Area(WMEntity):
 
     def __init__(self, area_ref, *args, **kwargs):    
 
+        super(Area, self).__init__(area_ref, *args, **kwargs)
         source = self._check_type(area_ref)     
         if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[area_ref], data_type='relation')
@@ -68,6 +69,14 @@ class Area(WMEntity):
         else:
             self.logger.error("No area found with specified ref {}".format(area_ref))  
             raise Exception("No area found")
+
+    @property
+    def geometry_id(self) :
+        return self._geometry_id
+
+    @property
+    def topology_id(self) :
+        return self._topology_id
 
     @property
     def geometry(self):

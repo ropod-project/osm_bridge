@@ -4,6 +4,7 @@ from OBL.structs.wm.point import Point
 class Connection(WMEntity):
 
     def __init__(self, connection_ref, *args, **kwargs):      
+        super(Connection, self).__init__(connection_ref, *args, **kwargs)
         source = self._check_type(connection_ref)     
         if source == "id":      
             __,ways,__ = self.osm_adapter.get_osm_element_by_id(ids=[connection_ref], data_type='way')
@@ -34,6 +35,10 @@ class Connection(WMEntity):
         else:
             self.logger.error("No connection found with given ref {}".format(connection_ref))  
             raise Exception("No connection found")
+
+    @property
+    def point_ids(self):
+        return self._point_ids
 
     @property
     def points(self):

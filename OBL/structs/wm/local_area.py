@@ -6,6 +6,7 @@ class LocalArea(WMEntity):
 
     def __init__(self, local_area_ref, *args, **kwargs):      
 
+        super(LocalArea, self).__init__(local_area_ref, *args, **kwargs)
         source = self._check_type(local_area_ref)     
         if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[local_area_ref], data_type='relation')
@@ -41,6 +42,14 @@ class LocalArea(WMEntity):
         else:
             self.logger.error("No local area found with specified ref {}".format(local_area_ref))  
             raise Exception("No local area found")
+
+    @property
+    def geometry_id(self) :
+        return self._geometry_id
+
+    @property
+    def topology_id(self) :
+        return self._topology_id
 
     @property
     def geometry(self):

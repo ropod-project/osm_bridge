@@ -6,6 +6,7 @@ from OBL.structs.wm.side import Side
 class Door(WMEntity):
 
     def __init__(self, door_ref, *args, **kwargs):      
+        super(Door, self).__init__(door_ref, *args, **kwargs)
         source = self._check_type(door_ref)     
         if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[door_ref], data_type='relation')
@@ -50,6 +51,14 @@ class Door(WMEntity):
         else:
             self.logger.error("No door found with given ref {}".format(door_ref))  
             raise Exception("No door found")
+
+    @property
+    def geometry_id(self) :
+        return self._geometry_id
+
+    @property
+    def topology_id(self) :
+        return self._topology_id
 
     @property
     def geometry(self):
