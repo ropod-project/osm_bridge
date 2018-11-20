@@ -146,6 +146,7 @@ class GlobalPathPlanner(object):
         for p in self.topological_path:
             try:
                 temp = PlannerArea(p.node)
+                temp.geometry. # to get level info
                 semantic_path.append(temp)
                 prev_idx = prev_idx + 1
             except:
