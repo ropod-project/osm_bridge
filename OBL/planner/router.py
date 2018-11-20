@@ -1,4 +1,3 @@
-from OBL.planner.planner_node import PlannerNode
 from OBL.planner.visited_node import VisitedNode
 from OBL.planner.planner_connection import PlannerConnection
 from heapq import heappop, heappush, heapify

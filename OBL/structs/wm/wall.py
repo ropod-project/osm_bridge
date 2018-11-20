@@ -8,6 +8,7 @@ class Wall(WMEntity):
 
     def __init__(self, wall_ref, *args, **kwargs):      
 
+        super(Wall, self).__init__(wall_ref, *args, **kwargs)
         source = self._check_type(wall_ref)     
         if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[wall_ref], data_type='relation')
@@ -42,6 +43,10 @@ class Wall(WMEntity):
         else:
             self.logger.error("No wall found with specified ref {}".format(wall_ref))  
             raise Exception("No wall found")
+
+    @property
+    def geometry_id(self) :
+        return self._geometry_id
 
     @property
     def geometry(self):

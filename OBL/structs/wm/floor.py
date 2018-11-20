@@ -8,6 +8,7 @@ class Floor(WMEntity):
 
     def __init__(self, floor_ref, *args, **kwargs):      
 
+        super(Floor, self).__init__(floor_ref, *args, **kwargs)
         source = self._check_type(floor_ref)     
         if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[floor_ref], data_type='relation')

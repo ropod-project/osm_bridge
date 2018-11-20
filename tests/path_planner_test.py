@@ -35,22 +35,26 @@ class TestPathPlanner(unittest.TestCase):
         destination_local = self.osm_bridge.get_local_area('AMK_B_L4_C1_LA1')
         path = self.navigation_path_planner.plan(start_floor, destination_floor, start_local, destination_local, global_path)
 
-        for pt in path:
-            print(pt)
-            print(pt.exit_door)
-            print(pt.navigation_areas)
-            print("---------------------------------------------")
+#         for pt in path:
+#             print(pt)
+#             print(pt.exit_door)
+#             print(pt.navigation_areas)
+#             print("---------------------------------------------")
+        self.assertEqual(path[1].id, 119)
+        self.assertEqual(len(path), 26)
 
     def test_overall_path_planner(self):
         path_planner = PathPlanner(self.osm_bridge)
         path_planner.set_building('AMK')
         path = path_planner.get_path_plan(start_floor='AMK_L-1', destination_floor='AMK_L4',start_area='AMK_D_L-1_C41',destination_area='AMK_B_L4_C1', start_local_area='AMK_D_L-1_C41_LA1',destination_local_area='AMK_B_L4_C1_LA1')
         
-        for pt in path:
-            print(pt)
-            print(pt.exit_door)
-            print(pt.navigation_areas)
-            print("---------------------------------------------")
+#         for pt in path:
+#             print(pt)
+#             print(pt.exit_door)
+#             print(pt.navigation_areas)
+#             print("---------------------------------------------")
+        self.assertEqual(path[1].id, 119)
+        self.assertEqual(len(path), 26)
 
 if __name__ == '__main__':
     unittest.main()

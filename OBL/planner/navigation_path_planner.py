@@ -73,8 +73,8 @@ class NavigationPathPlanner(object):
         self.path_distance = 0
         self.topological_path = []
 
-        start_node = PlannerNode(start.topology)
-        destination_node = PlannerNode(destination.topology)
+        start_node = PlannerNode(start.topology_id)
+        destination_node = PlannerNode(destination.topology_id)
 
         connections = []
 

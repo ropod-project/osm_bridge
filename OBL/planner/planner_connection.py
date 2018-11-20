@@ -5,7 +5,7 @@ class PlannerConnection(Connection):
     def __init__(self, connection_ref):
         super(PlannerConnection, self).__init__(connection_ref)
         self.nodes = []
-        for pt in self.points:
+        for pt in self.point_ids:
             self.nodes.append(PlannerNode(pt))
         self.oneway = (self.oneway == "yes")
 

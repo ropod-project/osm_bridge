@@ -4,6 +4,7 @@ from OBL.structs.wm.point import Point
 class Feature(WMEntity):
 
     def __init__(self, feature_ref):          
+        super(Feature, self).__init__(feature_ref)
         source = self._check_type(feature_ref)     
         if source == "id":      
             nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[feature_ref], data_type='node')

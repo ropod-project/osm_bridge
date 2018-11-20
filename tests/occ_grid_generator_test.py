@@ -19,7 +19,7 @@ class TestOccGridGenerator(unittest.TestCase):
         self.local_offset = [25, 25] # amk
 #         self.local_offset = [25, 80] # brsu
         self.floor = 4
-        self.debug = True
+        self.debug = False
 
     def test_require_osm_bridge(self) :
         self.assertRaises(Exception, OccGridGenerator(debug=self.debug))

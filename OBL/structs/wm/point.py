@@ -9,6 +9,7 @@ class Point(WMEntity):
     coordinate_system = 'spherical'
 
     def __init__(self, point_ref, *args, **kwargs):
+        super(Point, self).__init__(point_ref, *args, **kwargs)
         self.coordinate_system = kwargs.get("coordinate_system", self.coordinate_system)
         self.parent_id = ''
 

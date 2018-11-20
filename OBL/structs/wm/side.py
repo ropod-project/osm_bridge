@@ -6,6 +6,7 @@ class Side(WMEntity):
 
     def __init__(self, side_ref, *args, **kwargs):     
 
+        super(Side, self).__init__(side_ref, *args, **kwargs)
         source = self._check_type(side_ref)     
         if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[side_ref], data_type='relation')

@@ -9,7 +9,7 @@ class WMEntity(object):
     osm_adapter = None
     logger = logging.getLogger("WMEntity")
 
-    def __init__(self, entity_id):
+    def __init__(self, entity_id, *args, **kwargs):
         pass
 
     def __eq__(self, other):

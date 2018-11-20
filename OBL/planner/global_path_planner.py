@@ -81,8 +81,8 @@ class GlobalPathPlanner(object):
         self.semantic_path = []
         self.topological_path = []
 
-        start_node = PlannerNode(start.topology)
-        destination_node = PlannerNode(destination.topology)
+        start_node = PlannerNode(start.topology_id)
+        destination_node = PlannerNode(destination.topology_id)
 
         connections = []
 
@@ -110,7 +110,7 @@ class GlobalPathPlanner(object):
             start_to_elevator_distances = []
             start_to_elevator_paths = []
             for elevator in elevators:
-                elevator_node = PlannerNode(elevator.topology)
+                elevator_node = PlannerNode(elevator.topology_id)
                 elevator_nodes.append(elevator_node)
                 router = Router(start_node, elevator_node, start_connections)
                 router.route()

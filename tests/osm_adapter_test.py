@@ -4,7 +4,7 @@ import unittest
 class TestOSMAdapter(unittest.TestCase):
 
     def setUp(self):
-        self.osm_adapter = OSMAdapter(debug=True)
+        self.osm_adapter = OSMAdapter(debug=False)
 
     def test_get_osm_element_by_id(self): 
         result_node = self.osm_adapter.get_osm_element_by_id(ids=[4865],data_type='node')

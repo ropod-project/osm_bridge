@@ -10,6 +10,7 @@ class Shape(WMEntity):
     coordinate_system = 'spherical'
 
     def __init__(self, nodes, *args, **kwargs):
+        super(Shape, self).__init__(nodes, *args, **kwargs)
         global_origin = kwargs.get("global_origin", self.global_origin)
         local_origin = kwargs.get("local_origin", self.local_origin)
         coordinate_system = kwargs.get("coordinate_system", self.coordinate_system)
