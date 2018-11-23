@@ -13,13 +13,17 @@ class TestPathPlanner(unittest.TestCase):
         self.navigation_path_planner = NavigationPathPlanner(self.osm_bridge)
         self.semantic_global_path = None
 
-    def test_global_plan_same_floor(self):
+    def test_global_plan_same_floor_plus_local_planner(self):
         building = self.osm_bridge.get_building('AMK')
         start_floor = self.osm_bridge.get_floor('AMK_L-1')
         destination_floor = self.osm_bridge.get_floor('AMK_L-1')
         start = self.osm_bridge.get_corridor('AMK_B_L-1_C1')
         destination = self.osm_bridge.get_corridor('AMK_D_L-1_C41')
-        self.global_path_planner.plan(start_floor, destination_floor, start, destination, building.elevators)
+        global_path = self.global_path_planner.plan(start_floor, destination_floor, start, destination, building.elevators)
+
+        start_local = self.osm_bridge.get_local_area('AMK_D_L-1_C41_LA1')
+        destination_local = self.osm_bridge.get_local_area('AMK_B_L-1_C2_LA1')
+        path = self.navigation_path_planner.plan(start_floor, destination_floor, start_local, destination_local, global_path)
 
     def test_global_plan_different_floors_plus_local_planner(self):
         building = self.osm_bridge.get_building('AMK')

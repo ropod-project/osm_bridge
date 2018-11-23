@@ -142,15 +142,11 @@ class GlobalPathPlanner(object):
             [PlannerArea]: path consisting of planner areas
         """
         semantic_path = []
-        prev_idx = -1
         for p in self.topological_path:
-            try:
-                temp = PlannerArea(p.node)
-                temp.geometry. # to get level info
-                semantic_path.append(temp)
-                prev_idx = prev_idx + 1
-            except:
-                semantic_path[prev_idx].exit_door = Door(p.node)
+            temp = PlannerArea(p.node)
+            temp.geometry # to get level info
+            semantic_path.append(temp)
+
 
         return semantic_path
 

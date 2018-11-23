@@ -89,16 +89,23 @@ class NavigationPathPlanner(object):
 
         local_path = router.nodes
 
+        prev_idx = -1
         for local_pt in local_path:
-            local_area = LocalArea(local_pt.node)            
+            try:
+                local_area = LocalArea(local_pt.node)
+                local_area.geometry # to get level info
+                prev_idx = prev_idx + 1
+            except:
+                local_area = Door(local_pt.node)
+                local_area.geometry
+                semantic_path[prev_idx].exit_door = local_area
+
             for global_pt in global_path:
                 if global_pt.get_local_area_ids() is not None and local_area.id in global_pt.get_local_area_ids():
                     global_pt.navigation_areas.append(local_area)
                     break 
+
         return global_path
-
-
-
 
 
 
