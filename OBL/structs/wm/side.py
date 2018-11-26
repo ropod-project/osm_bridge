@@ -35,7 +35,7 @@ class Side(WMEntity):
                     self._feature_ids.append(member.ref)
         else:
             self.logger.error("No side found with specified ref {}".format(side_ref))  
-            raise Exception("No side found")
+            raise Exception("No side found with specified ref {}".format(side_ref))
 
     @property
     def corners(self):
