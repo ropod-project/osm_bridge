@@ -61,6 +61,8 @@ class OSMBridge(object):
         self.logger = logging.getLogger("OSMBridge")
         if kwargs.get("debug", self._debug):            
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+        else :
+            logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
         Point._convert_to_cartesian = self.convert_to_cartesian
         self.local_area_finder = LocalAreaFinder(self, debug=False)

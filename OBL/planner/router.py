@@ -78,8 +78,8 @@ class Router(object):
                 Remaining nodes are not accessible, so there's no point in
                 walking them. Also these nodes cannot be marked as visited,
                 as they might be accessible through a different path.
-                break
                 '''
+                break
 
             if step in self.visited:
                 '''

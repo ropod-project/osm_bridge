@@ -20,7 +20,6 @@ class TestStructs(unittest.TestCase):
               }
         }
         n = Node(data)
-        print(n)
         self.assertEqual(n.id, 4865)
         self.assertEqual(n.lat, 50.1362318)
         self.assertEqual(n.lon, 8.6475163)
@@ -43,7 +42,6 @@ class TestStructs(unittest.TestCase):
               }
         }
         w = Way(data)
-        print(w)
         self.assertEqual(w.id, 499)
 
     def test_relation(self):
@@ -78,7 +76,6 @@ class TestStructs(unittest.TestCase):
             }
         }
         r = Relation(data)
-        print(r)
         self.assertEqual(r.id, 149)
         self.assertEqual(len(r.members), 4)
         self.assertEqual(r.something, None)

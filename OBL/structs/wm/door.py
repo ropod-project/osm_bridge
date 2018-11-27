@@ -50,7 +50,7 @@ class Door(WMEntity):
                     self._topology_id = member.ref
         else:
             self.logger.error("No door found with given ref {}".format(door_ref))  
-            raise Exception("No door found")
+            raise Exception("No door found with given ref {}".format(door_ref))
 
     @property
     def geometry_id(self) :

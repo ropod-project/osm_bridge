@@ -1,4 +1,5 @@
 import logging
+import sys
 
 from OBL.osm_bridge import OSMBridge
 from OBL.structs.wm.point import Point
@@ -44,7 +45,7 @@ class GlobalPathPlanner(object):
 
         self.logger = logging.getLogger("GlobalPathPlanner")
         if kwargs.get("debug", self._debug):            
-            self.logger.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+            logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
     def plan(self, start_floor, destination_floor, start, destination, elevators):
@@ -126,12 +127,12 @@ class GlobalPathPlanner(object):
             router.route()
             elevator_to_destination_path = router.nodes
 
-            self.topological_path = start_to_elevator_path + elevator_to_destination_path
+            self.topological_path = start_to_elevator_path + elevator_to_destination_path[1:]
             self.path_distance = self.path_distance + router.path_distance
 
         log_statement = "Successfully planned {} m long path between {} and {}".format(self.path_distance, start.ref, destination.ref)
         self.logger.info(log_statement)
-        print(log_statement)
+#         print(log_statement)
         return self.get_semantic_path()
 
 
@@ -142,15 +143,11 @@ class GlobalPathPlanner(object):
             [PlannerArea]: path consisting of planner areas
         """
         semantic_path = []
-        prev_idx = -1
         for p in self.topological_path:
-            try:
-                temp = PlannerArea(p.node)
-                temp.geometry. # to get level info
-                semantic_path.append(temp)
-                prev_idx = prev_idx + 1
-            except:
-                semantic_path[prev_idx].exit_door = Door(p.node)
+            temp = PlannerArea(p.node)
+            temp.geometry # to get level info
+            semantic_path.append(temp)
+
 
         return semantic_path
 
