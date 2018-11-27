@@ -127,12 +127,12 @@ class GlobalPathPlanner(object):
             router.route()
             elevator_to_destination_path = router.nodes
 
-            self.topological_path = start_to_elevator_path + elevator_to_destination_path
+            self.topological_path = start_to_elevator_path + elevator_to_destination_path[1:]
             self.path_distance = self.path_distance + router.path_distance
 
         log_statement = "Successfully planned {} m long path between {} and {}".format(self.path_distance, start.ref, destination.ref)
         self.logger.info(log_statement)
-        print(log_statement)
+#         print(log_statement)
         return self.get_semantic_path()
 
 

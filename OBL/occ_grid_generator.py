@@ -110,9 +110,9 @@ class OccGridGenerator(object):
             try:
                 os.makedirs(self._dirname)
             except OSError as exc: # Guard against race condition
-                print(str(exc))
+                self.logger.error(str(exc))
 
-        print("Trying to create map file...")
+        self.logger.info("Trying to create map file...")
         grid_map = Image.new('L', (self._dimension,self._dimension),255) #128
 
         drawObject = ImageDraw.Draw(grid_map)
@@ -135,7 +135,7 @@ class OccGridGenerator(object):
         cropped_image = grid_map.crop((0,0, int(max_x), int(max_y)))
         cropped_image.save(self._dirname + "/" + self._file_name + "_floor_" + str(floor) + ".pgm")
         self._save_yaml_file(floor, max_x, max_y)
-        print("Map files saved at " + self._dirname)
+        self.logger.info("Map files saved at " + self._dirname)
         return self._dirname + "/" + self._file_name + "_floor_" + str(floor) + ".yaml"
 
     def _get_walls(self, floor):

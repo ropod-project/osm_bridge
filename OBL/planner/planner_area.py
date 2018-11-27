@@ -9,7 +9,7 @@ class PlannerArea(Area):
         self.exit_door = None
 
 #     def __repr__(self) :
-#         s = "<"
+#         s = "\n<"
 #         s += "type " + str(self.type) + "\n"
 #         s += "id " + str(self.id) + "\n"
 #         s += "ref " + str(self.ref) + "\n"
@@ -17,5 +17,6 @@ class PlannerArea(Area):
 #         for i in self.navigation_areas :
 #             s += "navigation_areas id " + str(i.id)  + "\n"
 #             s += "navigation_areas ref " + str(i.ref) + "\n"
+#         s += "exit_door " + str(self.exit_door) + "\n"
 #         s += ">"
 #         return s

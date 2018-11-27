@@ -10,6 +10,7 @@ from OBL.structs.wm.area import Area
 from OBL.structs.wm.local_area import LocalArea
 from OBL.structs.wm.building import Building
 from OBL.structs.wm.floor import Floor
+from OBL.structs.wm.door import Door
 from OBL.planner.router import Router
 from OBL.planner.planner_node import PlannerNode
 from OBL.planner.planner_connection import PlannerConnection
@@ -44,8 +45,6 @@ class NavigationPathPlanner(object):
         self.logger = logging.getLogger("NavigationPathPlanner")
         if kwargs.get("debug", self._debug):
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-        else :
-            logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 
     def plan(self, start_floor, destination_floor, start, destination, global_path):
@@ -94,19 +93,23 @@ class NavigationPathPlanner(object):
 
         prev_idx = -1
         for local_pt in local_path:
-            try:
+            if local_pt.node.parent_type == "local_area" :
                 local_area = LocalArea(local_pt.node)
                 local_area.geometry # to get level info
-                prev_idx = prev_idx + 1
-            except:
-                local_area = Door(local_pt.node)
-                local_area.geometry
-                semantic_path[prev_idx].exit_door = local_area
+            else :
+                door = Door(local_pt.node)
+                door.geometry
+                global_path[prev_idx].exit_door = door
+                continue
 
-            for global_pt in global_path:
-                if global_pt.get_local_area_ids() is not None and local_area.id in global_pt.get_local_area_ids():
-                    global_pt.navigation_areas.append(local_area)
-                    break 
+            global_pt = global_path[prev_idx]
+            if global_pt.get_local_area_ids() is not None and local_area.id in global_pt.get_local_area_ids():
+                global_pt.navigation_areas.append(local_area)
+            else :
+                prev_idx += 1
+                global_pt = global_path[prev_idx]
+                global_pt.navigation_areas.append(local_area)
+
 
         return global_path
 

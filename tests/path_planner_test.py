@@ -47,7 +47,7 @@ class TestPathPlanner(unittest.TestCase):
 #             print(pt.navigation_areas)
 #             print("---------------------------------------------")
         self.assertEqual(path[1].id, 119)
-        self.assertEqual(len(path), 26)
+        self.assertEqual(len(path), 25)
 
     def test_overall_path_planner(self):
         path_planner = PathPlanner(self.osm_bridge)
@@ -59,8 +59,9 @@ class TestPathPlanner(unittest.TestCase):
 #             print(pt.exit_door)
 #             print(pt.navigation_areas)
 #             print("---------------------------------------------")
+#         print(path)
         self.assertEqual(path[1].id, 119)
-        self.assertEqual(len(path), 26)
+        self.assertEqual(len(path), 25)
 
 #     def test_overall_path_planner(self):
 #         path_planner = PathPlanner(self.osm_bridge)

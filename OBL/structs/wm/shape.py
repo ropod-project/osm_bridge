@@ -18,7 +18,6 @@ class Shape(WMEntity):
         if isinstance(nodes, int):
             __,ways,__ = self.osm_adapter.get_osm_element_by_id(ids=[nodes], data_type='way')
             if len(ways) == 1:
-                print(ways[0])
                 nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=ways[0].nodes, data_type='node')
 
     

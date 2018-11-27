@@ -7,6 +7,7 @@ from OBL.structs.osm.tag import Tag
 class Point(WMEntity):
 
     coordinate_system = 'spherical'
+    _parent_type = None
 
     def __init__(self, point_ref, *args, **kwargs):
         super(Point, self).__init__(point_ref, *args, **kwargs)
@@ -28,3 +29,17 @@ class Point(WMEntity):
             self.logger.error("No node found with given ref {}".format(point_ref))  
             raise Exception("No node found with given ref {}".format(point_ref))
         
+    @property
+    def parent_type(self) :
+        if self._parent_type == None :
+            self._assign_parent_attributes()
+        return self._parent_type
+
+    def _assign_parent_attributes(self) :
+        __,__,relations = self.osm_adapter.get_parent(id=self.id, data_type='node', parent_child_role='topology')
+        if len(relations) > 0 :
+            for tag in relations[0].tags :
+                if tag.key == "type" :
+                    self._parent_type = tag.value
+                    break
+
