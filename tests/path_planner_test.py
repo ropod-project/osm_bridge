@@ -9,6 +9,8 @@ class TestPathPlanner(unittest.TestCase):
 
     def setUp(self):
         self.osm_bridge = OSMBridge()
+#         self.global_origin = [50.7800401, 7.18226]  # uni (coordinates of node id 1307)
+#         self.osm_bridge = OSMBridge(global_origin=self.global_origin)
         self.global_path_planner = GlobalPathPlanner(self.osm_bridge)
         self.navigation_path_planner = NavigationPathPlanner(self.osm_bridge)
         self.semantic_global_path = None
@@ -59,6 +61,19 @@ class TestPathPlanner(unittest.TestCase):
 #             print("---------------------------------------------")
         self.assertEqual(path[1].id, 119)
         self.assertEqual(len(path), 26)
+
+#     def test_overall_path_planner(self):
+#         path_planner = PathPlanner(self.osm_bridge)
+#         path_planner.set_building('BRSU')
+#         path = path_planner.get_path_plan(
+#                 destination_floor='BRSU_L0', 
+#                 start_floor='BRSU_L0',
+#                 destination_area='BRSU_C_L0_C9',
+#                 start_area='BRSU_C_L0_C2',
+#                 start_local_area='BRSU_C_L0_C2_LA1',
+#                 destination_local_area='BRSU_C_L0_C9_LA2'
+#                 )
+#         print(path)
 
 if __name__ == '__main__':
     unittest.main()

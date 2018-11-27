@@ -1,4 +1,5 @@
 import logging
+import sys
 
 from OBL.osm_bridge import OSMBridge
 from OBL.structs.wm.point import Point
@@ -44,7 +45,7 @@ class GlobalPathPlanner(object):
 
         self.logger = logging.getLogger("GlobalPathPlanner")
         if kwargs.get("debug", self._debug):            
-            self.logger.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+            logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
     def plan(self, start_floor, destination_floor, start, destination, elevators):

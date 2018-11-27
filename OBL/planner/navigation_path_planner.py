@@ -1,4 +1,5 @@
 import logging
+import sys
 from OBL.osm_bridge import OSMBridge
 from OBL.structs.wm.point import Point
 from OBL.structs.wm.room import Room
@@ -42,7 +43,9 @@ class NavigationPathPlanner(object):
 
         self.logger = logging.getLogger("NavigationPathPlanner")
         if kwargs.get("debug", self._debug):
-            self.logger.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+            logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+        else :
+            logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 
     def plan(self, start_floor, destination_floor, start, destination, global_path):
