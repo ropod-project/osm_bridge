@@ -26,5 +26,5 @@ class Point(WMEntity):
             self.x, self.y = self._convert_to_cartesian(nodes[0].lat, nodes[0].lon)
         else:
             self.logger.error("No node found with given ref {}".format(point_ref))  
-            raise Exception("No point found")
+            raise Exception("No node found with given ref {}".format(point_ref))
         

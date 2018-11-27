@@ -42,7 +42,7 @@ class Wall(WMEntity):
                     self._geometry_id = member.ref
         else:
             self.logger.error("No wall found with specified ref {}".format(wall_ref))  
-            raise Exception("No wall found")
+            raise Exception("No wall found with specified ref {}".format(wall_ref))
 
     @property
     def geometry_id(self) :
