@@ -3,7 +3,8 @@
 from setuptools import setup
 
 setup(
-    name='osm_bridge', 
+    name='OBL',
+    packages=["OBL"], 
     version='0.1.0', 
     description='Bridge to different OSM functionalities', 
     package_dir={'': '.'},
