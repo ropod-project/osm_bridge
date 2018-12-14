@@ -36,7 +36,7 @@ class Router(object):
                 self.path_distance = selected.g
                 break
         else:
-            raise Exception("Couldn't plan the path")
+            raise Exception("Couldn't plan the path. Error in node id {}".format(selected.node.id))
             return False
 
         while selected:
