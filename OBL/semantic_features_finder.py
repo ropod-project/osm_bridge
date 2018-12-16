@@ -10,6 +10,21 @@ class SemanticFeatures(object):
         self.door_sides = []
         self.corners = []
         self.features = [] 
+        self.pillars = []
+
+class Corner(object):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def __repr__(self):
+        return "<Corner x =%(x)s, y=%(y)s>" % {
+            'x': self.x,
+            'y': self.y
+        }
 
 class SemanticFeaturesFinder(object):
 
@@ -55,12 +70,13 @@ class SemanticFeaturesFinder(object):
         semantic_features.wall_sides = self._get_sides(walls, area_geometry)
         semantic_features.door_sides = self._get_sides(doors, area_geometry)
         semantic_features.features = area.features
-        # semantic_features.corners = self._get_corners(semantic_feature.wall_sides)
+        semantic_features.corners = self._get_corners(semantic_features.wall_sides)
+        semantic_features.pillars = area.pillars
 
         print(semantic_features.wall_sides)
         print(semantic_features.door_sides)
-
-        return walls
+        print(semantic_features.corners)
+        return semantic_features
 
         
     def _get_sides(self, parents, area_geometry):
@@ -68,10 +84,10 @@ class SemanticFeaturesFinder(object):
         for parent in parents:
             parent_sides = parent.sides
             if len(parent_sides) == 1:
-                sides.append(parent_sides[0])
+                sides.append([parent_sides[0]])
             else:
                 sides.append(self._get_visible_sides(parent_sides, area_geometry))
-        return sides
+        return [item for sublist in sides for item in sublist]
 
     def _get_visible_sides(self, parent_sides, area_geometry):
         sides = []
@@ -147,6 +163,26 @@ class SemanticFeaturesFinder(object):
             else:
                 lines.append(self._line(area_geometry.points[i-1], pt))
         return lines
+
+    def _get_corners(self, wall_sides):
+        lines = []
+        corners = []
+        for wall_side in wall_sides:
+            _corners = wall_side.corners
+            lines.append(self._line(_corners[0], _corners[1]))
+        for line1 in lines:
+            for line2 in lines:
+                if line1[2] == line2[2]:
+                    pass
+                else:
+                    res = self._check_intersection(line1, line2)
+                    if res:
+                        c = Corner(round(res[0],1),round(res[1],1))
+                        if c not in corners:
+                            corners.append(c)
+        return corners
+
+
 
 
         
