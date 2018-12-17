@@ -44,7 +44,7 @@ class Side(WMEntity):
         corners = []
         corner_nodes,__,__ = self.osm_adapter.get_osm_element_by_id(ids=self._corner_ids, data_type='node')
         for corner_node in corner_nodes:
-            corners.append(Point(corner))
+            corners.append(Point(corner_node))
         return corners
 
     @property

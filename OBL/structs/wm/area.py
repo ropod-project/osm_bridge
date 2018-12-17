@@ -3,6 +3,7 @@ from OBL.structs.wm.feature import Feature
 from OBL.structs.wm.point import Point
 from OBL.structs.wm.shape import Shape
 from OBL.structs.wm.wall import Wall
+from OBL.structs.wm.pillar import Pillar
 from OBL.structs.wm.door import Door
 from OBL.structs.wm.local_area import LocalArea
 from OBL.structs.wm.connection import Connection
@@ -41,6 +42,7 @@ class Area(WMEntity):
         self._wall_ids = []
         self._door_ids = []
         self._local_area_ids = []
+        self._pillar_ids = []
 
         if len(relations) == 1:
             self.id = relations[0].id
@@ -55,6 +57,8 @@ class Area(WMEntity):
             for member in relations[0].members:
                 if member.role == 'wall':
                     self._wall_ids.append(member.ref)
+                if member.role == 'pillar':
+                    self._pillar_ids.append(member.ref)
                 if member.role == 'door':
                     self._door_ids.append(member.ref)
                 if member.role == 'feature':
@@ -113,6 +117,16 @@ class Area(WMEntity):
         for door in door_relations :
             doors.append(Door(door))
         return doors
+
+    @property
+    def pillars(self):
+        if len(self._pillar_ids) == 0 :
+            return None
+        pillars = []
+        __,__,pillar_relations = self.osm_adapter.get_osm_element_by_id(ids=self._pillar_ids, data_type='relation')
+        for pillar in pillar_relations :
+            pillars.append(Pillar(pillar))
+        return pillars
 
     @property
     def features(self):
