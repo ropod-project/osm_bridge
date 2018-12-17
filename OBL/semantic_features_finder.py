@@ -12,20 +12,6 @@ class SemanticFeatures(object):
         self.features = [] 
         self.pillars = []
 
-class Corner(object):
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
-
-    def __repr__(self):
-        return "<Corner x =%(x)s, y=%(y)s>" % {
-            'x': self.x,
-            'y': self.y
-        }
-
 class SemanticFeaturesFinder(object):
 
     """Summary
@@ -38,13 +24,9 @@ class SemanticFeaturesFinder(object):
     _debug = False
 
     def __init__(self, osm_bridge, *args, **kwargs):
-        """Summary
-        
+        """
         Args:
             osm_bridge (OSMBridge): bridge between world model and OSM
-        
-        Raises:
-            Exception: Description
         """
         if not isinstance(osm_bridge, OSMBridge):
             raise Exception("Please pass OSM bridge instance")
@@ -70,12 +52,7 @@ class SemanticFeaturesFinder(object):
         semantic_features.wall_sides = self._get_sides(walls, area_geometry)
         semantic_features.door_sides = self._get_sides(doors, area_geometry)
         semantic_features.features = area.features
-        semantic_features.corners = self._get_corners(semantic_features.wall_sides)
         semantic_features.pillars = area.pillars
-
-        print(semantic_features.wall_sides)
-        print(semantic_features.door_sides)
-        print(semantic_features.corners)
         return semantic_features
 
         
@@ -98,25 +75,28 @@ class SemanticFeaturesFinder(object):
 
     def _check_if_side_is_visible(self, side, area_geometry):
         corners = side.corners
-        is_corner1_inside = self.local_area_finder._is_inside_polygon(corners[0].x,corners[0].y, area_geometry.points)
-        is_corner2_inside = self.local_area_finder._is_inside_polygon(corners[1].x,corners[1].y, area_geometry.points)
+        is_corner1_inside = self.local_area_finder.is_inside_polygon(corners[0].x,corners[0].y, area_geometry.points)
+        is_corner2_inside = self.local_area_finder.is_inside_polygon(corners[1].x,corners[1].y, area_geometry.points)
 
         if is_corner1_inside and is_corner2_inside:
+            # if both corners are inside the area then side is definitely visible from given area from some angle
             return True
         elif (is_corner1_inside and ~is_corner2_inside) or (~is_corner1_inside and is_corner2_inside):
+            # if 1 side corner is inside the geometry
             side_line = self._line(corners[0], corners[1]) 
             area_lines = self._get_area_lines(area_geometry)
+            # check if side intersects with area geometry
             for area_line in area_lines:
                 res = self._check_intersection(side_line, area_line)
+                # if yes decide based on how much of side length lies inside the area geometry
                 if res:
                     dist1 = sqrt((corners[0].x - res[0])**2 + (corners[0].y-res[1])**2)
                     dist2 = sqrt((res[0] - corners[1].x)**2 + (res[1]-corners[1].y)**2)
-                    if dist1 > (0.2*dist2) or dist2 > (0.2*dist1):
-                        if is_corner1_inside and dist1 > dist2:
-                            return True
-                        elif is_corner2_inside and dist2 > dist1:
-                            return True
+                    if (is_corner1_inside and dist1 > dist2) or (is_corner2_inside and dist2 > dist1):
+                        return True
+            return False
         elif (~is_corner1_inside and ~is_corner2_inside):
+            # if both side corners are outside the area geometry then it should intersect 2 area geometry lines to reach the 
             side_line = self._line(corners[0], corners[1]) 
             area_lines = self._get_area_lines(area_geometry)
             intersection_count = 0
@@ -125,7 +105,6 @@ class SemanticFeaturesFinder(object):
                 intersection_count = intersection_count + 1 if res else intersection_count
             if intersection_count >= 2:
                 return True
-
         return False
 
     # Source: https://stackoverflow.com/questions/20677795/
@@ -163,24 +142,6 @@ class SemanticFeaturesFinder(object):
             else:
                 lines.append(self._line(area_geometry.points[i-1], pt))
         return lines
-
-    def _get_corners(self, wall_sides):
-        lines = []
-        corners = []
-        for wall_side in wall_sides:
-            _corners = wall_side.corners
-            lines.append(self._line(_corners[0], _corners[1]))
-        for line1 in lines:
-            for line2 in lines:
-                if line1[2] == line2[2]:
-                    pass
-                else:
-                    res = self._check_intersection(line1, line2)
-                    if res:
-                        c = Corner(round(res[0],1),round(res[1],1))
-                        if c not in corners:
-                            corners.append(c)
-        return corners
 
 
 

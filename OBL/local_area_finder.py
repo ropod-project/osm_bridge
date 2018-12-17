@@ -84,7 +84,7 @@ class LocalAreaFinder(object):
             geometry = local_area.geometry
             self.logger.debug(geometry)
             self.logger.debug(geometry.points)
-            if self._is_inside_polygon(x, y, geometry.points) :
+            if self.is_inside_polygon(x, y, geometry.points) :
                 return local_area
         return self._get_nearest_local_area(x, y, local_areas)
 
@@ -134,7 +134,7 @@ class LocalAreaFinder(object):
                 min_dist_local_area = local_area
         return min_dist_local_area
 
-    def _is_inside_polygon(self, x, y, points):
+    def is_inside_polygon(self, x, y, points):
         """checks if point (x,y) is inside the polygon created by points
 
         :x: int/float
@@ -223,7 +223,7 @@ class LocalAreaFinder(object):
             geometry = probable_area.geometry
             self.logger.debug(geometry)
             self.logger.debug(geometry.points)
-            if self._is_inside_polygon(x, y, geometry.points) :
+            if self.is_inside_polygon(x, y, geometry.points) :
                 return probable_area
 #        return self.osm_bridge.get_area("AMK_B_L-1_C29")
         return None

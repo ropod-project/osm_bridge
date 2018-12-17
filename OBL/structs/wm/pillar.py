@@ -8,7 +8,7 @@ class Pillar(WMEntity):
     def __init__(self, pillar_ref, *args, **kwargs):      
 
         super(Pillar, self).__init__(pillar_ref, *args, **kwargs)
-        source = self._check_type(wall_ref)     
+        source = self._check_type(pillar_ref)     
         if source == "id":      
             __,__,relations = self.osm_adapter.get_osm_element_by_id(ids=[pillar_ref], data_type='relation')
         elif source == "ref":
