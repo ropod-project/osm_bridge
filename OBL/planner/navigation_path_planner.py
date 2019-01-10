@@ -41,6 +41,8 @@ class NavigationPathPlanner(object):
         self.topological_path = []
         self.semantic_path = []
         self.path_distance = 0
+        self.blocked_connections = []
+        self.relax_traffic_rules = False
 
         self.logger = logging.getLogger("NavigationPathPlanner")
         if kwargs.get("debug", self._debug):
@@ -86,7 +88,9 @@ class NavigationPathPlanner(object):
                 for connection_id in temp:
                     connections.append(PlannerConnection(connection_id))
 
-        router = Router(start_node, destination_node, connections)
+        router = Router(start_node, destination_node, connections, \
+            blocked_connections=self.blocked_connections,\
+            relax_traffic_rules=self.relax_traffic_rules)
         router.route()
 
         local_path = router.nodes
@@ -112,15 +116,3 @@ class NavigationPathPlanner(object):
 
 
         return global_path
-
-
-
-        
-
-
-
-        
-        
-
-
-        
