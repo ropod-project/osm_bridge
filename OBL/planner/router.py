@@ -1,4 +1,5 @@
 from OBL.planner.visited_node import VisitedNode
+from OBL.planner.planner_node import PlannerNode
 from OBL.planner.planner_connection import PlannerConnection
 from heapq import heappop, heappush, heapify
 from math import sin, radians, cos, atan2, sqrt
@@ -6,11 +7,25 @@ from math import sin, radians, cos, atan2, sqrt
 
 class Router(object):
 
-    def __init__(self, from_, to, connections):
+    def __init__(self, from_, to, connections, *args, **kwargs):
         self.from_ = VisitedNode(from_)
         self.to = to
         self.connections = connections
         self.path_distance = 0
+        self.relax_traffic_rules = kwargs.get("relax_traffic_rules",False)
+        self.blocked_connections = kwargs.get("blocked_connections",[])
+        self._update_data()
+
+    def _update_data(self):
+        for blocked_connection in self.blocked_connections:
+            n1 = PlannerNode(int(blocked_connection[0]))
+            n2 = PlannerNode(int(blocked_connection[1]))
+            for connection in self.connections:
+                if n1 in connection.nodes:
+                    idx = connection.nodes.index(n1)
+                    if len(connection.nodes) > idx+1:
+                        if connection.nodes[idx+1] == n2:
+                            self.connections.remove(connection)
 
     def route(self):
         self.from_.g = 0
@@ -108,9 +123,12 @@ class Router(object):
             from_ = node
 
     def is_way_section_accessible(self, way, from_, to):
-        if way.oneway and way.nodes.index(from_) > way.nodes.index(to):
+        if way.nodes.index(from_) > way.nodes.index(to):
+            if self.relax_traffic_rules:
+                return True 
+            if way.oneway:
+                return False 
             # print("x %(way)s is one-way" % {'way': way.id})
-            return False
         return True
 
     def path_cost(self, way, from_, to):

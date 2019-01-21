@@ -38,6 +38,7 @@ class Area(WMEntity):
         self._geometry_id = None
         self._topology_id = None
         self._connection_ids = []
+        self._recovery_connection_ids = []
         self._feature_ids = []
         self._wall_ids = []
         self._door_ids = []
@@ -65,6 +66,8 @@ class Area(WMEntity):
                     self._feature_ids.append(member.ref)
                 if member.role == 'local_connection':
                     self._connection_ids.append(member.ref)
+                if member.role == 'recovery_connection':
+                    self._recovery_connection_ids.append(member.ref)
                 if member.role == 'geometry':
                     self._geometry_id = member.ref
                 if member.role == 'topology':
@@ -147,6 +150,16 @@ class Area(WMEntity):
         for connection in connections_ways:
             connections.append(Connection(connection))
         return connections
+
+    @property
+    def recovery_connections(self):
+        if len(self._recovery_connection_ids) == 0 :
+            return None
+        recovery_connections = []
+        __,recovery_connections_ways,__ = self.osm_adapter.get_osm_element_by_id(ids=self._recovery_connection_ids, data_type='way')
+        for recovery_connection in recovery_connections_ways:
+            recovery_connections.append(Connection(recovery_connection))
+        return recovery_connections
 
     @property
     def local_areas(self):

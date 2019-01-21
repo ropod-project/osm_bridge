@@ -77,6 +77,8 @@ class PathPlanner(object):
             destination_local_area(str, optional): destination local area ref
             robot_position([x,y]) : robot position in x/y or lat/lng
             destination_task(str) : task to be performed at destination eg. docking, charging etc.
+            blocked_connections([connection]): list of unavailable connections 
+            relax_traffic_rules(boolean): by deafault false
 
         Returns:
             TYPE: navigation path
@@ -94,6 +96,9 @@ class PathPlanner(object):
         destination_local_area_ref = kwargs.get("destination_local_area")
         destination_task = kwargs.get("destination_task")
         robot_position = kwargs.get("robot_position")
+
+        self.navigation_path_planner.blocked_connections = kwargs.get("blocked_connections",[])
+        self.navigation_path_planner.relax_traffic_rules = kwargs.get("relax_traffic_rules", False)
 
         if not start_local_area_ref and not robot_position:
             raise Exception("Start local area ref or robot position is required to determine starting position") 
