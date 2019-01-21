@@ -87,6 +87,11 @@ class NavigationPathPlanner(object):
             if temp is not None:
                 for connection_id in temp:
                     connections.append(PlannerConnection(connection_id))
+            if self.relax_traffic_rules:
+                temp = place._recovery_connection_ids
+                if temp is not None:
+                    for connection_id in temp:
+                        connections.append(PlannerConnection(connection_id))
 
         router = Router(start_node, destination_node, connections, \
             blocked_connections=self.blocked_connections,\
