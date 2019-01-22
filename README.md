@@ -4,6 +4,50 @@
 
 ![architecture](docs/architecture.png)
 
+```
+building (Building)
+ |__ floors (Floor)
+ |    |__ connections (Connection)
+ |    |    |__ points (Point)
+ |    |__ walls (Wall)
+ |    |    |__ sides (Side)
+ |    |    |    |__ corners (Point)
+ |    |    |    |__ features (Feature)
+ |    |    |__ geometry (Shape)
+ |    |         |__ points (Point)
+ |    |__ rooms (Room)
+ |    |    |__ topology (Point)
+ |    |    |__ geometry (Shape)
+ |    |    |    |__ points (Point)
+ |    |    |__ connections (Connection)
+ |    |    |    |__ points (Point)
+ |    |    |__ features (Feature)
+ |    |    |__ walls (Wall)
+ |    |    |    |__ geometry (Shape)
+ |    |    |    |    |__ points (Point)
+ |    |    |    |__ sides (Side)
+ |    |    |         |__ corners (Point)
+ |    |    |         |__ features (Feature)
+ |    |    |__ local_areas (LocalArea)
+ |    |    |    |__ topology (Point)
+ |    |    |    |__ geometry (Shape)
+ |    |    |         |__ points (Point)
+ |    |    |__ doors (Door)
+ |    |         |__ topology (Point)
+ |    |         |__ geometry (Shape)
+ |    |         |    |__ points (Point)
+ |    |         |__ sides (Side)
+ |    |              |__ corners (Point)
+ |    |              |__ features (Feature)
+ |    |__ corridors (Corridor)
+ |         |__ <same as room>
+ |__ elevators (Elevator)
+ |    |__ <same as room>
+ |__ stairs (Stairs)
+ |    |__ <same as room>
+ |__ geometry (Shape)
+      |__ points (Point)
+```
 
 ## Installation
 
