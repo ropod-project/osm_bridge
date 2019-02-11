@@ -50,22 +50,25 @@ class OSMBridge(object):
         """
         self._server_ip = kwargs.get("server_ip", self._server_ip)
         self._server_port = kwargs.get("server_port", self._server_port)
+        try:
+            WMEntity.osm_adapter = OSMAdapter(server_ip=self._server_ip, server_port=self._server_port)
+            
+            self._global_origin = kwargs.get("global_origin", self._global_origin)
+            self._coordinate_system = kwargs.get("coordinate_system", self._coordinate_system)
+            Point.coordinate_system = self._coordinate_system
+            self._global_origin_cartesian = utm.from_latlon(self._global_origin[0], self._global_origin[1])
 
-        WMEntity.osm_adapter = OSMAdapter(server_ip=self._server_ip, server_port=self._server_port)
-        
-        self._global_origin = kwargs.get("global_origin", self._global_origin)
-        self._coordinate_system = kwargs.get("coordinate_system", self._coordinate_system)
-        Point.coordinate_system = self._coordinate_system
-        self._global_origin_cartesian = utm.from_latlon(self._global_origin[0], self._global_origin[1])
+            self.logger = logging.getLogger("OSMBridge")
+            if kwargs.get("debug", self._debug):            
+                logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+            else :
+                logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-        self.logger = logging.getLogger("OSMBridge")
-        if kwargs.get("debug", self._debug):            
-            logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-        else :
-            logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+            Point._convert_to_cartesian = self.convert_to_cartesian
+            self.local_area_finder = LocalAreaFinder(self, debug=False)
+        except Exception as e:
+            raise Exception("OSM Bridge cannot be initialised due to problems with Overpass connection")
 
-        Point._convert_to_cartesian = self.convert_to_cartesian
-        self.local_area_finder = LocalAreaFinder(self, debug=False)
 
     def convert_to_cartesian(self, lat, lon):
         """convert a point (x, y) from spherical coordinates to cartesian coordinates (in meters)
