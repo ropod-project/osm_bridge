@@ -93,8 +93,13 @@ class NavigationPathPlanner(object):
                     for connection_id in temp:
                         connections.append(PlannerConnection(connection_id))
 
+        blocked_connections_nodes = []
+        for blocked_connection in self.blocked_connections:
+            blocked_connections_nodes.append([self.osm_bridge.get_local_area(blocked_connection[0]).topology_id,\
+             self.osm_bridge.get_local_area(blocked_connection[1]).topology_id])
+
         router = Router(start_node, destination_node, connections, \
-            blocked_connections=self.blocked_connections,\
+            blocked_connections=blocked_connections_nodes,\
             relax_traffic_rules=self.relax_traffic_rules)
         router.route()
 

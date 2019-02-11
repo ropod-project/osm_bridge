@@ -25,10 +25,17 @@ class OSMAdapter(object):
         
         self.logger.info("Connecting to overpass server at {}:{}....".format(server_ip, server_port))
 
-        if self.test_overpass_connection():
+        if not self.check_connection_status():
+            raise Exception("Unable to connect to Overpass server")
+        
+
+    def check_connection_status(self):
+        self.connection_status = self.test_overpass_connection()
+        if self.connection_status:
             self.logger.info("Successfully connected to Overpass server")
         else:
-            self.logger.info("Couldn't connect to Overpass server")
+            self.logger.info("Couldn't connect to Overpass server") 
+        return self.connection_status
 
     def test_overpass_connection(self):
         '''
