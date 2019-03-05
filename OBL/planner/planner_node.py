@@ -1,6 +1,7 @@
 from OBL.planner.visited_node import VisitedNode
 from OBL.structs.wm.point import Point
 
+
 class PlannerNode(Point):
 
     def __init__(self, point_ref):

@@ -1,16 +1,12 @@
 import logging
 import sys
 
-from OBL.osm_bridge import OSMBridge
-from OBL.structs.wm.point import Point
 from OBL.structs.wm.room import Room
 from OBL.structs.wm.corridor import Corridor
 from OBL.structs.wm.elevator import Elevator
 from OBL.structs.wm.stairs import Stairs
 from OBL.structs.wm.area import Area
-from OBL.structs.wm.building import Building
 from OBL.structs.wm.floor import Floor
-from OBL.structs.wm.door import Door
 from OBL.planner.router import Router
 from OBL.planner.planner_node import PlannerNode
 from OBL.planner.planner_connection import PlannerConnection
@@ -28,13 +24,13 @@ class GlobalPathPlanner(object):
         semantic_path (list): list of planner areas
         topological_path (list): list of points
     """
-    
+
     # default values
     _debug = False
 
     def __init__(self, osm_bridge, *args, **kwargs):
         """Summary
-        
+
         Args:
             osm_bridge (OSMBridge): bridge between wm and osm
         """
@@ -44,24 +40,23 @@ class GlobalPathPlanner(object):
         self.path_distance = 0
 
         self.logger = logging.getLogger("GlobalPathPlanner")
-        if kwargs.get("debug", self._debug):            
+        if kwargs.get("debug", self._debug):
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-
 
     def plan(self, start_floor, destination_floor, start, destination, elevators):
         """Summary
         Plans global path using A* planner with straight line distance heuristics
-        
+
         Args:
             start_floor (Floor): start floor wm entity
             destination_floor (Floor): destination floor wm entity
             start (Area): start area wm entity
             destination (Area): destination area wm entity
             elevators (Elevators): list of elevator wm entity
-        
+
         Returns:
             [PlannerArea]: list of planner areas
-        
+
         Raises:
             Exception: multiple exception
         """
@@ -69,10 +64,12 @@ class GlobalPathPlanner(object):
             raise Exception("Invalid floor type")
 
         if not (isinstance(start, Room) or isinstance(start, Corridor) or isinstance(start, Area)):
-            raise Exception("For planning global path start position must be room, corridor or area")
+            raise Exception(
+                "For planning global path start position must be room, corridor or area")
 
         if not (isinstance(destination, Room) or isinstance(destination, Corridor) or isinstance(destination, Area)):
-            raise Exception("For planning global path destination position must be room, corridor or area")
+            raise Exception(
+                "For planning global path destination position must be room, corridor or area")
 
         for elevator in elevators:
             if not (isinstance(elevator, Elevator) or isinstance(elevator, Stairs)):
@@ -98,12 +95,13 @@ class GlobalPathPlanner(object):
         else:
             start_connections = []
             destination_connections = []
-            
+
             for connection_id in start_floor._connection_ids:
                 start_connections.append(PlannerConnection(connection_id))
 
             for connection_id in destination_floor._connection_ids:
-                destination_connections.append(PlannerConnection(connection_id))
+                destination_connections.append(
+                    PlannerConnection(connection_id))
 
             connections = start_connections + destination_connections
 
@@ -118,38 +116,39 @@ class GlobalPathPlanner(object):
                 start_to_elevator_distances.append(router.path_distance)
                 start_to_elevator_paths.append(router.nodes)
 
-            best_path_to_elevator_idx = start_to_elevator_distances.index(min(start_to_elevator_distances))
+            best_path_to_elevator_idx = start_to_elevator_distances.index(
+                min(start_to_elevator_distances))
             elevator_node = elevator_nodes[best_path_to_elevator_idx]
-            start_to_elevator_path = start_to_elevator_paths[best_path_to_elevator_idx]
-            self.path_distance = start_to_elevator_distances[best_path_to_elevator_idx]
+            start_to_elevator_path = start_to_elevator_paths[
+                best_path_to_elevator_idx]
+            self.path_distance = start_to_elevator_distances[
+                best_path_to_elevator_idx]
 
-            router = Router(elevator_node, destination_node, destination_connections)
+            router = Router(elevator_node, destination_node,
+                            destination_connections)
             router.route()
             elevator_to_destination_path = router.nodes
 
-            self.topological_path = start_to_elevator_path + elevator_to_destination_path[1:]
+            self.topological_path = start_to_elevator_path + \
+                elevator_to_destination_path[1:]
             self.path_distance = self.path_distance + router.path_distance
 
-        log_statement = "Successfully planned {} m long path between {} and {}".format(self.path_distance, start.ref, destination.ref)
+        log_statement = "Successfully planned {} m long path between {} and {}".format(
+            self.path_distance, start.ref, destination.ref)
         self.logger.info(log_statement)
 #         print(log_statement)
         return self.get_semantic_path()
 
-
     def get_semantic_path(self):
         """Summary
-        
+
         Returns:
             [PlannerArea]: path consisting of planner areas
         """
         semantic_path = []
         for p in self.topological_path:
             temp = PlannerArea(p.node)
-            temp.geometry # to get level info
+            temp.geometry  # to get level info
             semantic_path.append(temp)
 
-
         return semantic_path
-
-
-        

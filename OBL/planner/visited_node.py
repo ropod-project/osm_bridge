@@ -1,4 +1,5 @@
 class VisitedNode(object):
+
     def __init__(self, node, parent=None, g=None, h=None):
         self.node = node
         self.parent = parent

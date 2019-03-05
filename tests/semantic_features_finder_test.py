@@ -8,6 +8,7 @@ from OBL import OSMBridge
 from OBL import SemanticFeaturesFinder
 import unittest
 
+
 class TestSemanticFeaturesFinder(unittest.TestCase):
     '''
     Unit tests for local area finder class 
@@ -18,9 +19,10 @@ class TestSemanticFeaturesFinder(unittest.TestCase):
         self.semantic_feature_finder = SemanticFeaturesFinder(self.osm_bridge)
 
     def test_feature_finder(self):
-        features = self.semantic_feature_finder.get_features('BRSU_C_L0_RoomC022') 
-        self.assertEqual(len(features.wall_sides),5)
-        self.assertEqual(len(features.door_sides),2)
+        features = self.semantic_feature_finder.get_features(
+            'BRSU_C_L0_RoomC022')
+        self.assertEqual(len(features.wall_sides), 5)
+        self.assertEqual(len(features.door_sides), 2)
 
     def test_check_intersection(self):
         pt1 = self.osm_bridge.get_point(393)
@@ -36,4 +38,3 @@ class TestSemanticFeaturesFinder(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

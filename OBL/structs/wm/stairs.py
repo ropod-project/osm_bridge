@@ -1,5 +1,6 @@
 from OBL.structs.wm.area import Area
 
+
 class Stairs(Area):
 
     def __init__(self, stairs_ref, *args, **kwargs):

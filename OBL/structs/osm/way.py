@@ -1,14 +1,16 @@
 from OBL.structs.osm.tag import Tag
 
+
 class Way(object):
     '''
     OSM way
     '''
+
     def __init__(self, elm):
         element = elm
         self.id = element.get('id')
 
-        self.nodes =  []
+        self.nodes = []
         nodes = element.get('nodes')
         for node in nodes:
             self.nodes.append(node)

@@ -1,10 +1,6 @@
-import overpass
 import logging
 import sys
 import utm
-from OBL.structs.osm.node import Node
-from OBL.structs.osm.way import Way
-from OBL.structs.osm.relation import Relation
 from OBL.osm_adapter import OSMAdapter
 from OBL.local_area_finder import LocalAreaFinder
 from OBL.structs.wm.wm_entity import WMEntity
@@ -29,11 +25,11 @@ class OSMBridge(object):
 
     """Summary
     Provides abstraction to world model (https://git.ropod.org/ropod/wm/openstreetmap-indoor-modelling) using OSM adapter
-    
+
     Attributes:
         logger (logging): logger
     """
-    
+
     # default values
     _server_ip = "127.0.0.1"
     _server_port = 8000
@@ -43,7 +39,7 @@ class OSMBridge(object):
 
     def __init__(self, *args, **kwargs):
         """Summary
-        
+
         Args:
             server_ip(str, optional): ip address of overpass server
             server_port(int, optional): overpass server port
@@ -51,24 +47,28 @@ class OSMBridge(object):
         self._server_ip = kwargs.get("server_ip", self._server_ip)
         self._server_port = kwargs.get("server_port", self._server_port)
         try:
-            WMEntity.osm_adapter = OSMAdapter(server_ip=self._server_ip, server_port=self._server_port)
-            
-            self._global_origin = kwargs.get("global_origin", self._global_origin)
-            self._coordinate_system = kwargs.get("coordinate_system", self._coordinate_system)
+            WMEntity.osm_adapter = OSMAdapter(
+                server_ip=self._server_ip, server_port=self._server_port)
+
+            self._global_origin = kwargs.get(
+                "global_origin", self._global_origin)
+            self._coordinate_system = kwargs.get(
+                "coordinate_system", self._coordinate_system)
             Point.coordinate_system = self._coordinate_system
-            self._global_origin_cartesian = utm.from_latlon(self._global_origin[0], self._global_origin[1])
+            self._global_origin_cartesian = utm.from_latlon(
+                self._global_origin[0], self._global_origin[1])
 
             self.logger = logging.getLogger("OSMBridge")
-            if kwargs.get("debug", self._debug):            
+            if kwargs.get("debug", self._debug):
                 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-            else :
+            else:
                 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
             Point._convert_to_cartesian = self.convert_to_cartesian
             self.local_area_finder = LocalAreaFinder(self, debug=False)
         except Exception as e:
-            raise Exception("OSM Bridge cannot be initialised due to problems with Overpass connection")
-
+            raise Exception(
+                "OSM Bridge cannot be initialised due to problems with Overpass connection")
 
     def convert_to_cartesian(self, lat, lon):
         """convert a point (x, y) from spherical coordinates to cartesian coordinates (in meters)
@@ -86,7 +86,7 @@ class OSMBridge(object):
 
     def set_coordinate_system(self, name, *args, **kwargs):
         """Set the global or local origin for the OSMBridge
-        
+
         Args:
             name (str): spherical/cartesian
         """
@@ -96,174 +96,173 @@ class OSMBridge(object):
         self._local_origin = kwargs.get("local_origin", self._local_origin)
 
     @property
-    def global_origin(self) :
+    def global_origin(self):
         return self._global_origin
 
     def get_feature(self, ref):
         """Summary
-        
+
         Args:
             ref (str, int): feature ref
-        
+
         Returns:
             Feature: feature wm entity
         """
-        return  Feature(ref)
+        return Feature(ref)
 
     def get_side(self, ref):
         """Summary
-        
+
         Args:
             ref (str, int): side ref
-        
+
         Returns:
             Side: side wm entity
         """
-        return  Side(ref)
+        return Side(ref)
 
     def get_door(self, ref):
         """Summary
-        
+
         Args:
             ref (str, int): door ref
-        
+
         Returns:
             Door: door wm entity
         """
-        return  Door(ref)
+        return Door(ref)
 
     def get_wall(self, ref):
         """Summary
-        
+
         Args:
             ref (str, int): wall ref
-        
+
         Returns:
             Wall: wall wm entity
         """
-        return  Wall(ref)
+        return Wall(ref)
 
     def get_local_area(self, *args, **kwargs):
         """Summary
-        
+
         Args:
             ref (str, int): local area ref
-        
+
         Returns:
             LocalArea: local area wm entity
         """
-        if len(args) == 1 : # arg is a ref of local area
-            return  LocalArea(args[0])
-        elif len(args) == 0 and len(kwargs) >= 2 : # call local area finder 
+        if len(args) == 1:  # arg is a ref of local area
+            return LocalArea(args[0])
+        elif len(args) == 0 and len(kwargs) >= 2:  # call local area finder
             return self.local_area_finder.get_local_area(**kwargs)
 
     def get_connection(self, ref):
         """Summary
-        
+
         Args:
             ref (str, int): connection ref
-        
+
         Returns:
             Connection: connection wm entity
         """
-        return  Connection(ref)
+        return Connection(ref)
 
     def get_room(self, ref):
         """Summary
-        
+
         Args:
             ref (str, int): room ref
-        
+
         Returns:
             Room: room wm entity
         """
-        return  Room(ref)
+        return Room(ref)
 
     def get_corridor(self, ref):
         """Summary
-        
+
         Args:
             ref (str, int): corridor ref
-        
+
         Returns:
             Corridor: corridor wm entity
         """
-        return  Corridor(ref)
+        return Corridor(ref)
 
     def get_area(self, ref):
         """Summary
-        
+
         Args:
             ref (str, int): area ref
-        
+
         Returns:
             Area: area wm entity
         """
-        return  Area(ref)
+        return Area(ref)
 
     def get_elevator(self, ref):
         """Summary
-        
+
         Args:
             ref (str, int): elevator ref
-        
+
         Returns:
             Elevator: elevator wm entity
         """
-        return  Elevator(ref)
+        return Elevator(ref)
 
     def get_stairs(self, ref):
         """Summary
-        
+
         Args:
             ref (str, int): stairs ref
-        
+
         Returns:
             Stairs: stair wm entity
         """
-        return  Stair(ref)
+        return Stair(ref)
 
     def get_floor(self, ref):
         """Summary
-        
+
         Args:
             ref (str, int): floor ref
-        
+
         Returns:
             Floor: floor wm entity
         """
-        return  Floor(ref)
+        return Floor(ref)
 
     def get_building(self, ref):
         """Summary
-        
+
         Args:
             ref (str, int): building ref
-        
+
         Returns:
             Building: building wm entity
         """
-        return  Building(ref)
+        return Building(ref)
 
     def get_point(self, ref):
         """Summary
-        
+
         Args:
             ref (id, Node): point id or OSM node
-        
+
         Returns:
             Point: point wm entity
         """
-        return  Point(ref)
+        return Point(ref)
 
     def get_shape(self, ref):
         """Summary
-        
+
         Args:
             ref (id, Node[]): point id or OSM nodes
-        
+
         Returns:
             Shape: shape wm entity
         """
-        return  Shape(ref)
-    
+        return Shape(ref)

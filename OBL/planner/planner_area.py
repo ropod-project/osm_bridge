@@ -1,5 +1,4 @@
 from OBL.structs.wm.area import Area
-from OBL.structs.wm.area import Door
 
 
 class PlannerArea(Area):
