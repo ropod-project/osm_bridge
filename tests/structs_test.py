@@ -1,7 +1,8 @@
 from OBL.structs.osm.node import Node
 from OBL.structs.osm.way import Way
-from OBL.structs.osm.relation import Relation, Member
+from OBL.structs.osm.relation import Relation
 import unittest
+
 
 class TestStructs(unittest.TestCase):
 
@@ -14,10 +15,10 @@ class TestStructs(unittest.TestCase):
             "id": 4865,
             "lat": 50.1362318,
             "lon": 8.6475163,
-            "tags": 
-              {
-                  "highway": "elevator"
-              }
+            "tags":
+            {
+                "highway": "elevator"
+            }
         }
         n = Node(data)
         self.assertEqual(n.id, 4865)
@@ -25,7 +26,7 @@ class TestStructs(unittest.TestCase):
         self.assertEqual(n.lon, 8.6475163)
 
     def test_way(self):
-        data =  {
+        data = {
             "type": "way",
             "id": 499,
             "nodes": [
@@ -35,11 +36,11 @@ class TestStructs(unittest.TestCase):
                 2521,
                 2518
             ],
-            "tags": 
-              {
+            "tags":
+            {
                 "indoor": "wall",
                 "level": "-1"
-              }
+            }
         }
         w = Way(data)
         self.assertEqual(w.id, 499)

@@ -1,9 +1,11 @@
 from OBL.structs.osm.tag import Tag
 
+
 class Node(object):
     '''
     OSM node
     '''
+
     def __init__(self, elm):
         element = elm
         self.id = element.get('id')

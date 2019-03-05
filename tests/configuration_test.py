@@ -2,6 +2,7 @@ from OBL import OSMAdapter
 
 import unittest
 
+
 class TestConfiguration(unittest.TestCase):
 
     def setUp(self):

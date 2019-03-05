@@ -1,6 +1,5 @@
 from OBL.planner.visited_node import VisitedNode
 from OBL.planner.planner_node import PlannerNode
-from OBL.planner.planner_connection import PlannerConnection
 from heapq import heappop, heappush, heapify
 from math import sin, radians, cos, atan2, sqrt
 
@@ -12,8 +11,8 @@ class Router(object):
         self.to = to
         self.connections = connections
         self.path_distance = 0
-        self.relax_traffic_rules = kwargs.get("relax_traffic_rules",False)
-        self.blocked_connections = kwargs.get("blocked_connections",[])
+        self.relax_traffic_rules = kwargs.get("relax_traffic_rules", False)
+        self.blocked_connections = kwargs.get("blocked_connections", [])
         self._update_data()
 
     def _update_data(self):
@@ -23,8 +22,8 @@ class Router(object):
             for connection in self.connections:
                 if n1 in connection.nodes:
                     idx = connection.nodes.index(n1)
-                    if len(connection.nodes) > idx+1:
-                        if connection.nodes[idx+1] == n2:
+                    if len(connection.nodes) > idx + 1:
+                        if connection.nodes[idx + 1] == n2:
                             self.connections.remove(connection)
 
     def route(self):
@@ -51,7 +50,8 @@ class Router(object):
                 self.path_distance = selected.g
                 break
         else:
-            raise Exception("Couldn't plan the path. Error in node id {}".format(selected.node.id))
+            raise Exception(
+                "Couldn't plan the path. Error in node id {}".format(selected.node.id))
             return False
 
         while selected:
@@ -78,12 +78,12 @@ class Router(object):
 
         if forward:
             # walk_nodes = way.nodes[index + 1:index + 100]
-            walk_nodes = way.nodes[index+1:index+2]
-        else:            
+            walk_nodes = way.nodes[index + 1:index + 2]
+        else:
             if index == 0:
                 # We're at the beginning of the path.
                 return
-            walk_nodes = way.nodes[index-1:index ]
+            walk_nodes = way.nodes[index - 1:index]
         # print("Found %d steps on %d" % (len(walk_nodes), way.id))
 
         g = 0
@@ -117,7 +117,8 @@ class Router(object):
                 self.heap.pop()
                 heapify(self.heap)
                 break
-            node = VisitedNode(step, parent=from_, g=g, h=self.path_estimate(step, self.to))
+            node = VisitedNode(step, parent=from_, g=g,
+                               h=self.path_estimate(step, self.to))
             heappush(self.heap, (node.f, node))
             # print("    sqrt %s" % node)
             from_ = node
@@ -125,9 +126,9 @@ class Router(object):
     def is_way_section_accessible(self, way, from_, to):
         if way.nodes.index(from_) > way.nodes.index(to):
             if self.relax_traffic_rules:
-                return True 
+                return True
             if way.oneway:
-                return False 
+                return False
             # print("x %(way)s is one-way" % {'way': way.id})
         return True
 
@@ -143,7 +144,8 @@ class Router(object):
         R = 6371000  # radius of the earth
         dlat = radians(p2[0]) - radians(p1[0])
         dlon = radians(p2[1]) - radians(p1[1])
-        a = (sin(dlat / 2)) ** 2 + cos(radians(p1[0])) * cos(radians(p2[0])) * (sin(dlon / 2)) ** 2
+        a = (sin(dlat / 2)) ** 2 + \
+            cos(radians(p1[0])) * cos(radians(p2[0])) * (sin(dlon / 2)) ** 2
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
         return R * c
 

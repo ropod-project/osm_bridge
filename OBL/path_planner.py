@@ -10,23 +10,23 @@ class PathPlanner(object):
 
     """Summary
     Provides methods for path planning, calculating estimated path distance and for configurating the path planner
-    
+
     Attributes:
         global_path_planner (GlobalPathPlanner): plans global path 
         logger (): logger
         navigation_path_planner (NavigationPathPlanner): plans local navigation path for robot to follow
         osm_bridge (OSMBridge): bridge between world model and OSM
     """
-    
+
     # default values
     _debug = False
 
     def __init__(self, osm_bridge, *args, **kwargs):
         """Summary
-        
+
         Args:
             osm_bridge (OSMBridge): bridge between world model and OSM
-        
+
         Raises:
             Exception: Description
         """
@@ -43,12 +43,12 @@ class PathPlanner(object):
         self._coordinate_system = 'cartesian'
 
         self.logger = logging.getLogger("PathPlanner")
-        if kwargs.get("debug", self._debug):            
+        if kwargs.get("debug", self._debug):
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
     def set_building(self, building_ref):
         """Summary
-        
+
         Args:
             building_ref (int/string): uuid or semantic name of the building
         """
@@ -57,14 +57,13 @@ class PathPlanner(object):
 
     def set_coordinate_system(self, coordinate_system):
         """Summary
-        
+
         Args:
             coordinate_system (string): spherical/cartesian
         """
         self._coordinate_system = coordinate_system
 
-
-    def get_path_plan(self,start_floor='', destination_floor='', start_area='', destination_area='', *args, **kwargs):
+    def get_path_plan(self, start_floor='', destination_floor='', start_area='', destination_area='', *args, **kwargs):
         """Summary
         Plans detailed navigation path for robot
         Args:
@@ -82,7 +81,7 @@ class PathPlanner(object):
 
         Returns:
             TYPE: navigation path
-        
+
         Raises:
             Exception: can raise multiple exceptions
         """
@@ -97,28 +96,36 @@ class PathPlanner(object):
         destination_task = kwargs.get("destination_task")
         robot_position = kwargs.get("robot_position")
 
-        self.navigation_path_planner.blocked_connections = kwargs.get("blocked_connections",[])
-        self.navigation_path_planner.relax_traffic_rules = kwargs.get("relax_traffic_rules", False)
+        self.navigation_path_planner.blocked_connections = kwargs.get(
+            "blocked_connections", [])
+        self.navigation_path_planner.relax_traffic_rules = kwargs.get(
+            "relax_traffic_rules", False)
 
         if not start_local_area_ref and not robot_position:
-            raise Exception("Start local area ref or robot position is required to determine starting position") 
+            raise Exception(
+                "Start local area ref or robot position is required to determine starting position")
 
         if not destination_local_area_ref and not destination_task:
-            raise Exception("Destination local area ref or destination task is required to determine destination")
+            raise Exception(
+                "Destination local area ref or destination task is required to determine destination")
 
         isLatlong = True if self._coordinate_system == 'spherical' else False
 
         start_local_area = None
         if not start_local_area_ref:
-            start_local_area = self.local_area_finder.get_local_area(robot_position[0], robot_position[1], area_name=start_area, isLatlong=isLatlong)
+            start_local_area = self.local_area_finder.get_local_area(
+                robot_position[0], robot_position[1], area_name=start_area, isLatlong=isLatlong)
         else:
-            start_local_area = self.osm_bridge.get_local_area(start_local_area_ref)
+            start_local_area = self.osm_bridge.get_local_area(
+                start_local_area_ref)
 
         destination_local_area = None
         if not destination_local_area_ref:
-            destination_local_area = self.local_area_finder.get_local_area(area_name=destination_area, behaviour=destination_task)
+            destination_local_area = self.local_area_finder.get_local_area(
+                area_name=destination_area, behaviour=destination_task)
         else:
-            destination_local_area = self.osm_bridge.get_local_area(destination_local_area_ref)
+            destination_local_area = self.osm_bridge.get_local_area(
+                destination_local_area_ref)
 
         start_floor = self.osm_bridge.get_floor(start_floor)
         destination_floor = self.osm_bridge.get_floor(destination_floor)
@@ -126,13 +133,14 @@ class PathPlanner(object):
         start_area = self.osm_bridge.get_area(start_area)
         destination_area = self.osm_bridge.get_area(destination_area)
 
-        global_path = self.global_path_planner.plan(start_floor, destination_floor, start_area, destination_area, elevators)
-        navigation_path = self.navigation_path_planner.plan(start_floor, destination_floor, start_local_area, destination_local_area, global_path)
+        global_path = self.global_path_planner.plan(
+            start_floor, destination_floor, start_area, destination_area, elevators)
+        navigation_path = self.navigation_path_planner.plan(
+            start_floor, destination_floor, start_local_area, destination_local_area, global_path)
 
         return navigation_path
 
-
-    def get_estimated_path_distance(self,start_floor='', destination_floor='', start_area='', destination_area='', *args, **kwargs):
+    def get_estimated_path_distance(self, start_floor='', destination_floor='', start_area='', destination_area='', *args, **kwargs):
         """Summary
         Returns estimated path distance in Kms
         Args:
@@ -140,7 +148,7 @@ class PathPlanner(object):
             destination_floor (str): destination floor
             start_area (str): start area
             destination_area (str): destination area
-        
+
         Returns:
             TYPE: path distance (double)
         """
@@ -152,10 +160,7 @@ class PathPlanner(object):
         start_area = self.osm_bridge.get_area(start_area)
         destination_area = self.osm_bridge.get_area(destination_area)
 
-        global_path = self.global_path_planner.plan(start_floor, destination_floor, start_area, destination_area, elevators)
+        global_path = self.global_path_planner.plan(
+            start_floor, destination_floor, start_area, destination_area, elevators)
 
         return global_path.path_distance
-
-
-
-        

@@ -1,8 +1,8 @@
 from OBL.structs.osm.node import Node
-from OBL.structs.osm.tag import Tag
 from OBL.structs.osm.way import Way
 from OBL.structs.osm.relation import Relation
 import logging
+
 
 class WMEntity(object):
 
@@ -24,7 +24,7 @@ class WMEntity(object):
     def __getattr__(self, item):
         return None
 
-    def _check_type(self,ref):
+    def _check_type(self, ref):
         if isinstance(ref, int):
             return "id"
         elif isinstance(ref, str):

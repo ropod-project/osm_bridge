@@ -1,20 +1,11 @@
 import logging
 import sys
-from OBL.osm_bridge import OSMBridge
-from OBL.structs.wm.point import Point
-from OBL.structs.wm.room import Room
-from OBL.structs.wm.corridor import Corridor
-from OBL.structs.wm.elevator import Elevator
-from OBL.structs.wm.stairs import Stairs
-from OBL.structs.wm.area import Area
 from OBL.structs.wm.local_area import LocalArea
-from OBL.structs.wm.building import Building
 from OBL.structs.wm.floor import Floor
 from OBL.structs.wm.door import Door
 from OBL.planner.router import Router
 from OBL.planner.planner_node import PlannerNode
 from OBL.planner.planner_connection import PlannerConnection
-from OBL.planner.planner_area import PlannerArea
 
 
 class NavigationPathPlanner(object):
@@ -27,13 +18,13 @@ class NavigationPathPlanner(object):
         path_distance (double): distance in km
         topological_path (list): list of points
     """
-    
+
     # default values
     _debug = False
 
     def __init__(self, osm_bridge, *args, **kwargs):
         """Summary
-        
+
         Args:
             osm_bridge (OSMBridge): bridge between wm and osm
         """
@@ -48,7 +39,6 @@ class NavigationPathPlanner(object):
         if kwargs.get("debug", self._debug):
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-
     def plan(self, start_floor, destination_floor, start, destination, global_path):
         """Summary
         Plans navigation path using A* planner with straight line distance heuristics
@@ -58,10 +48,10 @@ class NavigationPathPlanner(object):
             destination_floor (Floor): destination floor wm entity
             start (LocalArea): start local area wm entity
             destination (LocalArea): destination local area wm entity
-        
+
         Returns:
             [PlannerArea]: list of planner areas 
-        
+
         Raises:
             Exception: multiple exceptions
         """
@@ -69,10 +59,12 @@ class NavigationPathPlanner(object):
             raise Exception("Invalid floor type")
 
         if not isinstance(start, LocalArea):
-            raise Exception("For planning navigation path start position must be local area")
+            raise Exception(
+                "For planning navigation path start position must be local area")
 
         if not isinstance(destination, LocalArea):
-            raise Exception("For planning navigation path destination position must be local area")
+            raise Exception(
+                "For planning navigation path destination position must be local area")
 
         self.path_distance = 0
         self.topological_path = []
@@ -95,22 +87,22 @@ class NavigationPathPlanner(object):
 
         blocked_connections_nodes = []
         for blocked_connection in self.blocked_connections:
-            blocked_connections_nodes.append([self.osm_bridge.get_local_area(blocked_connection[0]).topology_id,\
-             self.osm_bridge.get_local_area(blocked_connection[1]).topology_id])
+            blocked_connections_nodes.append([self.osm_bridge.get_local_area(blocked_connection[0]).topology_id,
+                                              self.osm_bridge.get_local_area(blocked_connection[1]).topology_id])
 
-        router = Router(start_node, destination_node, connections, \
-            blocked_connections=blocked_connections_nodes,\
-            relax_traffic_rules=self.relax_traffic_rules)
+        router = Router(start_node, destination_node, connections,
+                        blocked_connections=blocked_connections_nodes,
+                        relax_traffic_rules=self.relax_traffic_rules)
         router.route()
 
         local_path = router.nodes
 
         prev_idx = -1
         for local_pt in local_path:
-            if local_pt.node.parent_type == "local_area" :
+            if local_pt.node.parent_type == "local_area":
                 local_area = LocalArea(local_pt.node)
-                local_area.geometry # to get level info
-            else :
+                local_area.geometry  # to get level info
+            else:
                 door = Door(local_pt.node)
                 door.geometry
                 global_path[prev_idx].exit_door = door
@@ -119,10 +111,9 @@ class NavigationPathPlanner(object):
             global_pt = global_path[prev_idx]
             if global_pt.get_local_area_ids() is not None and local_area.id in global_pt.get_local_area_ids():
                 global_pt.navigation_areas.append(local_area)
-            else :
+            else:
                 prev_idx += 1
                 global_pt = global_path[prev_idx]
                 global_pt.navigation_areas.append(local_area)
-
 
         return global_path

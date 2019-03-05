@@ -1,10 +1,6 @@
 import logging
 import sys
-from OBL.structs.wm.point import Point
-from OBL.structs.wm.room import Room
-from OBL.structs.wm.corridor import Corridor
-from OBL.structs.wm.area import Area
-from OBL.structs.wm.floor import Floor
+
 
 class LocalAreaFinder(object):
 
@@ -18,7 +14,7 @@ class LocalAreaFinder(object):
         self.osm_bridge = osm_bridge
 
         self.logger = logging.getLogger("LocalAreaFinder")
-        if kwargs.get("debug", self._debug):            
+        if kwargs.get("debug", self._debug):
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
     def get_local_area(self, *args, **kwargs):
@@ -40,16 +36,16 @@ class LocalAreaFinder(object):
         floor_name = kwargs.get("floor_name")
         pointX = kwargs.get("x")
         pointY = kwargs.get("y")
-        behaviour =kwargs.get("behaviour")
+        behaviour = kwargs.get("behaviour")
         self._isLatlong = kwargs.get("isLatlong", self._isLatlong)
-        if floor_name == None and area_name == None :
+        if floor_name is None and area_name is None:
             return None
-        if behaviour == None and (pointX == None or pointY == None) :
+        if behaviour is None and (pointX is None or pointY is None):
             return None
 
-        if behaviour == None :
+        if behaviour is None:
             return self._get_local_area_from_position(pointX, pointY, area_name, floor_name)
-        else :
+        else:
             return self._get_local_area_from_behaviour(area_name, floor_name, behaviour)
 
     def _get_local_area_from_position(self, pointX, pointY, area_name, floor_name):
@@ -62,29 +58,29 @@ class LocalAreaFinder(object):
         :returns: LocalArea object
 
         """
-        if self._isLatlong :            
+        if self._isLatlong:
             x, y = self.osm_bridge.convert_to_cartesian(pointX, pointY)
             self.logger.debug(x)
             self.logger.debug(y)
-        else :
+        else:
             x, y = pointX, pointY
 
-        if area_name == None :
+        if area_name is None:
             area_object = self._get_area_object(x, y, floor_name)
 #           just in case the robot position is outside currently known areas
-            if area_object == None :
+            if area_object is None:
                 return None
-        else :
+        else:
             area_object = self.osm_bridge.get_area(area_name)
 
-        self.logger.debug("Area ID: "+str(area_object.id))
+        self.logger.debug("Area ID: " + str(area_object.id))
         local_areas = area_object.local_areas
-        for local_area in local_areas :
+        for local_area in local_areas:
             self.logger.debug(local_area.ref)
             geometry = local_area.geometry
             self.logger.debug(geometry)
             self.logger.debug(geometry.points)
-            if self.is_inside_polygon(x, y, geometry.points) :
+            if self.is_inside_polygon(x, y, geometry.points):
                 return local_area
         return self._get_nearest_local_area(x, y, local_areas)
 
@@ -97,20 +93,20 @@ class LocalAreaFinder(object):
         :returns: LocalArea object
 
         """
-        if area_name == None :
+        if area_name is None:
             return self._get_local_area_from_floor_with_behaviour(query_behaviour, floor_name)
-        else :
+        else:
             area_object = self.osm_bridge.get_area(area_name)
 
-        self.logger.debug("Area ID: "+str(area_object.id))
+        self.logger.debug("Area ID: " + str(area_object.id))
         local_areas = area_object.local_areas
-        for local_area in local_areas :
+        for local_area in local_areas:
             self.logger.debug(local_area.ref)
-            local_area.geometry # need to call geometry because the tag is owned by it
-            if local_area.behaviour == query_behaviour :
+            local_area.geometry  # need to call geometry because the tag is owned by it
+            if local_area.behaviour == query_behaviour:
                 return local_area
         return None
-    
+
     def _get_nearest_local_area(self, x, y, local_areas):
         """returns the local area that is nearest to the point (x, y)
 
@@ -122,14 +118,15 @@ class LocalAreaFinder(object):
         """
         min_dist = 0
         min_dist_local_area = None
-        for local_area in local_areas :
+        for local_area in local_areas:
             topology = local_area.topology
-            if topology.coordinate_system == "spherical" :
-                cart_x, cart_y = self.osm_bridge.convert_to_cartesian(topology.lat, topology.lon)
-            else :
+            if topology.coordinate_system == "spherical":
+                cart_x, cart_y = self.osm_bridge.convert_to_cartesian(
+                    topology.lat, topology.lon)
+            else:
                 cart_x, cart_y = topology.x, topology.y
             dist = self._calculate_cartesian_distance(x, y, cart_x, cart_y)
-            if min_dist_local_area == None or dist < min_dist :
+            if min_dist_local_area is None or dist < min_dist:
                 min_dist = dist
                 min_dist_local_area = local_area
         return min_dist_local_area
@@ -146,16 +143,17 @@ class LocalAreaFinder(object):
         xPoints = []
         yPoints = []
 
-        for point in points[:-1] :      # first and last point in points is same
-            if point.coordinate_system == "spherical" :
-                cart_x, cart_y = self.osm_bridge.convert_to_cartesian(point.lat, point.lon)
-            else :
+        for point in points[:-1]:      # first and last point in points is same
+            if point.coordinate_system == "spherical":
+                cart_x, cart_y = self.osm_bridge.convert_to_cartesian(
+                    point.lat, point.lon)
+            else:
                 cart_x, cart_y = point.x, point.y
             xPoints.append(cart_x)
             yPoints.append(cart_y)
         return self._ray_tracing_algorithm(xPoints, yPoints, x, y)
 
-    def _ray_tracing_algorithm(self, vertx, verty, testx, testy) :
+    def _ray_tracing_algorithm(self, vertx, verty, testx, testy):
         """Checks if the point (textx, testy) is inside polygon defined by list vertx and verty
         Taken from : https://stackoverflow.com/a/2922778/10460994
         Implements ray tracing algorithm.
@@ -169,11 +167,11 @@ class LocalAreaFinder(object):
         """
         j = -1
         counter = 0
-        for i in range(len(vertx)) :
+        for i in range(len(vertx)):
             numerator = testy - verty[i]
             denominator = (verty[j] - verty[i])
             temp = (vertx[j] - vertx[i]) * (numerator / denominator) + vertx[i]
-            if (verty[i] > testy) != (verty[j] > testy) and (testx < temp) :
+            if (verty[i] > testy) != (verty[j] > testy) and (testx < temp):
                 counter += 1
             j = i
         return (counter % 2 == 1)
@@ -188,7 +186,7 @@ class LocalAreaFinder(object):
         :returns: float
 
         """
-        return ((x2-x1)**2 + (y2-y1)**2)**0.5
+        return ((x2 - x1)**2 + (y2 - y1)**2)**0.5
 
     def _get_area_object(self, x, y, floor_name):
         """get the Area object in which the point (x, y) is located
@@ -201,21 +199,22 @@ class LocalAreaFinder(object):
         """
         self.logger.debug(floor_name)
         floor_object = self.osm_bridge.get_floor(floor_name)
-        self.logger.debug("Floor ID: "+str(floor_object.id))
+        self.logger.debug("Floor ID: " + str(floor_object.id))
         areas = floor_object.corridors
         areas.extend(floor_object.rooms)
         distances = []
-        for area in areas :
+        for area in areas:
             self.logger.debug(area.ref)
             topology = area.topology
-            if topology.coordinate_system == "spherical" :
-                cart_x, cart_y = self.osm_bridge.convert_to_cartesian(topology.lat, topology.lon)
-            else :
+            if topology.coordinate_system == "spherical":
+                cart_x, cart_y = self.osm_bridge.convert_to_cartesian(
+                    topology.lat, topology.lon)
+            else:
                 cart_x, cart_y = topology.x, topology.y
             dist = self._calculate_cartesian_distance(x, y, cart_x, cart_y)
             distances.append(dist)
         self.logger.debug(distances)
-        for i in range(5) :
+        for i in range(5):
             ind = distances.index(min(distances))
             probable_area = areas.pop(ind)
             distances.pop(ind)
@@ -223,7 +222,7 @@ class LocalAreaFinder(object):
             geometry = probable_area.geometry
             self.logger.debug(geometry)
             self.logger.debug(geometry.points)
-            if self.is_inside_polygon(x, y, geometry.points) :
+            if self.is_inside_polygon(x, y, geometry.points):
                 return probable_area
 #        return self.osm_bridge.get_area("AMK_B_L-1_C29")
         return None
@@ -238,16 +237,16 @@ class LocalAreaFinder(object):
         """
         self.logger.debug(floor_name)
         floor_object = self.osm_bridge.get_floor(floor_name)
-        self.logger.debug("Floor ID: "+str(floor_object.id))
+        self.logger.debug("Floor ID: " + str(floor_object.id))
         areas = floor_object.corridors
         areas.extend(floor_object.rooms)
-        for area in areas :
+        for area in areas:
             self.logger.debug(area.ref)
             local_areas = area.local_areas
-            if local_areas == None :
+            if local_areas is None:
                 continue
-            for local_area in local_areas :
-                local_area.geometry # the tags belong to geometry
-                if local_area.behaviour == query_behaviour :
+            for local_area in local_areas:
+                local_area.geometry  # the tags belong to geometry
+                if local_area.behaviour == query_behaviour:
                     return local_area
         return None

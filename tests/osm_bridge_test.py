@@ -1,10 +1,9 @@
 from OBL import OSMBridge
 from OBL.structs.wm.point import Point
-from OBL.structs.wm.shape import Shape
 from OBL import OSMAdapter
-from OBL.structs.osm.node import Node
 
 import unittest
+
 
 class TestOSMBridge(unittest.TestCase):
 
@@ -13,7 +12,8 @@ class TestOSMBridge(unittest.TestCase):
         self.osm_adapter = OSMAdapter()
 
     def test_point(self):
-        node_result,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4865],data_type='node')
+        node_result, __, __ = self.osm_adapter.get_osm_element_by_id(
+            ids=[4865], data_type='node')
         Point.coordinate_system = 'spherical'
         p = self.osm_bridge.get_point(node_result[0])
         assert p.lat is not None
@@ -30,30 +30,30 @@ class TestOSMBridge(unittest.TestCase):
         s = self.osm_bridge.get_shape(1021)
         assert len(s.points) > 0
 
-
-    def test_get_feature_by_id(self): 
+    def test_get_feature_by_id(self):
         f = self.osm_bridge.get_feature(4865)
         self.assertEqual(f.id, 4865)
 
-    def test_get_side_by_id(self): 
+    def test_get_side_by_id(self):
         self.assertRaises(Exception, self.osm_bridge.get_side, 99999)
 
     def test_get_door_by_id(self):
         d = self.osm_bridge.get_door(161)
-        self.assertEqual(d.id,161)
+        self.assertEqual(d.id, 161)
         assert d.geometry is not None
         assert d.topology is not None
         assert d.sides is None
 
     def test_get_door_by_name(self):
         d = self.osm_bridge.get_door('AMK_B_L-1_C2_Door1')
-        self.assertEqual(d.id,161)
+        self.assertEqual(d.id, 161)
         assert d.geometry is not None
         assert d.topology is not None
         assert d.sides is None
 
-    def test_get_door_from_point(self) :
-        node_result,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4978],data_type='node')
+    def test_get_door_from_point(self):
+        node_result, __, __ = self.osm_adapter.get_osm_element_by_id(
+            ids=[4978], data_type='node')
         Point.coordinate_system = 'cartesian'
         Point.global_origin = [50.1363485, 8.6474024]
         p = Point(node_result[0])
@@ -75,8 +75,9 @@ class TestOSMBridge(unittest.TestCase):
         assert l.geometry is not None
         assert l.topology is not None
 
-    def test_get_local_area_from_point(self) :
-        node_result,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4743],data_type='node')
+    def test_get_local_area_from_point(self):
+        node_result, __, __ = self.osm_adapter.get_osm_element_by_id(
+            ids=[4743], data_type='node')
         Point.coordinate_system = 'cartesian'
         Point.global_origin = [50.1363485, 8.6474024]
         p = Point(node_result[0])
@@ -108,8 +109,9 @@ class TestOSMBridge(unittest.TestCase):
         assert r.geometry is not None
         assert r.topology is not None
 
-    def test_get_room_from_point(self) :
-        node_result,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4678],data_type='node')
+    def test_get_room_from_point(self):
+        node_result, __, __ = self.osm_adapter.get_osm_element_by_id(
+            ids=[4678], data_type='node')
         Point.coordinate_system = 'cartesian'
         Point.global_origin = [50.1363485, 8.6474024]
         p = Point(node_result[0])
@@ -136,8 +138,9 @@ class TestOSMBridge(unittest.TestCase):
         assert r.geometry is not None
         assert r.topology is not None
 
-    def test_get_corridor_from_point(self) :
-        node_result,__,__ = self.osm_adapter.get_osm_element_by_id(ids=[4666],data_type='node')
+    def test_get_corridor_from_point(self):
+        node_result, __, __ = self.osm_adapter.get_osm_element_by_id(
+            ids=[4666], data_type='node')
         Point.coordinate_system = 'cartesian'
         Point.global_origin = [50.1363485, 8.6474024]
         p = Point(node_result[0])
@@ -169,7 +172,6 @@ class TestOSMBridge(unittest.TestCase):
         assert e.id == 5
         la = e.local_area('AMK_B_E1_LA1')
         assert la.id == 163
-
 
     def test_get_floor(self):
         f = self.osm_bridge.get_floor(164)
