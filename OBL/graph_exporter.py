@@ -3,18 +3,15 @@ from OBL import OSMBridge
 import utm
 import logging
 import sys
-import os
 import matplotlib.pyplot as plt
 
 
 class GraphExporter(object):
 
-    """Generates occupancy grids for a map based on the OSM map
+    """Used for exporting floor and area level graphs
     """
 
     _debug = False
-    _dirname = "~/graph"
-    _file_name = "graph"
     _server_ip = "127.0.0.1"
     _osm_bridge = None
     _server_port = 8000
@@ -27,8 +24,6 @@ class GraphExporter(object):
         :osm_bridge: OSMBridge object
         :server_ip(str, optional): ip address of overpass server
         :server_port(int, optional): overpass server port
-        :dirname: String
-        :filename: String
         :local_offset: [float, float]
         :debug: boolean
         """
@@ -52,8 +47,6 @@ class GraphExporter(object):
             self._global_origin = self._osm_bridge.global_origin
 
         self._local_offset = kwargs.get("local_offset", self._local_offset)
-        self._dirname = kwargs.get("dirname", self._dirname)
-        self._file_name = kwargs.get("filename", self._file_name)
         self._global_origin_cartesian = utm.from_latlon(
             self._global_origin[0], self._global_origin[1])
 
@@ -61,25 +54,24 @@ class GraphExporter(object):
         if kwargs.get("debug", self._debug):
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-    def get_global_topological_graph(self, floor_ref):
+    def get_global_topological_graph(self, floor_ref, visualise=False):
         floor = self._osm_bridge.get_floor(floor_ref)
         global_connections = floor.connections
         graph = nx.Graph()
         for global_connection in global_connections:
-            for point in global_connection.points:
-                graph.add_node(point.id, pos=(point.x, point.y))
-        # print(graph.nodes.data())
-
-        for global_connection in global_connections:
             for i, point in enumerate(global_connection.points):
+                graph.add_node(point.id, pos=(point.x, point.y))
+
                 if i is not 0:
                     graph.add_edge(global_connection.points[
                                    i - 1].id, point.id)
+        # print(graph.nodes.data())
         # print(graph.edges.data())
-        self.plot_graph(graph)
+        if visualise:
+            self.visualize_graph(graph)
         return graph
 
-    def get_local_topological_graph(self, floor_ref):
+    def get_local_topological_graph(self, floor_ref, visualise=False):
         floor = self._osm_bridge.get_floor(floor_ref)
         areas = []
         if floor.rooms is not None:
@@ -92,28 +84,37 @@ class GraphExporter(object):
         for area in areas:
             if area.connections is not None:
                 for local_connection in area.connections:
-                    for point in local_connection.points:
+                    for i, point in enumerate(local_connection.points):
                         graph.add_node(point.id, pos=(point.x, point.y))
 
-        # print(graph.nodes.data())
-
-        for area in areas:
-            if area.connections is not None:
-                for local_connection in area.connections:
-                    for i, point in enumerate(local_connection.points):
                         if i is not 0:
                             graph.add_edge(local_connection.points[
                                            i - 1].id, point.id,
                                            oneway=local_connection.oneway)
-
+        # print(graph.nodes.data())
         # print(graph.edges.data())
-        self.plot_graph(graph)
+        if visualise:
+            self.visualize_graph(graph)
         return graph
 
-    def get_local_topological_graph_of_area(self, area_ref):
-        pass
+    def get_local_topological_graph_of_area(self, area_ref, visualise=False):
+        area = self._osm_bridge.get_area(area_ref)
+        graph = nx.Graph()
+        if area is not None:
+            if area.connections is not None:
+                for local_connection in area.connections:
+                    for i, point in enumerate(local_connection.points):
+                        graph.add_node(point.id, pos=(point.x, point.y))
 
-    def plot_graph(self, graph):
+                        if i is not 0:
+                            graph.add_edge(local_connection.points[
+                                           i - 1].id, point.id,
+                                           oneway=local_connection.oneway)
+        if visualise:
+            self.visualize_graph(graph)
+        return graph
+
+    def visualize_graph(self, graph):
         pos = nx.get_node_attributes(graph, 'pos')
-        nx.draw(graph, pos)   # default spring_layout
+        nx.draw(graph, pos)
         plt.show()
