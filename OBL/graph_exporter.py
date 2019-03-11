@@ -54,7 +54,7 @@ class GraphExporter(object):
         if kwargs.get("debug", self._debug):
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-    def get_global_topological_graph(self, floor_ref, visualise=False):
+    def get_global_topological_graph(self, floor_ref, visualize=False):
         floor = self._osm_bridge.get_floor(floor_ref)
         global_connections = floor.connections
         graph = nx.Graph()
@@ -67,11 +67,11 @@ class GraphExporter(object):
                                    i - 1].id, point.id)
         # print(graph.nodes.data())
         # print(graph.edges.data())
-        if visualise:
+        if visualize:
             self.visualize_graph(graph)
         return graph
 
-    def get_local_topological_graph(self, floor_ref, visualise=False):
+    def get_local_topological_graph(self, floor_ref, visualize=False):
         floor = self._osm_bridge.get_floor(floor_ref)
         areas = []
         if floor.rooms is not None:
@@ -93,11 +93,11 @@ class GraphExporter(object):
                                            oneway=local_connection.oneway)
         # print(graph.nodes.data())
         # print(graph.edges.data())
-        if visualise:
+        if visualize:
             self.visualize_graph(graph)
         return graph
 
-    def get_local_topological_graph_of_area(self, area_ref, visualise=False):
+    def get_local_topological_graph_of_area(self, area_ref, visualize=False):
         area = self._osm_bridge.get_area(area_ref)
         graph = nx.Graph()
         if area is not None:
@@ -110,7 +110,7 @@ class GraphExporter(object):
                             graph.add_edge(local_connection.points[
                                            i - 1].id, point.id,
                                            oneway=local_connection.oneway)
-        if visualise:
+        if visualize:
             self.visualize_graph(graph)
         return graph
 
