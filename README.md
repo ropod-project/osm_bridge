@@ -292,8 +292,6 @@ visualize_graph(graph):
 - graph : networkx graph
 ```
 
-```
-
 ## World model structs
 [wm](OBL/structs/wm/README.md)
 
