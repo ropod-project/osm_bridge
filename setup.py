@@ -10,5 +10,5 @@ setup(
     package_dir={'': '.'},
     author='Lakshadeep Naik',
     author_email='lakshadeep.naik@gmail.com',
-    install_requires=['utm','overpass','Pillow','pyyaml']
+    install_requires=['utm','overpass','Pillow','pyyaml','networkx']
     )
