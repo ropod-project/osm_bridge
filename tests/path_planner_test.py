@@ -109,6 +109,19 @@ class TestPathPlanner(unittest.TestCase):
         except:
             self.fail("In this case path shhould be successfully planned")
 
+    def test_get_estimated_path_distance(self):
+        path_planner = PathPlanner(self.osm_bridge)
+        path_planner.set_building('AMK')
+
+        try:
+            # even though connections are blocked since traffic rules are relaxed
+            # path planning should be successful in this case
+            distance = path_planner.get_estimated_path_distance(start_floor='AMK_L-1', destination_floor='AMK_L4',
+                                       start_area='AMK_D_L-1_C41', destination_area='AMK_B_L4_C1')
+            print("Path distance:", distance)
+        except:
+            self.fail("In this case path shhould be successfully planned")
+
 
 if __name__ == '__main__':
     unittest.main()
