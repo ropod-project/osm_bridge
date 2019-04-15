@@ -58,13 +58,16 @@ class GraphExporter(object):
         floor = self._osm_bridge.get_floor(floor_ref)
         global_connections = floor.connections
         graph = nx.Graph()
+        prev_area = None
         for global_connection in global_connections:
             for i, point in enumerate(global_connection.points):
-                graph.add_node(point.id, pos=(point.x, point.y))
+                area = self._osm_bridge.get_area(point)
+                graph.add_node(area.id, pos=(point.x, point.y),
+                               type=area.type, name=area.ref)
 
                 if i is not 0:
-                    graph.add_edge(global_connection.points[
-                                   i - 1].id, point.id)
+                    graph.add_edge(prev_area.id, area.id)
+                prev_area = area
         # print(graph.nodes.data())
         # print(graph.edges.data())
         if visualize:
@@ -80,18 +83,20 @@ class GraphExporter(object):
             areas = areas + floor.corridors
 
         graph = nx.Graph()
-
+        prev_local_area = None
         for area in areas:
             if area.connections is not None:
                 for local_connection in area.connections:
                     for i, point in enumerate(local_connection.points):
-                        graph.add_node(point.id, pos=(point.x, point.y))
-
+                        local_area = self._osm_bridge.get_local_area(point)
+                        local_area.geometry
+                        graph.add_node(local_area.id, pos=(point.x, point.y), parent_id=area.id, type=area.type,
+                                       name=local_area.ref, local_area_type=local_area.type, behaviour=local_area.behaviour)
                         if i is not 0:
-                            graph.add_edge(local_connection.points[
-                                           i - 1].id, point.id,
+                            graph.add_edge(prev_local_area.id, local_area.id,
                                            oneway=local_connection.oneway)
-        # print(graph.nodes.data())
+                        prev_local_area = local_area
+        print(graph.nodes.data())
         # print(graph.edges.data())
         if visualize:
             self.visualize_graph(graph)
@@ -104,7 +109,8 @@ class GraphExporter(object):
             if area.connections is not None:
                 for local_connection in area.connections:
                     for i, point in enumerate(local_connection.points):
-                        graph.add_node(point.id, pos=(point.x, point.y))
+                        graph.add_node(point.id, pos=(
+                            point.x, point.y), parent_id=area.id, type=area.type, )
 
                         if i is not 0:
                             graph.add_edge(local_connection.points[
