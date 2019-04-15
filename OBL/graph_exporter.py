@@ -54,7 +54,7 @@ class GraphExporter(object):
         if kwargs.get("debug", self._debug):
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-    def get_global_topological_graph(self, floor_ref, visualize=False):
+    def get_global_topological_graph(self, floor_ref, elevator_refs=None, visualize=False):
         floor = self._osm_bridge.get_floor(floor_ref)
         global_connections = floor.connections
         graph = nx.Graph()
@@ -74,51 +74,59 @@ class GraphExporter(object):
             self.visualize_graph(graph)
         return graph
 
-    def get_local_topological_graph(self, floor_ref, visualize=False):
+    def get_local_topological_graph(self, floor_ref, elevator_refs=None, visualize=False):
         floor = self._osm_bridge.get_floor(floor_ref)
         areas = []
+
         if floor.rooms is not None:
             areas = areas + floor.rooms
         if floor.corridors is not None:
             areas = areas + floor.corridors
 
+        if elevator_refs:
+            elevators = []
+            for elevator_ref in elevator_refs:
+                elevator = self._osm_bridge.get_elevator(elevator_ref)
+                elevators.append(elevator)
+            areas = areas + elevators
+
         graph = nx.Graph()
+    
+        for area in areas:
+            local_areas = area.local_areas
+            if local_areas is not None:
+                for local_area in local_areas:
+                    local_area.geometry
+                    point = local_area.topology
+                    graph.add_node(local_area.id, pos=(point.x, point.y), parent_id=area.id, type=area.type,
+                                   name=local_area.ref, behaviour=local_area.behaviour)
+            doors = area.doors
+            if doors is not None:
+                for door in doors:
+                    door.geometry
+                    point = door.topology
+                    graph.add_node(door.id, pos=(point.x, point.y), parent_id=area.id, type=area.type,
+                                   name=door.ref, behaviour=door.type)
+
         prev_local_area = None
         for area in areas:
-            if area.connections is not None:
-                for local_connection in area.connections:
+            local_connections = area.connections
+            if local_connections is not None:
+                for local_connection in local_connections:
                     for i, point in enumerate(local_connection.points):
                         local_area = self._osm_bridge.get_local_area(point)
-                        local_area.geometry
-                        graph.add_node(local_area.id, pos=(point.x, point.y), parent_id=area.id, type=area.type,
-                                       name=local_area.ref, local_area_type=local_area.type, behaviour=local_area.behaviour)
                         if i is not 0:
-                            graph.add_edge(prev_local_area.id, local_area.id,
-                                           oneway=local_connection.oneway)
+                            if(graph.has_node(prev_local_area.id) and graph.has_node(local_area.id)):
+                                graph.add_edge(prev_local_area.id, local_area.id,
+                                               oneway=local_connection.oneway)
                         prev_local_area = local_area
-        print(graph.nodes.data())
+    
+        # print(graph.nodes.data())
         # print(graph.edges.data())
         if visualize:
             self.visualize_graph(graph)
         return graph
 
-    def get_local_topological_graph_of_area(self, area_ref, visualize=False):
-        area = self._osm_bridge.get_area(area_ref)
-        graph = nx.Graph()
-        if area is not None:
-            if area.connections is not None:
-                for local_connection in area.connections:
-                    for i, point in enumerate(local_connection.points):
-                        graph.add_node(point.id, pos=(
-                            point.x, point.y), parent_id=area.id, type=area.type, )
-
-                        if i is not 0:
-                            graph.add_edge(local_connection.points[
-                                           i - 1].id, point.id,
-                                           oneway=local_connection.oneway)
-        if visualize:
-            self.visualize_graph(graph)
-        return graph
 
     def visualize_graph(self, graph):
         pos = nx.get_node_attributes(graph, 'pos')
