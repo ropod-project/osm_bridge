@@ -22,15 +22,11 @@ class TestGraphExporter(unittest.TestCase):
 
     def test_get_global_topological_graph(self):
         graph_exporter = GraphExporter(osm_bridge=self.osm_bridge, local_offset=self.local_offset, debug=self.debug)
-        graph_exporter.get_global_topological_graph('AMK_L-1', visualize=False)
+        graph_exporter.get_global_topological_graph('AMK_L4', visualize=False)
 
     def test_get_local_topological_graph(self):
         graph_exporter = GraphExporter(osm_bridge=self.osm_bridge, local_offset=self.local_offset, debug=self.debug)
-        graph_exporter.get_local_topological_graph('AMK_L-1', visualize=False)
-
-    def test_get_area_local_topological_graph(self):
-        graph_exporter = GraphExporter(osm_bridge=self.osm_bridge, local_offset=self.local_offset, debug=self.debug)
-        graph_exporter.get_local_topological_graph_of_area('AMK_D_L-1_C41', visualize=False)
+        graph_exporter.get_local_topological_graph('AMK', 'AMK_L4', visualize=False)
 
 
 if __name__ == '__main__':

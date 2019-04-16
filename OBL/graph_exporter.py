@@ -64,7 +64,6 @@ class GraphExporter(object):
                 area = self._osm_bridge.get_area(point)
                 graph.add_node(area.id, pos=(point.x, point.y),
                                type=area.type, name=area.ref)
-
                 if i is not 0:
                     graph.add_edge(prev_area.id, area.id)
                 prev_area = area
@@ -74,7 +73,8 @@ class GraphExporter(object):
             self.visualize_graph(graph)
         return graph
 
-    def get_local_topological_graph(self, floor_ref, elevator_refs=None, visualize=False):
+    def get_local_topological_graph(self, building_ref, floor_ref, visualize=False):
+        building = self._osm_bridge.get_building('AMK')
         floor = self._osm_bridge.get_floor(floor_ref)
         areas = []
 
@@ -83,11 +83,8 @@ class GraphExporter(object):
         if floor.corridors is not None:
             areas = areas + floor.corridors
 
-        if elevator_refs:
-            elevators = []
-            for elevator_ref in elevator_refs:
-                elevator = self._osm_bridge.get_elevator(elevator_ref)
-                elevators.append(elevator)
+        elevators = building.elevators
+        if elevators:
             areas = areas + elevators
 
         graph = nx.Graph()
