@@ -257,7 +257,7 @@ generate_map(floor_ref, building_ref):
 ```
 
 ### GraphExporter
-Exports topological graphs at floor/area level in `networkx` format
+Exports topological graphs at floor level in `networkx` format
 
 * Exporting global topological graph at floor level
 ```
@@ -270,6 +270,7 @@ return nextworkx graph
 * Exporting local topological graph at floor level (with traffic rules)
 ```
 get_local_topological_graph(floor_ref, visualize=False):
+- building_ref: building semantic ref (string) or OSM uuid (int)
 - floor_ref : floor semantic ref (string) or OSM uuid (int)
 - visualize : it true graph is plotted using matplotlib
 return nextworkx graph
@@ -278,15 +279,8 @@ NOTE: In OSM local topological graphs can contain directed & undirected edges. `
 local topological graphs are returned as undirected graphs with `oneway` attribute which specifies if particular edge is 
 directed/undirected.
 
-* Exporting local topological graph at area level (with traffic rules)
-```
-get_local_topological_graph_of_area(area_ref, visualize=False):
-- area_ref : area/room/corridor semantic ref (string) or OSM uuid (int)
-- visualize : it true graph is plotted using matplotlib
-return nextworkx graph
-```
 
-* Visualize expoerted graph
+* Visualize exported graph
 ```
 visualize_graph(graph):
 - graph : networkx graph
