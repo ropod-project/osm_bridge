@@ -10,8 +10,8 @@ class TestPathPlanner(unittest.TestCase):
 
     def setUp(self):
         self.osm_bridge = OSMBridge()
-#         self.global_origin = [50.7800401, 7.18226]  # uni (coordinates of node id 1307)
-#         self.osm_bridge = OSMBridge(global_origin=self.global_origin)
+        # self.global_origin = [50.7800401, 7.18226]  # uni (coordinates of node id 1307)
+        # self.osm_bridge = OSMBridge(global_origin=self.global_origin)
         self.global_path_planner = GlobalPathPlanner(self.osm_bridge)
         self.navigation_path_planner = NavigationPathPlanner(self.osm_bridge)
         self.semantic_global_path = None
@@ -57,30 +57,29 @@ class TestPathPlanner(unittest.TestCase):
     def test_overall_path_planner(self):
         path_planner = PathPlanner(self.osm_bridge)
         path_planner.set_building('AMK')
-        path = path_planner.get_path_plan(start_floor='AMK_L-1', destination_floor='AMK_L4', start_area='AMK_D_L-1_C41',
-                                          destination_area='AMK_B_L4_C1', start_local_area='AMK_D_L-1_C41_LA1', destination_local_area='AMK_B_L4_C1_LA1')
-
-#         for pt in path:
-#             print(pt)
-#             print(pt.exit_door)
-#             print(pt.navigation_areas)
-#             print("---------------------------------------------")
-#         print(path)
+        path = path_planner.get_path_plan(
+                start_floor='AMK_L-1', 
+                destination_floor='AMK_L4', 
+                start_area='AMK_D_L-1_C41',
+                destination_area='AMK_B_L4_C1', 
+                start_local_area='AMK_D_L-1_C41_LA1', 
+                destination_local_area='AMK_B_L4_C1_LA1')
+        print(path)
         self.assertEqual(path[1].id, 119)
         self.assertEqual(len(path), 25)
 
-#     def test_overall_path_planner(self):
-#         path_planner = PathPlanner(self.osm_bridge)
-#         path_planner.set_building('BRSU')
-#         path = path_planner.get_path_plan(
-#                 destination_floor='BRSU_L0',
-#                 start_floor='BRSU_L0',
-#                 destination_area='BRSU_C_L0_C9',
-#                 start_area='BRSU_C_L0_C2',
-#                 start_local_area='BRSU_C_L0_C2_LA1',
-#                 destination_local_area='BRSU_C_L0_C9_LA2'
-#                 )
-#         print(path)
+    # def test_overall_path_planner(self):
+    #     path_planner = PathPlanner(self.osm_bridge)
+    #     path_planner.set_building('BRSU')
+    #     path = path_planner.get_path_plan(
+    #             destination_floor='BRSU_L0',
+    #             start_floor='BRSU_L0',
+    #             start_area='BRSU_C_L0_C9',
+    #             start_local_area='BRSU_C_L0_C9_LA1',
+    #             destination_area='BRSU_A_L0_C9',
+    #             destination_local_area='BRSU_C_L0_C9_LA2'
+    #             )
+    #     print(path)
 
     def test_dynamic_path_planner_blocked_with_traffic_rules(self):
         path_planner = PathPlanner(self.osm_bridge)
@@ -89,10 +88,15 @@ class TestPathPlanner(unittest.TestCase):
         # path planning should fail here as connections are blocked and traffic rules are
         # still in effect
         with self.assertRaises(Exception) as context:
-            self.assertRaises(path_planner.get_path_plan(start_floor='AMK_L-1', destination_floor='AMK_L4',
-                                                         start_area='AMK_D_L-1_C41', destination_area='AMK_B_L4_C1',
-                                                         start_local_area='AMK_D_L-1_C41_LA1', destination_local_area='AMK_B_L4_C1_LA1',
-                                                         blocked_connections=[[4825, 4824], [4824, 5055]], relax_traffic_rules=False))
+            self.assertRaises(path_planner.get_path_plan(
+                start_floor='AMK_L-1', 
+                destination_floor='AMK_L4',
+                start_area='AMK_D_L-1_C41', 
+                destination_area='AMK_B_L4_C1',
+                start_local_area='AMK_D_L-1_C41_LA1', 
+                destination_local_area='AMK_B_L4_C1_LA1',
+                blocked_connections=[['AMK_C_L-1_C36_LA2', 'AMK_C_L-1_C35_LA2'], ['AMK_C_L-1_C35_LA2', 'AMK_C_L-1_C34_Door1']], 
+                relax_traffic_rules=False))
         self.assertTrue("Couldn't plan the path" in str(context.exception))
 
     def test_dynamic_path_planner_blocked_wo_traffic_rules(self):
@@ -102,10 +106,15 @@ class TestPathPlanner(unittest.TestCase):
         try:
             # even though connections are blocked since traffic rules are relaxed
             # path planning should be successful in this case
-            path_planner.get_path_plan(start_floor='AMK_L-1', destination_floor='AMK_L4',
-                                       start_area='AMK_D_L-1_C41', destination_area='AMK_B_L4_C1',
-                                       start_local_area='AMK_D_L-1_C41_LA1', destination_local_area='AMK_B_L4_C1_LA1',
-                                       blocked_connections=[[4825, 4824], [4824, 5055]], relax_traffic_rules=True)
+            path_planner.get_path_plan(
+                    start_floor='AMK_L-1', 
+                    destination_floor='AMK_L4',
+                    start_area='AMK_D_L-1_C41', 
+                    destination_area='AMK_B_L4_C1',
+                    start_local_area='AMK_D_L-1_C41_LA1', 
+                    destination_local_area='AMK_B_L4_C1_LA1',
+                    blocked_connections=[['AMK_C_L-1_C36_LA2', 'AMK_C_L-1_C35_LA2'], ['AMK_C_L-1_C35_LA2', 'AMK_C_L-1_C34_Door1']], 
+                    relax_traffic_rules=True)
         except:
             self.fail("In this case path shhould be successfully planned")
 
