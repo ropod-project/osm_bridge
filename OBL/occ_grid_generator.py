@@ -123,6 +123,7 @@ class OccGridGenerator(object):
         drawObject = ImageDraw.Draw(grid_map)
         ways = []
         ways.extend(self._get_walls(floor))
+        ways.extend(self._get_pillars(floor))
         ways.extend(self._get_elevator_walls())
         ways.extend(self._get_doors(floor))
         max_x, max_y = 0, 0
@@ -161,6 +162,23 @@ class OccGridGenerator(object):
             walls.append(tuple(nodes))
         self.logger.debug(str(len(walls)) + " walls found")
         return tuple(walls)
+
+    def _get_pillars(self, floor):
+        """returns all the nodes for all ways with pillar tag
+
+        :floor: int
+        :returns: ((n, n,..), (n, n, ..), ...) where n represents Node object
+
+        """
+        __, ways, __ = self.osm_adapter.search_by_tag(
+            data_type='way', key_val_dict={'level': floor, 'indoor': 'pillar'})
+        pillars = []
+        for way in ways:
+            nodes, __, __ = self.osm_adapter.get_osm_element_by_id(
+                ids=way.nodes, data_type='node')
+            pillars.append(tuple(nodes))
+        self.logger.debug(str(len(pillars)) + " pillars found")
+        return tuple(pillars)
 
     def _get_elevator_walls(self):
         """returns all the nodes for all ways with wall tag with no level tag (elevator walls)
