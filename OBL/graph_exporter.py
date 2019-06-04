@@ -74,7 +74,7 @@ class GraphExporter(object):
         return graph
 
     def get_local_topological_graph(self, building_ref, floor_ref, visualize=False):
-        building = self._osm_bridge.get_building('AMK')
+        building = self._osm_bridge.get_building(building_ref)
         floor = self._osm_bridge.get_floor(floor_ref)
         areas = []
 

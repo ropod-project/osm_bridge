@@ -5,7 +5,7 @@ import unittest
 
 class TestGraphExporter(unittest.TestCase):
     '''
-    Unit tests for occupancy grid generator class 
+    Unit tests for graph exporter module
     '''
 
     def setUp(self):
