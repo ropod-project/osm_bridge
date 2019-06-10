@@ -1,5 +1,5 @@
 from OBL import OSMBridge
-from OBL.nearest_wlan_finder import NearestWLANFinder
+from OBL import NearestWLANFinder
 
 import unittest
 
