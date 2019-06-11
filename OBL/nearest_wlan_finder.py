@@ -41,16 +41,21 @@ class NearestWLANFinder(object):
         pointX = kwargs.get("x")
         pointY = kwargs.get("y")
 
-        if area_name is None and local_area_name is None and \
-                (pointX is None or pointY is None or floor_name is None):
-            return None
-
-        if area_name is not None:
-            return self._get_wlan_point_from_area(area_name)
-        elif local_area_name is not None:
-            return self._get_wlan_point_from_local_area(local_area_name)
-        else:
-            return self._get_wlan_point_from_pose(pointX, pointY, floor_name)
+        if floor_name is None:
+            if area_name is not None:
+                floor_name = self._get_floor_from_area(area_name)
+            elif local_area_name is not None:
+                floor_name = self._get_floor_from_local_area(local_area_name)
+            else:
+                return None
+        if pointX is None or pointY is None:
+            if area_name is not None:
+                pointX, pointY = self._get_x_and_y_from_area(area_name)
+            elif local_area_name is not None:
+                pointX, pointY = self._get_x_and_y_from_local_area(local_area_name)
+            else:
+                return None
+        return self._get_wlan_point_from_pose(pointX, pointY, floor_name)
 
     def _get_wlan_point_from_pose(self, x, y, floor_name):
         """Get the nearest wlan point from point(x, y)
@@ -72,11 +77,11 @@ class NearestWLANFinder(object):
                 nearest_wlan_point = point
         return nearest_wlan_point
 
-    def _get_wlan_point_from_area(self, area_name):
-        """Get topology node of area and get nearest wlan point from that node
+    def _get_floor_from_area(self, area_name):
+        """Get floor id of area
 
         :area_name: string or int
-        :returns: Point
+        :returns: int
 
         """
         area_obj = self.osm_bridge.get_area(area_name)
@@ -85,15 +90,13 @@ class NearestWLANFinder(object):
             data_type='relation',
             parent_child_role=area_obj.type)
         floor_id = relations[0].id
-        topology = area_obj.topology
-        return self._get_wlan_point_from_pose(topology.x, topology.y, floor_id)
+        return floor_id
 
-    def _get_wlan_point_from_local_area(self, local_area_name):
-        """Get topology node of area containing given local_area and get nearest
-        wlan point from that.
+    def _get_floor_from_local_area(self, local_area_name):
+        """Get floor id of local_area
 
         :local_area_name: string or int
-        :returns: Point
+        :returns: int
 
         """
         local_area_obj = self.osm_bridge.get_local_area(local_area_name)
@@ -102,7 +105,29 @@ class NearestWLANFinder(object):
             data_type='relation',
             parent_child_role=local_area_obj.type)
         area_id = relations[0].id
-        return self._get_wlan_point_from_area(area_id)
+        return self._get_floor_from_area(area_id)
+
+    def _get_x_and_y_from_area(self, area_name):
+        """Get x and y coordinate of topology of area
+
+        :area_name: string or int
+        :returns: tuple(x, y)
+
+        """
+        area_obj = self.osm_bridge.get_area(area_name)
+        point_obj =  area_obj.topology
+        return (point_obj.x, point_obj.y)
+
+    def _get_x_and_y_from_local_area(self, local_area_name):
+        """Get x and y coordinate of topology of local_area
+
+        :local_area_name: string or int
+        :returns: tuple(x, y)
+
+        """
+        local_area_obj = self.osm_bridge.get_local_area(local_area_name)
+        point_obj =  local_area_obj.topology
+        return (point_obj.x, point_obj.y)
 
     def _calculate_cartesian_distance(self, x1, y1, x2, y2):
         """returns the cartesian distance between 2 points
