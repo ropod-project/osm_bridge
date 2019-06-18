@@ -58,12 +58,12 @@ class TestPathPlanner(unittest.TestCase):
         path_planner = PathPlanner(self.osm_bridge)
         path_planner.set_building('AMK')
         path = path_planner.get_path_plan(
-                start_floor='AMK_L-1', 
-                destination_floor='AMK_L4', 
-                start_area='AMK_D_L-1_C41',
-                destination_area='AMK_B_L4_C1', 
-                start_local_area='AMK_D_L-1_C41_LA1', 
-                destination_local_area='AMK_B_L4_C1_LA1')
+            start_floor='AMK_L-1',
+            destination_floor='AMK_L4',
+            start_area='AMK_D_L-1_C41',
+            destination_area='AMK_B_L4_C1',
+            start_local_area='AMK_D_L-1_C41_LA1',
+            destination_local_area='AMK_B_L4_C1_LA1')
         print(path)
         self.assertEqual(path[1].id, 119)
         self.assertEqual(len(path), 25)
@@ -89,13 +89,15 @@ class TestPathPlanner(unittest.TestCase):
         # still in effect
         with self.assertRaises(Exception) as context:
             self.assertRaises(path_planner.get_path_plan(
-                start_floor='AMK_L-1', 
+                start_floor='AMK_L-1',
                 destination_floor='AMK_L4',
-                start_area='AMK_D_L-1_C41', 
+                start_area='AMK_D_L-1_C41',
                 destination_area='AMK_B_L4_C1',
-                start_local_area='AMK_D_L-1_C41_LA1', 
+                start_local_area='AMK_D_L-1_C41_LA1',
                 destination_local_area='AMK_B_L4_C1_LA1',
-                blocked_connections=[['AMK_C_L-1_C36_LA2', 'AMK_C_L-1_C35_LA2'], ['AMK_C_L-1_C35_LA2', 'AMK_C_L-1_C34_Door1']], 
+                blocked_connections=[
+                    ['AMK_C_L-1_C36_LA2', 'AMK_C_L-1_C35_LA2'],
+                    ['AMK_C_L-1_C35_LA2', 'AMK_C_L-1_C34_Door1']],
                 relax_traffic_rules=False))
         self.assertTrue("Couldn't plan the path" in str(context.exception))
 
@@ -107,14 +109,16 @@ class TestPathPlanner(unittest.TestCase):
             # even though connections are blocked since traffic rules are relaxed
             # path planning should be successful in this case
             path_planner.get_path_plan(
-                    start_floor='AMK_L-1', 
-                    destination_floor='AMK_L4',
-                    start_area='AMK_D_L-1_C41', 
-                    destination_area='AMK_B_L4_C1',
-                    start_local_area='AMK_D_L-1_C41_LA1', 
-                    destination_local_area='AMK_B_L4_C1_LA1',
-                    blocked_connections=[['AMK_C_L-1_C36_LA2', 'AMK_C_L-1_C35_LA2'], ['AMK_C_L-1_C35_LA2', 'AMK_C_L-1_C34_Door1']], 
-                    relax_traffic_rules=True)
+                start_floor='AMK_L-1',
+                destination_floor='AMK_L4',
+                start_area='AMK_D_L-1_C41',
+                destination_area='AMK_B_L4_C1',
+                start_local_area='AMK_D_L-1_C41_LA1',
+                destination_local_area='AMK_B_L4_C1_LA1',
+                blocked_connections=[
+                    ['AMK_C_L-1_C36_LA2', 'AMK_C_L-1_C35_LA2'],
+                    ['AMK_C_L-1_C35_LA2', 'AMK_C_L-1_C34_Door1']],
+                relax_traffic_rules=True)
         except:
             self.fail("In this case path shhould be successfully planned")
 
@@ -125,8 +129,10 @@ class TestPathPlanner(unittest.TestCase):
         try:
             # even though connections are blocked since traffic rules are relaxed
             # path planning should be successful in this case
-            distance = path_planner.get_estimated_path_distance(start_floor='AMK_L-1', destination_floor='AMK_L4',
-                                       start_area='AMK_D_L-1_C41', destination_area='AMK_B_L4_C1')
+            distance = path_planner.get_estimated_path_distance(start_floor='AMK_L-1',
+                                                                destination_floor='AMK_L4',
+                                                                start_area='AMK_D_L-1_C41',
+                                                                destination_area='AMK_B_L4_C1')
             print("Path distance:", distance)
         except:
             self.fail("In this case path shhould be successfully planned")
