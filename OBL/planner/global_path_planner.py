@@ -85,7 +85,7 @@ class GlobalPathPlanner(object):
         connections = []
 
         if start_floor == destination_floor:
-            for connection_id in start_floor._member_ids['global_connection']:
+            for connection_id in start_floor.connection_ids:
                 connections.append(PlannerConnection(connection_id))
 
             router = Router(start_node, destination_node, connections)
@@ -96,10 +96,10 @@ class GlobalPathPlanner(object):
             start_connections = []
             destination_connections = []
 
-            for connection_id in start_floor._member_ids['global_connection']:
+            for connection_id in start_floor.connection_ids:
                 start_connections.append(PlannerConnection(connection_id))
 
-            for connection_id in destination_floor._member_ids['global_connection']:
+            for connection_id in destination_floor.connection_ids:
                 destination_connections.append(
                     PlannerConnection(connection_id))
 
