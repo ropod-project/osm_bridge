@@ -52,6 +52,10 @@ class Floor(WMEntity):
             raise Exception("No floor found")
 
     @property
+    def connection_ids(self):
+        return self._member_ids['global_connection'] if 'global_connection' in self._member_ids else []
+
+    @property
     def walls(self):
         if 'wall' not in self._member_ids or len(self._member_ids['wall']) == 0:
             return None
