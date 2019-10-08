@@ -2,6 +2,7 @@ from OBL.structs.wm.wm_entity import WMEntity
 from OBL.structs.wm.wall import Wall
 from OBL.structs.wm.room import Room
 from OBL.structs.wm.corridor import Corridor
+from OBL.structs.wm.area import Area
 from OBL.structs.wm.point import Point
 from OBL.structs.wm.connection import Connection
 
@@ -98,6 +99,17 @@ class Floor(WMEntity):
         for corridor in corridor_relations:
             corridors.append(Corridor(corridor))
         return corridors
+
+    @property
+    def areas(self):
+        if 'area' not in self._member_ids or len(self._member_ids['area']) == 0:
+            return None
+        areas = []
+        __, __, area_relations = self.osm_adapter.get_osm_element_by_id(
+            ids=self._member_ids['area'], data_type='relation')
+        for area in area_relations:
+            areas.append(Area(area))
+        return areas
 
     @property
     def wlans(self):
