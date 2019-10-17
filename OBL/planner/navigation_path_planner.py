@@ -42,6 +42,7 @@ class NavigationPathPlanner(object):
     def plan(self, start_floor, destination_floor, start, destination, global_path):
         """Summary
         Plans navigation path using A* planner with straight line distance heuristics
+        Uses recovery connections for the first and the last area (ignoring traffic rules)
 
         Args:
             start_floor (Floor): start floor wm entity
@@ -74,12 +75,12 @@ class NavigationPathPlanner(object):
 
         connections = []
 
-        for place in global_path:
+        for i, place in enumerate(global_path):
             temp = place.connection_ids
             if temp is not None:
                 for connection_id in temp:
                     connections.append(PlannerConnection(connection_id))
-            if self.relax_traffic_rules:
+            if self.relax_traffic_rules or i in [0, -1]:
                 temp = place.recovery_connection_ids
                 if temp is not None:
                     for connection_id in temp:
