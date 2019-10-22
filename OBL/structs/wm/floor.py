@@ -2,6 +2,8 @@ from OBL.structs.wm.wm_entity import WMEntity
 from OBL.structs.wm.wall import Wall
 from OBL.structs.wm.room import Room
 from OBL.structs.wm.corridor import Corridor
+from OBL.structs.wm.area import Area
+from OBL.structs.wm.point import Point
 from OBL.structs.wm.connection import Connection
 
 
@@ -26,6 +28,7 @@ class Floor(WMEntity):
         self.ref = ''
         self.name = ''
         self.height = ''
+        self._member_ids = {}
 
         # private attributes
         self._connection_ids = []
@@ -40,62 +43,84 @@ class Floor(WMEntity):
                 setattr(self, tag.key.replace("-", "_"), tag.value)
 
             for member in relations[0].members:
-                if member.role == 'wall':
-                    self._wall_ids.append(member.ref)
-                if member.role == 'room':
-                    self._room_ids.append(member.ref)
-                if member.role == 'corridor':
-                    self._corridor_ids.append(member.ref)
-                if member.role == 'global_connection':
-                    self._connection_ids.append(member.ref)
+                if member.role in self._member_ids:
+                    self._member_ids[member.role].append(member.ref)
+                else:
+                    self._member_ids[member.role] = [member.ref]
         else:
             self.logger.error(
                 "No floor found with given ref {}".format(floor_ref))
             raise Exception("No floor found")
 
     @property
+    def connection_ids(self):
+        return self._member_ids['global_connection'] if 'global_connection' in self._member_ids else []
+
+    @property
     def walls(self):
-        if len(self._wall_ids) == 0:
+        if 'wall' not in self._member_ids or len(self._member_ids['wall']) == 0:
             return None
         walls = []
         __, __, wall_relations = self.osm_adapter.get_osm_element_by_id(
-            ids=self._wall_ids, data_type='relation')
+            ids=self._member_ids['wall'], data_type='relation')
         for wall_id in wall_relations:
             walls.append(Wall(wall_id))
         return walls
 
     @property
     def connections(self):
-        if len(self._connection_ids) == 0:
+        if 'global_connection' not in self._member_ids or len(self._member_ids['global_connection']) == 0:
             return None
         connections = []
         __, connections_ways, __ = self.osm_adapter.get_osm_element_by_id(
-            ids=self._connection_ids, data_type='way')
+            ids=self._member_ids['global_connection'], data_type='way')
         for connection in connections_ways:
             connections.append(Connection(connection))
         return connections
 
     @property
     def rooms(self):
-        if len(self._room_ids) == 0:
+        if 'room' not in self._member_ids or len(self._member_ids['room']) == 0:
             return None
         rooms = []
         __, __, room_relations = self.osm_adapter.get_osm_element_by_id(
-            ids=self._room_ids, data_type='relation')
+            ids=self._member_ids['room'], data_type='relation')
         for room in room_relations:
             rooms.append(Room(room))
         return rooms
 
     @property
     def corridors(self):
-        if len(self._corridor_ids) == 0:
+        if 'corridor' not in self._member_ids or len(self._member_ids['corridor']) == 0:
             return None
         corridors = []
         __, __, corridor_relations = self.osm_adapter.get_osm_element_by_id(
-            ids=self._corridor_ids, data_type='relation')
+            ids=self._member_ids['corridor'], data_type='relation')
         for corridor in corridor_relations:
             corridors.append(Corridor(corridor))
         return corridors
+
+    @property
+    def areas(self):
+        if 'area' not in self._member_ids or len(self._member_ids['area']) == 0:
+            return None
+        areas = []
+        __, __, area_relations = self.osm_adapter.get_osm_element_by_id(
+            ids=self._member_ids['area'], data_type='relation')
+        for area in area_relations:
+            areas.append(Area(area))
+        return areas
+
+    @property
+    def wlans(self):
+        if 'wlan' not in self._member_ids or len(self._member_ids['wlan']) == 0:
+            return None
+        wlans = []
+        nodes, __, __ = self.osm_adapter.get_osm_element_by_id(
+            ids=self._member_ids['wlan'], data_type='node')
+        for node in nodes:
+            wlans.append(Point(node))
+        return wlans
 
     def room(self, ref):
         return Room(ref, scope_id=self.id, scope_role='room', scope_role_type='relation')

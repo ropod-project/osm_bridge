@@ -95,6 +95,14 @@ class Area(WMEntity):
         return self._topology_id
 
     @property
+    def connection_ids(self):
+        return self._connection_ids
+
+    @property
+    def recovery_connection_ids(self):
+        return self._recovery_connection_ids
+
+    @property
     def geometry(self):
         __, geometries, __ = self.osm_adapter.get_osm_element_by_id(
             ids=[self._geometry_id], data_type='way')
@@ -187,10 +195,13 @@ class Area(WMEntity):
             ids=self._local_area_ids, data_type='relation')
         for local_area in local_area_relations:
             local_areas.append(LocalArea(local_area))
+            local_areas[-1]._parent_id = self.id
         return local_areas
 
     def local_area(self, ref):
-        return LocalArea(ref, scope_id=self.id, scope_role='local_area', scope_role_type='relation')
+        local_area = LocalArea(ref, scope_id=self.id, scope_role='local_area', scope_role_type='relation')
+        local_area._parent_id = self.id
+        return local_area
 
     def __repr__(self):
         return "<" + self.__class__.__name__ + " id=%(id)s type=%(type)s>" % {

@@ -15,11 +15,10 @@ class TestOccGridGenerator(unittest.TestCase):
         self.server_ip = "127.0.0.1"
         self.server_port = 8000
         self.global_origin = [50.1363485, 8.6474024]  # amk
-# self.global_origin = [50.7800401, 7.18226]  # uni (coordinates of node
-# id 1307)
+        # self.global_origin = [50.7800401, 7.18226]  # uni (coordinates of node id 1307) 
 
         self.local_offset = [25, 25]  # amk
-#         self.local_offset = [25, 80] # brsu
+        # self.local_offset = [110, 80] # brsu
         self.floor = 4
         self.debug = False
 
@@ -32,14 +31,22 @@ class TestOccGridGenerator(unittest.TestCase):
 
     def test_map_files_exists_with_bridge_object(self):
         occ_grid_generator = OccGridGenerator(
-            osm_bridge=self.osm_bridge, local_offset=self.local_offset, debug=self.debug)
+            osm_bridge=self.osm_bridge,
+            local_offset=self.local_offset,
+            dirname='/tmp/map',
+            debug=self.debug)
         filename = occ_grid_generator.generate_map(floor=-1)
         print(filename)
         self.assertTrue(os.path.isfile(filename))
 
     def test_map_files_exists_with_server_info(self):
-        occ_grid_generator = OccGridGenerator(server_ip=self.server_ip,
-                                              server_port=self.server_port, global_origin=self.global_origin, local_offset=self.local_offset, debug=self.debug)
+        occ_grid_generator = OccGridGenerator(
+            server_ip=self.server_ip,
+            server_port=self.server_port,
+            global_origin=self.global_origin,
+            local_offset=self.local_offset,
+            dirname='/tmp/map',
+            debug=self.debug)
         filename = occ_grid_generator.generate_map(floor=-1)
         print(filename)
         self.assertTrue(os.path.isfile(filename))
