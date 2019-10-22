@@ -103,7 +103,7 @@ class LocalAreaFinder(object):
         for local_area in local_areas:
             self.logger.debug(local_area.ref)
             local_area.geometry  # need to call geometry because the tag is owned by it
-            if local_area.behaviour == query_behaviour:
+            if query_behaviour in local_area.behaviour:
                 return local_area
         return None
 
@@ -255,6 +255,6 @@ class LocalAreaFinder(object):
                 continue
             for local_area in local_areas:
                 local_area.geometry  # the tags belong to geometry
-                if local_area.behaviour == query_behaviour:
+                if query_behaviour in local_area.behaviour:
                     return local_area
         return None

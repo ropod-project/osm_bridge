@@ -35,7 +35,6 @@ class LocalArea(WMEntity):
 
         if len(relations) == 1:
             self.id = relations[0].id
-
             for tag in relations[0].tags:
                 setattr(self, tag.key.replace("-", "_"), tag.value)
 
@@ -64,8 +63,10 @@ class LocalArea(WMEntity):
             ids=[self._geometry_id], data_type='way')
 
         for tag in geometries[0].tags:
-            setattr(self, tag.key, tag.value)
-
+            if tag.key == 'behaviour':
+                self.behaviour = tag.value.split(";")
+            else:
+                setattr(self, tag.key, tag.value)
         nodes, __, __ = self.osm_adapter.get_osm_element_by_id(
             ids=geometries[0].nodes, data_type='node')
         return Shape(nodes)
