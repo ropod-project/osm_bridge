@@ -163,4 +163,4 @@ class PathPlanner(object):
         global_path = self.global_path_planner.plan(
             start_floor, destination_floor, start_area, destination_area, elevators)
 
-        return global_path.path_distance
+        return self.global_path_planner.path_distance

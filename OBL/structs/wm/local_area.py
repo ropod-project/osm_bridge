@@ -27,6 +27,7 @@ class LocalArea(WMEntity):
         self.id = ''
         self.behaviour = ''
         self.ref = ''
+        self._parent_id = None
 
         # private attributes
         self._geometry_id = None
@@ -34,7 +35,6 @@ class LocalArea(WMEntity):
 
         if len(relations) == 1:
             self.id = relations[0].id
-
             for tag in relations[0].tags:
                 setattr(self, tag.key.replace("-", "_"), tag.value)
 
@@ -63,8 +63,10 @@ class LocalArea(WMEntity):
             ids=[self._geometry_id], data_type='way')
 
         for tag in geometries[0].tags:
-            setattr(self, tag.key, tag.value)
-
+            if tag.key == 'behaviour':
+                self.behaviour = tag.value.split(";")
+            else:
+                setattr(self, tag.key, tag.value)
         nodes, __, __ = self.osm_adapter.get_osm_element_by_id(
             ids=geometries[0].nodes, data_type='node')
         return Shape(nodes)
@@ -74,3 +76,12 @@ class LocalArea(WMEntity):
         topological_nodes, __, __ = self.osm_adapter.get_osm_element_by_id(
             ids=[self._topology_id], data_type='node')
         return Point(topological_nodes[0])
+
+    @property
+    def parent_id(self):
+        if self._parent_id is None:
+            __, __, relations = self.osm_adapter.get_parent(
+                id=self.id, data_type='relation', parent_child_role='local_area')
+            if len(relations) > 0:
+                self._parent_id = relations[0].id
+        return self._parent_id

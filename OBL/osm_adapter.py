@@ -152,7 +152,7 @@ class OSMAdapter(object):
         elif data_type == 'way':
             role_code = 'bw'
         elif data_type == 'relation':
-            role_code == 'br'
+            role_code = 'br'
 
         query_string = data_type + \
             '(' + str(id) + ');rel(' + role_code + ':"' + parent_child_role + '");'

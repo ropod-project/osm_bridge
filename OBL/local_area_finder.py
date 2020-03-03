@@ -103,7 +103,7 @@ class LocalAreaFinder(object):
         for local_area in local_areas:
             self.logger.debug(local_area.ref)
             local_area.geometry  # need to call geometry because the tag is owned by it
-            if local_area.behaviour == query_behaviour:
+            if query_behaviour in local_area.behaviour:
                 return local_area
         return None
 
@@ -200,8 +200,16 @@ class LocalAreaFinder(object):
         self.logger.debug(floor_name)
         floor_object = self.osm_bridge.get_floor(floor_name)
         self.logger.debug("Floor ID: " + str(floor_object.id))
-        areas = floor_object.corridors
-        areas.extend(floor_object.rooms)
+        areas = []
+        corridors = floor_object.corridors
+        if corridors is not None:
+            areas.extend(corridors)
+        rooms = floor_object.rooms
+        if rooms is not None:
+            areas.extend(rooms)
+        area_objs = floor_object.areas
+        if area_objs is not None:
+            areas.extend(area_objs)
         distances = []
         for area in areas:
             self.logger.debug(area.ref)
@@ -247,6 +255,6 @@ class LocalAreaFinder(object):
                 continue
             for local_area in local_areas:
                 local_area.geometry  # the tags belong to geometry
-                if local_area.behaviour == query_behaviour:
+                if query_behaviour in local_area.behaviour:
                     return local_area
         return None
