@@ -256,6 +256,36 @@ generate_map(floor_ref, building_ref):
 - building_ref : building semantic ref (string) or OSM uuid (int)
 ```
 
+### GraphExporter
+Exports topological graphs at floor level in `networkx` format
+
+* Exporting global topological graph at floor level
+```
+get_global_topological_graph(floor_ref, visualize=False):
+- floor_ref : floor semantic ref (string) or OSM uuid (int)
+- visualize : it true graph is plotted using matplotlib
+return nextworkx graph
+```
+
+* Exporting local topological graph at floor level (with traffic rules)
+```
+get_local_topological_graph(floor_ref, visualize=False):
+- building_ref: building semantic ref (string) or OSM uuid (int)
+- floor_ref : floor semantic ref (string) or OSM uuid (int)
+- visualize : it true graph is plotted using matplotlib
+return nextworkx graph
+```
+NOTE: In OSM local topological graphs can contain directed & undirected edges. `networkx` doesn't support such graphs, hence 
+local topological graphs are returned as undirected graphs with `oneway` attribute which specifies if particular edge is 
+directed/undirected.
+
+
+* Visualize exported graph
+```
+visualize_graph(graph):
+- graph : networkx graph
+```
+
 ## World model structs
 [wm](OBL/structs/wm/README.md)
 
