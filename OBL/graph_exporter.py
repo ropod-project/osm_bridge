@@ -54,7 +54,7 @@ class GraphExporter(object):
         if kwargs.get("debug", self._debug):
             logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-    def get_global_topological_graph(self, floor_ref, elevator_refs=None, visualize=False):
+    def get_global_topological_graph(self, floor_ref, visualize=False):
         floor = self._osm_bridge.get_floor(floor_ref)
         global_connections = floor.connections
         graph = nx.Graph()
@@ -82,6 +82,10 @@ class GraphExporter(object):
             areas = areas + floor.rooms
         if floor.corridors is not None:
             areas = areas + floor.corridors
+        if floor.corridors is not None:
+            areas = areas + floor.corridors
+        if floor.areas is not None:
+            areas = areas + floor.areas
 
         elevators = building.elevators
         if elevators:
@@ -104,7 +108,6 @@ class GraphExporter(object):
                     point = door.topology
                     graph.add_node(door.id, pos=(point.x, point.y), parent_id=area.id, type=area.type,
                                    name=door.ref, behaviour=door.type)
-
         prev_local_area = None
         for area in areas:
             local_connections = area.connections
@@ -117,7 +120,6 @@ class GraphExporter(object):
                                 graph.add_edge(prev_local_area.id, local_area.id,
                                                oneway=local_connection.oneway)
                         prev_local_area = local_area
-    
         # print(graph.nodes.data())
         # print(graph.edges.data())
         if visualize:
